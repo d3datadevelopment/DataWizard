@@ -40,15 +40,7 @@ class Configuration
 
     public function configure()
     {
-        $this->registerExport( self::GROUP_ARTICLES, oxNew( activeArticlesInactiveCategory::class));
-        $this->registerExport( self::GROUP_ARTICLES, oxNew( articlesWithoutManufacturers::class));
-        $this->registerExport( self::GROUP_ARTICLES, oxNew( gappedArticleImages::class));
-        $this->registerExport( self::GROUP_ARTICLES, oxNew( noArticleTextSet::class));
-        $this->registerExport( self::GROUP_ARTICLES, oxNew( wrongArticlePrice::class));
-        $this->registerExport( self::GROUP_CATEGORY, oxNew( emptyCategories::class));
-        $this->registerExport( self::GROUP_CATEGORY, oxNew( inactiveCategories::class));
-        $this->registerExport( self::GROUP_CATEGORY, oxNew( inactiveParentCategory::class));
-        $this->registerExport( self::GROUP_REMARKS, oxNew( unreleasedRatings::class));
+
     }
 
     public function registerExport($group, ExportBase $export)
