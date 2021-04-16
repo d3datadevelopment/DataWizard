@@ -1,0 +1,41 @@
+{
+  "name": "d3/datawizard",
+  "description": "das magische Datenwerkzeug",
+  "type": "oxideshop-module",
+  "keywords": [
+    "oxid",
+    "modules",
+    "eShop",
+    "d3",
+    "export"
+  ],
+  "authors": [
+    {
+      "name": "D3 Data Development (Inh. Thomas Dartsch)",
+      "email": "info@shopmodule.com",
+      "homepage": "https://www.d3data.de",
+      "role": "Owner"
+    }
+  ],
+  "support": {
+    "email": "support@shopmodule.com"
+  },
+  "homepage": "https://www.oxidmodule.com/",
+  "license": [
+    "proprietary"
+  ],
+  "require": {
+    "oxid-esales/oxideshop-ce": "~6.3"
+  },
+  "extra": {
+    "oxideshop": {
+      "source-directory": "/src",
+      "target-directory": "d3/datawizard"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "D3\\DataWizard\\": "../../../source/modules/d3/datawizard"
+    }
+  }
+}
