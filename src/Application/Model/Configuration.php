@@ -15,16 +15,6 @@
 
 namespace D3\DataWizard\Application\Model;
 
-use D3\DataWizard\Application\Model\Exports\activeArticlesInactiveCategory;
-use D3\DataWizard\Application\Model\Exports\articlesWithoutManufacturers;
-use D3\DataWizard\Application\Model\Exports\emptyCategories;
-use D3\DataWizard\Application\Model\Exports\gappedArticleImages;
-use D3\DataWizard\Application\Model\Exports\inactiveCategories;
-use D3\DataWizard\Application\Model\Exports\inactiveParentCategory;
-use D3\DataWizard\Application\Model\Exports\noArticleTextSet;
-use D3\DataWizard\Application\Model\Exports\unreleasedRatings;
-use D3\DataWizard\Application\Model\Exports\wrongArticlePrice;
-
 class Configuration
 {
     const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
