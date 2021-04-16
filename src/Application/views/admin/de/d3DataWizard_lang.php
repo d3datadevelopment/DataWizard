@@ -24,12 +24,18 @@ $aLang = array(
 //Navigation
     'charset'                                         => 'UTF-8',
     'd3mxDataWizard'                                  => '<i class="fa fa-fw fas-hat-wizard"></i> Data Wizard',
+    'd3mxDataWizard_Export'                           => 'Exporte',
 
     'D3_DATAWIZARD_GROUP_ARTICLES'                    => 'Artikel',
     'D3_DATAWIZARD_GROUP_CATEGORIES'                  => 'Kategorien',
     'D3_DATAWIZARD_GROUP_REMARKS'                     => 'Bewertungen',
+    'D3_DATAWIZARD_GROUP_USERS'                       => 'Benutzer',
+    'D3_DATAWIZARD_GROUP_ORDERS'                      => 'Bestellungen',
 
-    'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten'
+    'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten',
+
+    'D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED'            => 'Es sind keine Exporte installiert oder aktiviert.',
+    'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar'
 
 // Abracadata
 // Harry Potter

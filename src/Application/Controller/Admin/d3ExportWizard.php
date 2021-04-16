@@ -26,7 +26,9 @@ use D3\DataWizard\Application\Model\Exports\noArticleTextSet;
 use D3\DataWizard\Application\Model\Exports\unreleasedRatings;
 use D3\DataWizard\Application\Model\Exports\wrongArticlePrice;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsView;
 
 class d3ExportWizard extends AdminDetailsController
 {
@@ -56,6 +58,12 @@ class d3ExportWizard extends AdminDetailsController
     {
         $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
         $this->configuration->getExportById($id)->run();
+
+        $oEx = oxNew(
+            StandardException::class,
+            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
+        );
+        Registry::get(UtilsView::class)->addErrorToDisplay($oEx);
     }
 
     public function getUserMessages()
@@ -66,68 +74,5 @@ class d3ExportWizard extends AdminDetailsController
     public function getHelpURL()
     {
         return null;
-    }
-
-    public function exportEmptyCategories()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\emptyCategories $export */
-        $export = oxNew(emptyCategories::class);
-        $export->run();
-    }
-
-    public function exportInactiveCategories()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\inactiveCategories $export */
-        $export = oxNew(inactiveCategories::class);
-        $export->run();
-    }
-
-    public function exportGappedArticleImages()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\gappedArticleImages $export */
-        $export = oxNew(gappedArticleImages::class);
-        $export->run();
-    }
-
-    public function exportNoArticleTextsSet()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\noArticleTextSet $export */
-        $export = oxNew(noArticleTextSet::class);
-        $export->run();
-    }
-
-    public function exportWrongArticlePrice()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\wrongArticlePrice $export */
-        $export = oxNew(wrongArticlePrice::class);
-        $export->run();
-    }
-
-    public function exportArticlesWithoutManufacturers()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\articlesWithoutManufacturers $export */
-        $export = oxNew(articlesWithoutManufacturers::class);
-        $export->run();
-    }
-
-    public function exportUnreleasedRatings()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\unreleasedRatings $export */
-        $export = oxNew(unreleasedRatings::class);
-        $export->run();
-    }
-
-    public function exportInactiveParentCategory()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\inactiveParentCategory $export */
-        $export = oxNew(inactiveParentCategory::class);
-        $export->run();
-    }
-
-    public function exportActiveArticlesInactiveCategory()
-    {
-        /** @var \D3\DataWizard\Application\Model\Exports\activeArticlesInactiveCategory $export */
-        $export = oxNew(activeArticlesInactiveCategory::class);
-        $export->run();
     }
 }

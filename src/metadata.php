@@ -22,7 +22,7 @@ $sMetadataVersion = '2.1';
  */
 $aModule = [
     'id'          => 'd3datawizard',
-    'title'       => '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em"> Data Wizard query framework',
+    'title'       => '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em"> Data Wizard framework',
     'description' => [
         'de' => '',
         'en' => '',

@@ -50,7 +50,7 @@
                         <div class="card-body pb-0">
                             <div class="row">
                                 [{foreach from=$oView->getGroupExports($group) key="id" item="export"}]
-                                    <div class="col-sm-3 pb-4">
+                                    <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
                                         <div class="card">
                                             <h5 class="card-header">
                                                 [{$export->getTitle()}]
@@ -59,7 +59,18 @@
                                                 <p class="card-text">
                                                     [{$export->getDescription()}]
                                                 </p>
-                                                <button class="btn btn-primary" onclick="document.getElementById('exportid').value = '[{$id}]'; document.getElementById('myedit').submit();">
+                                                <button class="btn btn-primary"
+                                                    onclick="
+                                                        setTimeout(function(){
+                                                            document.getElementById('mask').className='';
+                                                            document.getElementById('popup2').className='d3loader-2';
+                                                        }, 3000);
+                                                        document.getElementById('mask').className='on';
+                                                        document.getElementById('popup2').className='d3loader-2 on';
+                                                        document.getElementById('exportid').value = '[{$id}]';
+                                                        document.getElementById('myedit').submit();
+                                                    "
+                                                >
                                                     <i class="fas fa-magic"></i>
                                                     [{oxmultilang ident=$export->getButtonText()}]
                                                 </button>
@@ -77,8 +88,19 @@
             [{/foreach}]
         </div>
     [{else}]
-        keine Exporte definiert
+        <div class="alert alert-primary" role="alert">
+            [{oxmultilang ident="D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED"}]
+        </div>
     [{/if}]
 </form>
+
+<div id="mask" class=""></div>
+<div id="popup2" class="d3loader-2">
+    <div class="d3loader-spinner">
+        <div class="d3loader-circle-1"></div>
+        <div class="d3loader-circle-2"></div>
+        <div class="d3loader-circle-3"></div>
+    </div>
+</div>
 
 [{include file="d3_cfg_mod_inc.tpl"}]
