@@ -25,7 +25,8 @@
     "proprietary"
   ],
   "require": {
-    "oxid-esales/oxideshop-ce": "~6.3"
+    "oxid-esales/oxideshop-ce": "~6.3",
+    "league/csv": "^9.0"
   },
   "extra": {
     "oxideshop": {

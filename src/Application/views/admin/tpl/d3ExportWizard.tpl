@@ -32,6 +32,7 @@
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
     <input type="hidden" name="fnc" value="doExport">
     <input type="hidden" name="exportid" id="exportid" value="">
+    <input type="hidden" name="exportformat" id="exportformat" value="CSV">
 
     [{assign var="groups" value=$oView->getGroups()}]
     [{if $groups|count}]
@@ -59,21 +60,43 @@
                                                 <p class="card-text">
                                                     [{$export->getDescription()}]
                                                 </p>
-                                                <button class="btn btn-primary"
-                                                    onclick="
-                                                        setTimeout(function(){
+
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-primary" onclick="
+                                                            setTimeout(function(){
                                                             document.getElementById('mask').className='';
                                                             document.getElementById('popup2').className='d3loader-2';
-                                                        }, 3000);
-                                                        document.getElementById('mask').className='on';
-                                                        document.getElementById('popup2').className='d3loader-2 on';
-                                                        document.getElementById('exportid').value = '[{$id}]';
-                                                        document.getElementById('myedit').submit();
-                                                    "
-                                                >
-                                                    <i class="fas fa-magic"></i>
-                                                    [{oxmultilang ident=$export->getButtonText()}]
-                                                </button>
+                                                            }, 3000);
+                                                            document.getElementById('mask').className='on';
+                                                            document.getElementById('popup2').className='d3loader-2 on';
+                                                            document.getElementById('exportid').value = '[{$id}]';
+                                                            document.getElementById('myedit').submit();
+                                                        "
+                                                    >
+                                                        <i class="fas fa-magic"></i>
+                                                        [{oxmultilang ident=$export->getButtonText()}]
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <span class="sr-only">
+                                                            <i class="fas fa-magic"></i>
+                                                            [{oxmultilang ident=$export->getButtonText()}]
+                                                        </span>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <button class="dropdown-item" onclick="
+                                                                setTimeout(function(){
+                                                                document.getElementById('mask').className='';
+                                                                document.getElementById('popup2').className='d3loader-2';
+                                                                }, 3000);
+                                                                document.getElementById('mask').className='on';
+                                                                document.getElementById('popup2').className='d3loader-2 on';
+                                                                document.getElementById('exportid').value = '[{$id}]';
+                                                                document.getElementById('myedit').submit();
+                                                            "
+                                                        >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]</button>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

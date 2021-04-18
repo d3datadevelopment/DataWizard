@@ -15,10 +15,15 @@
 
 namespace D3\DataWizard\Application\Model;
 
-use D3\ModCfg\Application\Model\d3database;
+use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
+use League\Csv\CannotInsertRecord;
+use League\Csv\EncloseField;
+use League\Csv\Exception;
+use League\Csv\Writer;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
@@ -26,13 +31,17 @@ use OxidEsales\Eshop\Core\Registry;
 
 abstract class ExportBase implements QueryBase
 {
+    const FORMAT_CSV = 'CSV';
+
     /**
+     * @throws CannotInsertRecord
+     * @throws DatabaseConnectionException
+     * @throws DatabaseErrorException
+     * @throws Exception
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      * @throws DBALException
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
      */
     public function run()
     {
@@ -46,11 +55,53 @@ abstract class ExportBase implements QueryBase
             );
         }
 
-        d3database::getInstance()->downloadExportCsvByQuery($this->getExportFilename(), $this->getQuery());
+        $rows = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getAll($query);
+
+        if (count($rows) <= 0) {
+            throw oxNew(
+                StandardException::class,
+                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
+            );
+        }
+
+        $fieldNames = array_keys($rows[0]);
+
+        $csv = $this->getCsv();
+        $csv->insertOne($fieldNames);
+        $csv->insertAll($rows);
+
+        /** @var $oFS d3filesystem */
+        $oFS = oxNew(d3filesystem::class);
+        $oFS->startDirectDownload($this->getExportFilename(), $csv->getContent());
     }
 
     public function getButtonText() : string
     {
         return "D3_DATAWIZARD_EXPORT_SUBMIT";
+    }
+
+    /**
+     * @return Writer
+     * @throws Exception
+     */
+    protected function getCsv(): Writer
+    {
+        $csv = Writer::createFromString();
+
+        EncloseField::addTo($csv, "\t\x1f");
+
+        $sEncloser = Registry::getConfig()->getConfigParam('sGiCsvFieldEncloser');
+        if (false == $sEncloser) {
+            $sEncloser = '"';
+        }
+        $csv->setEnclosure($sEncloser);
+
+        $sDelimiter = Registry::getConfig()->getConfigParam('sCSVSign');
+        if (false == $sDelimiter) {
+            $sDelimiter = ';';
+        }
+        $csv->setDelimiter($sDelimiter);
+
+        return $csv;
     }
 }

@@ -17,6 +17,8 @@ namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\Configuration;
 use Doctrine\DBAL\DBALException;
+use League\Csv\CannotInsertRecord;
+use League\Csv\Exception;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
@@ -46,7 +48,9 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
+     * @throws CannotInsertRecord
      * @throws DBALException
+     * @throws Exception
      */
     public function doExport()
     {
@@ -62,11 +66,6 @@ class d3ExportWizard extends AdminDetailsController
             }
 
             $export->run();
-
-            throw oxNew(
-                StandardException::class,
-                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
-            );
         } catch (StandardException $e) {
             Registry::getUtilsView()->addErrorToDisplay($e);
         }
