@@ -17,12 +17,15 @@
  */
 $sMetadataVersion = '2.1';
 
+$sModuleId = 'd3datawizard';
+$logo = '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em">';
+
 /**
  * Module information
  */
 $aModule = [
-    'id'          => 'd3datawizard',
-    'title'       => '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em"> Data Wizard framework',
+    'id'          => $sModuleId,
+    'title'       => $logo.' Data Wizard framework',
     'description' => [
         'de' => '',
         'en' => '',
@@ -39,6 +42,14 @@ $aModule = [
     'events'      => [],
     'templates'   => [
         'd3ExportWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ExportWizard.tpl',
+    ],
+    'settings'    => [
+        [
+            'group'     => $sModuleId.'_general',
+            'name'      => $sModuleId.'_debug',
+            'type'      => 'bool',
+            'value'     => false
+        ],
     ],
     'blocks'      => []
 ];

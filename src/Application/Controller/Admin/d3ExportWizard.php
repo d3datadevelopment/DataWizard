@@ -16,19 +16,10 @@
 namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\Configuration;
-use D3\DataWizard\Application\Model\Exports\activeArticlesInactiveCategory;
-use D3\DataWizard\Application\Model\Exports\articlesWithoutManufacturers;
-use D3\DataWizard\Application\Model\Exports\emptyCategories;
-use D3\DataWizard\Application\Model\Exports\gappedArticleImages;
-use D3\DataWizard\Application\Model\Exports\inactiveCategories;
-use D3\DataWizard\Application\Model\Exports\inactiveParentCategory;
-use D3\DataWizard\Application\Model\Exports\noArticleTextSet;
-use D3\DataWizard\Application\Model\Exports\unreleasedRatings;
-use D3\DataWizard\Application\Model\Exports\wrongArticlePrice;
+use Doctrine\DBAL\DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\UtilsView;
 
 class d3ExportWizard extends AdminDetailsController
 {
@@ -54,16 +45,31 @@ class d3ExportWizard extends AdminDetailsController
         return $this->configuration->getExportsByGroup($group);
     }
 
+    /**
+     * @throws DBALException
+     */
     public function doExport()
     {
-        $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
-        $this->configuration->getExportById($id)->run();
+        try {
+            $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
+            $export = $this->configuration->getExportById($id);
 
-        $oEx = oxNew(
-            StandardException::class,
-            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
-        );
-        Registry::get(UtilsView::class)->addErrorToDisplay($oEx);
+            if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
+                throw oxNew(
+                    StandardException::class,
+                    $export->getQuery()
+                );
+            }
+
+            $export->run();
+
+            throw oxNew(
+                StandardException::class,
+                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
+            );
+        } catch (StandardException $e) {
+            Registry::getUtilsView()->addErrorToDisplay($e);
+        }
     }
 
     public function getUserMessages()
