@@ -17,7 +17,7 @@ namespace D3\DataWizard\Application\Model\ExportRenderer;
 
 interface RendererInterface
 {
-    public function getContent($rows, $fieldnames);
+    public function getContent($rows, $fieldNames) : string;
 
-    public function getFileExtension();
+    public function getFileExtension() : string;
 }

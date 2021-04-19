@@ -68,7 +68,7 @@ abstract class ExportBase implements QueryBase
         /** @var $oFS d3filesystem */
         $oFS = oxNew(d3filesystem::class);
         $oFS->startDirectDownload(
-            $this->getExportFilenameBase().'.'.$this->getFileExtension($format),
+            $oFS->filterFilename($this->getExportFileName($format)),
             $content
         );
     }
@@ -104,5 +104,15 @@ abstract class ExportBase implements QueryBase
     {
         $renderer = $this->getRenderer($format);
         return $renderer->getContent($rows, $fieldnames);
+    }
+
+    /**
+     * @param $format
+     *
+     * @return string
+     */
+    public function getExportFileName($format) : string
+    {
+        return $this->getExportFilenameBase().'_'.date('Y-m-d_H-i-s').'.'.$this->getFileExtension($format);
     }
 }

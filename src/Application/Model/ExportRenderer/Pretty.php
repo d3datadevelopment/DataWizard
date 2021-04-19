@@ -19,7 +19,7 @@ use MathieuViossat\Util\ArrayToTextTable;
 
 class Pretty implements RendererInterface
 {
-    public function getContent($rows, $fieldnames)
+    public function getContent($rows, $fieldNames) : string
     {
         $renderer = oxNew(ArrayToTextTable::class, $rows);
         return $renderer->getTable();

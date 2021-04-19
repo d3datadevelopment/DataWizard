@@ -31,7 +31,7 @@ class Csv implements RendererInterface
      * @throws Exception
      * @throws CannotInsertRecord
      */
-    public function getContent($rows, $fieldNames)
+    public function getContent($rows, $fieldNames): string
     {
         $csv = $this->getCsv();
         $csv->insertOne($fieldNames);
