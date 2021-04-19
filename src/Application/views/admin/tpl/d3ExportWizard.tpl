@@ -6,12 +6,10 @@
 [{oxscript include="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"}]
 [{oxstyle include="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css"}]
 
-<style type="text/css">
+<style>
     button {
-        margin: 1em;
-        margin-left: 5em;
+        margin: 1em 1em 1em 5em;
     }
-
     html {
         font-size: 0.8em;
     }
@@ -24,8 +22,26 @@
     h5.card-header {
         font-size: 1.1rem;
     }
-
 </style>
+
+[{capture name="d3script"}][{strip}]
+    function startExport(id, format) {
+        let elements = document.getElementsByClassName('errorbox');
+        for (var i = 0; i < elements.length; i++){
+            elements[i].style.display = 'none';
+        }
+        setTimeout(function(){
+            document.getElementById('mask').className='';
+            document.getElementById('popup2').className='d3loader-2';
+        }, 3000);
+        document.getElementById('mask').className='on';
+        document.getElementById('popup2').className='d3loader-2 on';
+        document.getElementById('exportid').value = id;
+        document.getElementById('exportformat').value = format;
+        document.getElementById('myedit').submit();
+    }
+[{/strip}][{/capture}]
+[{oxscript add=$smarty.capture.d3script}]
 
 <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post" style="padding: 0;margin: 0;height:0;">
     [{$oViewConf->getHiddenSid()}]
@@ -62,18 +78,7 @@
                                                 </p>
 
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-primary" onclick="
-                                                            setTimeout(function(){
-                                                            document.getElementById('mask').className='';
-                                                            document.getElementById('popup2').className='d3loader-2';
-                                                            }, 3000);
-                                                            document.getElementById('mask').className='on';
-                                                            document.getElementById('popup2').className='d3loader-2 on';
-                                                            document.getElementById('exportid').value = '[{$id}]';
-                                                            document.getElementById('exportformat').value = 'CSV';
-                                                            document.getElementById('myedit').submit();
-                                                        "
-                                                    >
+                                                    <button type="button" class="btn btn-primary" onclick="startExport('[{$id}]', 'CSV')">
                                                         <i class="fas fa-magic"></i>
                                                         [{oxmultilang ident=$export->getButtonText()}]
                                                     </button>
@@ -85,30 +90,12 @@
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         [{block name="dataWizardExportFormat"}]
-                                                            <button class="dropdown-item" onclick="
-                                                                    setTimeout(function(){
-                                                                    document.getElementById('mask').className='';
-                                                                    document.getElementById('popup2').className='d3loader-2';
-                                                                    }, 3000);
-                                                                    document.getElementById('mask').className='on';
-                                                                    document.getElementById('popup2').className='d3loader-2 on';
-                                                                    document.getElementById('exportid').value = '[{$id}]';
-                                                                    document.getElementById('exportformat').value = 'CSV';
-                                                                    document.getElementById('myedit').submit();
-                                                                "
-                                                            >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]</button>
-                                                            <button class="dropdown-item" onclick="
-                                                                    setTimeout(function(){
-                                                                    document.getElementById('mask').className='';
-                                                                    document.getElementById('popup2').className='d3loader-2';
-                                                                    }, 3000);
-                                                                    document.getElementById('mask').className='on';
-                                                                    document.getElementById('popup2').className='d3loader-2 on';
-                                                                    document.getElementById('exportid').value = '[{$id}]';
-                                                                    document.getElementById('exportformat').value = 'Pretty';
-                                                                    document.getElementById('myedit').submit();
-                                                                "
-                                                            >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]</button>
+                                                            <button class="dropdown-item" onclick="startExport('[{$id}]', 'CSV')">
+                                                                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]
+                                                            </button>
+                                                            <button class="dropdown-item" onclick="startExport('[{$id}]', 'Pretty')">
+                                                                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]
+                                                            </button>
                                                         [{/block}]
                                                     </div>
                                                 </div>
