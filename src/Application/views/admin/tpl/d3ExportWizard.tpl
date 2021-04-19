@@ -84,30 +84,32 @@
                                                         </span>
                                                     </button>
                                                     <div class="dropdown-menu">
-                                                        <button class="dropdown-item" onclick="
-                                                                setTimeout(function(){
-                                                                document.getElementById('mask').className='';
-                                                                document.getElementById('popup2').className='d3loader-2';
-                                                                }, 3000);
-                                                                document.getElementById('mask').className='on';
-                                                                document.getElementById('popup2').className='d3loader-2 on';
-                                                                document.getElementById('exportid').value = '[{$id}]';
-                                                                document.getElementById('exportformat').value = 'CSV';
-                                                                document.getElementById('myedit').submit();
-                                                            "
-                                                        >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]</button>
-                                                        <button class="dropdown-item" onclick="
-                                                                setTimeout(function(){
-                                                                document.getElementById('mask').className='';
-                                                                document.getElementById('popup2').className='d3loader-2';
-                                                                }, 3000);
-                                                                document.getElementById('mask').className='on';
-                                                                document.getElementById('popup2').className='d3loader-2 on';
-                                                                document.getElementById('exportid').value = '[{$id}]';
-                                                                document.getElementById('exportformat').value = 'Pretty';
-                                                                document.getElementById('myedit').submit();
-                                                            "
-                                                        >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]</button>
+                                                        [{block name="dataWizardExportFormat"}]
+                                                            <button class="dropdown-item" onclick="
+                                                                    setTimeout(function(){
+                                                                    document.getElementById('mask').className='';
+                                                                    document.getElementById('popup2').className='d3loader-2';
+                                                                    }, 3000);
+                                                                    document.getElementById('mask').className='on';
+                                                                    document.getElementById('popup2').className='d3loader-2 on';
+                                                                    document.getElementById('exportid').value = '[{$id}]';
+                                                                    document.getElementById('exportformat').value = 'CSV';
+                                                                    document.getElementById('myedit').submit();
+                                                                "
+                                                            >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]</button>
+                                                            <button class="dropdown-item" onclick="
+                                                                    setTimeout(function(){
+                                                                    document.getElementById('mask').className='';
+                                                                    document.getElementById('popup2').className='d3loader-2';
+                                                                    }, 3000);
+                                                                    document.getElementById('mask').className='on';
+                                                                    document.getElementById('popup2').className='d3loader-2 on';
+                                                                    document.getElementById('exportid').value = '[{$id}]';
+                                                                    document.getElementById('exportformat').value = 'Pretty';
+                                                                    document.getElementById('myedit').submit();
+                                                                "
+                                                            >[{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]</button>
+                                                        [{/block}]
                                                     </div>
                                                 </div>
 
