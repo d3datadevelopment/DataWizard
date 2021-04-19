@@ -22,7 +22,7 @@ interface QueryBase
     /**
      * @return string
      */
-    public function getExportFilename() : string;
+    public function getExportFilenameBase() : string;
 
     /**
      * @return string

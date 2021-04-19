@@ -65,7 +65,7 @@ class d3ExportWizard extends AdminDetailsController
                 );
             }
 
-            $export->run();
+            $export->run(Registry::getRequest()->getRequestEscapedParameter('exportformat'));
         } catch (StandardException $e) {
             Registry::getUtilsView()->addErrorToDisplay($e);
         }

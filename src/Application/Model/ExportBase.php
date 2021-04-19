@@ -15,14 +15,13 @@
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
 use League\Csv\CannotInsertRecord;
-use League\Csv\EncloseField;
 use League\Csv\Exception;
-use League\Csv\Writer;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -31,19 +30,17 @@ use OxidEsales\Eshop\Core\Registry;
 
 abstract class ExportBase implements QueryBase
 {
-    const FORMAT_CSV = 'CSV';
-
     /**
-     * @throws CannotInsertRecord
+     * @param string $format
+     *
+     * @throws DBALException
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
-     * @throws Exception
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
-     * @throws DBALException
      */
-    public function run()
+    public function run($format = RendererBridge::FORMAT_CSV)
     {
         $query = trim($this->getQuery());
 
@@ -66,13 +63,14 @@ abstract class ExportBase implements QueryBase
 
         $fieldNames = array_keys($rows[0]);
 
-        $csv = $this->getCsv();
-        $csv->insertOne($fieldNames);
-        $csv->insertAll($rows);
+        $content = $this->renderContent($rows, $fieldNames, $format);
 
         /** @var $oFS d3filesystem */
         $oFS = oxNew(d3filesystem::class);
-        $oFS->startDirectDownload($this->getExportFilename(), $csv->getContent());
+        $oFS->startDirectDownload(
+            $this->getExportFilenameBase().'.'.$this->getFileExtension($format),
+            $content
+        );
     }
 
     public function getButtonText() : string
@@ -81,27 +79,30 @@ abstract class ExportBase implements QueryBase
     }
 
     /**
-     * @return Writer
-     * @throws Exception
+     * @param $format
+     *
+     * @return ExportRenderer\RendererInterface
      */
-    protected function getCsv(): Writer
+    public function getRenderer($format): ExportRenderer\RendererInterface
     {
-        $csv = Writer::createFromString();
+        return oxNew(RendererBridge::class)->getRenderer($format);
+    }
 
-        EncloseField::addTo($csv, "\t\x1f");
+    public function getFileExtension($format)
+    {
+        return $this->getRenderer($format)->getFileExtension();
+    }
 
-        $sEncloser = Registry::getConfig()->getConfigParam('sGiCsvFieldEncloser');
-        if (false == $sEncloser) {
-            $sEncloser = '"';
-        }
-        $csv->setEnclosure($sEncloser);
-
-        $sDelimiter = Registry::getConfig()->getConfigParam('sCSVSign');
-        if (false == $sDelimiter) {
-            $sDelimiter = ';';
-        }
-        $csv->setDelimiter($sDelimiter);
-
-        return $csv;
+    /**
+     * @param $rows
+     * @param $fieldnames
+     * @param $format
+     *
+     * @return mixed
+     */
+    public function renderContent($rows, $fieldnames, $format)
+    {
+        $renderer = $this->getRenderer($format);
+        return $renderer->getContent($rows, $fieldnames);
     }
 }
