@@ -18,6 +18,7 @@ namespace D3\DataWizard\Application\Controller\Admin;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
+use D3\ModCfg\Application\Model\d3database;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
@@ -63,10 +64,12 @@ class d3ExportWizard extends AdminDetailsController
             $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
             $export = $this->configuration->getExportById($id);
 
+            [ $queryString, $parameters ] = $export->getQuery();
+
             if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
                 throw oxNew(
                     DebugException::class,
-                    $export->getQuery()
+                    d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
                 );
             }
 

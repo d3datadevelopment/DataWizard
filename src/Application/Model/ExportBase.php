@@ -42,9 +42,7 @@ abstract class ExportBase implements QueryBase
      */
     public function run($format = RendererBridge::FORMAT_CSV)
     {
-        $query = trim($this->getQuery());
-
-        list( $rows, $fieldNames ) = $this->executeQuery( $query );
+        [ $rows, $fieldNames ] = $this->executeQuery( $this->getQuery() );
 
         $content = $this->renderContent($rows, $fieldNames, $format);
 
@@ -112,15 +110,19 @@ abstract class ExportBase implements QueryBase
     }
 
     /**
-     * @param string $query
+     * @param array $query
      *
      * @return array
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
      */
-    protected function executeQuery( string $query ): array
+    protected function executeQuery( array $query ): array
     {
-        if ( strtolower( substr( $query, 0, 6 ) ) !== 'select' ) {
+        [ $queryString, $parameters ] = $query;
+
+        $queryString = trim($queryString);
+
+        if ( strtolower( substr( $queryString, 0, 6 ) ) !== 'select' ) {
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
@@ -128,7 +130,7 @@ abstract class ExportBase implements QueryBase
             );
         }
 
-        $rows = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->getAll( $query );
+        $rows = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->getAll( $queryString, $parameters );
 
         if ( count( $rows ) <= 0 ) {
             throw oxNew(

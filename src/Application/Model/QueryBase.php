@@ -40,7 +40,7 @@ interface QueryBase
     public function getButtonText() : string;
 
     /**
-     * @return string
+     * @return array [string $query, array $parameters]
      */
-    public function getQuery() : string;
+    public function getQuery() : array;
 }
