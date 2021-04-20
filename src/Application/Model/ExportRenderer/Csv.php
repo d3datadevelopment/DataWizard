@@ -15,7 +15,7 @@
 
 namespace D3\DataWizard\Application\Model\ExportRenderer;
 
-use League\Csv\CannotInsertRecord;
+use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use League\Csv\EncloseField;
 use League\Csv\Exception;
 use League\Csv\Writer;
@@ -28,14 +28,19 @@ class Csv implements RendererInterface
      * @param $fieldNames
      *
      * @return string
-     * @throws Exception
-     * @throws CannotInsertRecord
+     * @throws RenderException
      */
     public function getContent($rows, $fieldNames): string
     {
-        $csv = $this->getCsv();
-        $csv->insertOne($fieldNames);
-        $csv->insertAll($rows);
+        try {
+            $csv = $this->getCsv();
+            $csv->insertOne( $fieldNames );
+            $csv->insertAll( $rows );
+        } catch (Exception $e) {
+            /** @var RenderException $newException */
+            $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
+            throw $newException;
+        }
 
         return $csv->getContent();
     }

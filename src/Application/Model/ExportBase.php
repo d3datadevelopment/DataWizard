@@ -20,8 +20,6 @@ use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
-use League\Csv\CannotInsertRecord;
-use League\Csv\Exception;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -36,6 +34,8 @@ abstract class ExportBase implements QueryBase
      * @throws DBALException
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
+     * @throws Exceptions\NoSuitableRendererException
+     * @throws Exceptions\TaskException
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
@@ -44,24 +44,7 @@ abstract class ExportBase implements QueryBase
     {
         $query = trim($this->getQuery());
 
-        if (strtolower(substr($query, 0, 6)) !== 'select') {
-            /** @var StandardException $e */
-            throw oxNew(
-                StandardException::class,
-                $this->getTitle().' - '.Registry::getLang()->translateString('D3_DATAWIZARD_EXPORT_NOSELECT')
-            );
-        }
-
-        $rows = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC)->getAll($query);
-
-        if (count($rows) <= 0) {
-            throw oxNew(
-                StandardException::class,
-                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT')
-            );
-        }
-
-        $fieldNames = array_keys($rows[0]);
+        list( $rows, $fieldNames ) = $this->executeQuery( $query );
 
         $content = $this->renderContent($rows, $fieldNames, $format);
 
@@ -73,6 +56,9 @@ abstract class ExportBase implements QueryBase
         );
     }
 
+    /**
+     * @return string
+     */
     public function getButtonText() : string
     {
         return "D3_DATAWIZARD_EXPORT_SUBMIT";
@@ -82,13 +68,20 @@ abstract class ExportBase implements QueryBase
      * @param $format
      *
      * @return ExportRenderer\RendererInterface
+     * @throws Exceptions\NoSuitableRendererException
      */
     public function getRenderer($format): ExportRenderer\RendererInterface
     {
         return oxNew(RendererBridge::class)->getRenderer($format);
     }
 
-    public function getFileExtension($format)
+    /**
+     * @param $format
+     *
+     * @return string
+     * @throws Exceptions\NoSuitableRendererException
+     */
+    public function getFileExtension($format): string
     {
         return $this->getRenderer($format)->getFileExtension();
     }
@@ -98,9 +91,10 @@ abstract class ExportBase implements QueryBase
      * @param $fieldnames
      * @param $format
      *
-     * @return mixed
+     * @return string
+     * @throws Exceptions\NoSuitableRendererException
      */
-    public function renderContent($rows, $fieldnames, $format)
+    public function renderContent($rows, $fieldnames, $format): string
     {
         $renderer = $this->getRenderer($format);
         return $renderer->getContent($rows, $fieldnames);
@@ -110,9 +104,42 @@ abstract class ExportBase implements QueryBase
      * @param $format
      *
      * @return string
+     * @throws Exceptions\NoSuitableRendererException
      */
     public function getExportFileName($format) : string
     {
         return $this->getExportFilenameBase().'_'.date('Y-m-d_H-i-s').'.'.$this->getFileExtension($format);
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return array
+     * @throws DatabaseConnectionException
+     * @throws DatabaseErrorException
+     */
+    protected function executeQuery( string $query ): array
+    {
+        if ( strtolower( substr( $query, 0, 6 ) ) !== 'select' ) {
+            throw oxNew(
+                Exceptions\TaskException::class,
+                $this,
+                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTSELECT' )
+            );
+        }
+
+        $rows = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->getAll( $query );
+
+        if ( count( $rows ) <= 0 ) {
+            throw oxNew(
+                Exceptions\TaskException::class,
+                $this,
+                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTCONTENT' )
+            );
+        }
+
+        $fieldNames = array_keys( $rows[0] );
+
+        return [ $rows, $fieldNames ];
     }
 }

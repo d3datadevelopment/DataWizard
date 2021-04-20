@@ -16,10 +16,14 @@
 namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
+use D3\DataWizard\Application\Model\Exceptions\DebugException;
+use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
+use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
-use League\Csv\CannotInsertRecord;
-use League\Csv\Exception;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
+use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -48,9 +52,10 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
-     * @throws CannotInsertRecord
-     * @throws DBALException
-     * @throws Exception
+     * @throws DatabaseConnectionException
+     * @throws StandardException
+     * @throws d3ShopCompatibilityAdapterException
+     * @throws d3_cfg_mod_exception
      */
     public function doExport()
     {
@@ -60,13 +65,13 @@ class d3ExportWizard extends AdminDetailsController
 
             if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
                 throw oxNew(
-                    StandardException::class,
+                    DebugException::class,
                     $export->getQuery()
                 );
             }
 
             $export->run(Registry::getRequest()->getRequestEscapedParameter('exportformat'));
-        } catch (StandardException $e) {
+        } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
             Registry::getUtilsView()->addErrorToDisplay($e);
         }
     }

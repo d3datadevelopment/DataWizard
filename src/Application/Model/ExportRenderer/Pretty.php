@@ -19,12 +19,21 @@ use MathieuViossat\Util\ArrayToTextTable;
 
 class Pretty implements RendererInterface
 {
+    /**
+     * @param $rows
+     * @param $fieldNames
+     *
+     * @return string
+     */
     public function getContent($rows, $fieldNames) : string
     {
         $renderer = oxNew(ArrayToTextTable::class, $rows);
         return $renderer->getTable();
     }
 
+    /**
+     * @return string
+     */
     public function getFileExtension(): string
     {
         return 'txt';

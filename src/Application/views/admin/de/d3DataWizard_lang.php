@@ -39,10 +39,12 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV-Format',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty-Format',
 
-    'D3_DATAWIZARD_EXPORT_NOSELECT'                   => 'Export kann nicht ausgeführt werden. Exporte erfordern SELECT Query.',
+    'D3_DATAWIZARD_DEBUG'                             => 'Debug: %1$s',
 
+    'D3_DATAWIZARD_ERR_NOEXPORTSELECT'                => 'Export kann nicht ausgeführt werden. Exporte erfordern SELECT Query.',
     'D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED'            => 'Es sind keine Exporte installiert oder aktiviert.',
-    'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar'
+    'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar',
+    'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert'
 
 // Abracadata
 // Harry Potter

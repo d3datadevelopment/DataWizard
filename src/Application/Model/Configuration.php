@@ -35,17 +35,27 @@ class Configuration
 
     }
 
+    /**
+     * @param            $group
+     * @param ExportBase $export
+     */
     public function registerExport($group, ExportBase $export)
     {
         $this->exports[$group][md5(serialize($export))] = $export;
     }
 
-    public function getGroupedExports()
+    /**
+     * @return array
+     */
+    public function getGroupedExports(): array
     {
         return $this->exports;
     }
 
-    public function getGroups()
+    /**
+     * @return array
+     */
+    public function getGroups(): array
     {
         return array_keys($this->exports);
     }

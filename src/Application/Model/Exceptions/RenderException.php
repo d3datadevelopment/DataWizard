@@ -13,20 +13,10 @@
  * @link          http://www.oxidmodule.com
  */
 
-namespace D3\DataWizard\Application\Model\ExportRenderer;
+namespace D3\DataWizard\Application\Model\Exceptions;
 
-interface RendererInterface
+use OxidEsales\Eshop\Core\Exception\StandardException;
+
+class RenderException extends StandardException implements DataWizardException
 {
-    /**
-     * @param $rows
-     * @param $fieldNames
-     *
-     * @return string
-     */
-    public function getContent($rows, $fieldNames) : string;
-
-    /**
-     * @return string
-     */
-    public function getFileExtension() : string;
 }

@@ -15,6 +15,8 @@
 
 namespace D3\DataWizard\Application\Model\ExportRenderer;
 
+use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
+
 class RendererBridge
 {
     const FORMAT_CSV    = 'CSV';
@@ -23,16 +25,20 @@ class RendererBridge
     /**
      * @param string $format
      *
+     * @throws NoSuitableRendererException
      * @return RendererInterface
      */
     public function getRenderer($format = self::FORMAT_CSV): RendererInterface
     {
         switch ($format) {
+            case self::FORMAT_CSV:
+                return oxNew(Csv::class);
             case self::FORMAT_PRETTY:
                 return oxNew(Pretty::class);
-            case self::FORMAT_CSV:
-            default:
-                return oxNew(Csv::class);
         }
+
+        /** @var NoSuitableRendererException $e */
+        $e = oxNew(NoSuitableRendererException::class, $format);
+        throw $e;
     }
 }

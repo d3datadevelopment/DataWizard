@@ -25,6 +25,7 @@
     "proprietary"
   ],
   "require": {
+    "php": ">=7.1",
     "oxid-esales/oxideshop-ce": "~6.3",
     "league/csv": "^9.0",
     "mathieuviossat/arraytotexttable": "^1.0"
