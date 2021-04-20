@@ -13,6 +13,8 @@
  * @link          http://www.oxidmodule.com
  */
 
+declare(strict_types=1);
+
 namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;

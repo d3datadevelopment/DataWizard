@@ -15,6 +15,8 @@
  * @link      http://www.oxidmodule.com
  */
 
+declare(strict_types=1);
+
 $sLangName = "Deutsch";
 // -------------------------------
 // RESOURCE IDENTITFIER = STRING
