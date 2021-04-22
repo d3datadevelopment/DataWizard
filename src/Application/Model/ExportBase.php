@@ -99,6 +99,14 @@ abstract class ExportBase implements QueryBase
     }
 
     /**
+     * @return string
+     */
+    public function getExportFilenameBase() : string
+    {
+        return $this->getTitle();
+    }
+
+    /**
      * @param $format
      *
      * @return string
