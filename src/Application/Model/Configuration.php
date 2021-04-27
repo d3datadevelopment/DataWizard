@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Exports\InactiveCategories;
+
 class Configuration
 {
     const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
@@ -32,7 +34,7 @@ class Configuration
 
     public function configure()
     {
-
+        $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
     }
 
     /**

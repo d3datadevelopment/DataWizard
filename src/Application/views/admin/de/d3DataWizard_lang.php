@@ -42,7 +42,9 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOEXPORTSELECT'                => 'Export kann nicht ausgeführt werden. Exporte erfordern SELECT Query.',
     'D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED'            => 'Es sind keine Exporte installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar',
-    'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert'
+    'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
+
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikel'
 
 // Abracadata
 // Harry Potter
