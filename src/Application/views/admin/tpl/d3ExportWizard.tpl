@@ -51,7 +51,7 @@
     <input type="hidden" name="exportformat" id="exportformat" value="CSV">
 
     [{assign var="groups" value=$oView->getGroups()}]
-    [{if $groups|count}]
+    [{if $groups|@count}]
         <div id="accordion">
             [{foreach from=$oView->getGroups() item="group"}]
                 <div class="card mb-2">
