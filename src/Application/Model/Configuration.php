@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exports\InactiveCategories;
+use OxidEsales\Eshop\Core\Registry;
 
 class Configuration
 {
@@ -34,7 +35,9 @@ class Configuration
 
     public function configure()
     {
-        $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
+        if (false === Registry::getConfig()->getConfigParam('d3datawizard_hideexamples', false)) {
+            $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
+        }
     }
 
     /**

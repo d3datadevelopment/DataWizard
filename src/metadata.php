@@ -51,6 +51,12 @@ $aModule = [
             'type'      => 'bool',
             'value'     => false
         ],
+        [
+            'group'     => $sModuleId.'_general',
+            'name'      => $sModuleId.'_hideexamples',
+            'type'      => 'bool',
+            'value'     => false
+        ],
     ],
     'blocks'      => []
 ];

@@ -26,6 +26,7 @@ $aLang = array(
 
     'SHOP_MODULE_GROUP_d3datawizard_general'          => 'Grundeinstellungen',
     'SHOP_MODULE_d3datawizard_debug'                  => 'zeigt Abfragen anstatt diese auszuführen',
+    'SHOP_MODULE_d3datawizard_hideexamples'           => 'Beispielexporte ausblenden',
 
     'D3_DATAWIZARD_GROUP_ARTICLES'                    => 'Artikel',
     'D3_DATAWIZARD_GROUP_CATEGORIES'                  => 'Kategorien',
