@@ -50,7 +50,7 @@ abstract class ExportBase implements QueryBase
      */
     public function run($format = RendererBridge::FORMAT_CSV)
     {
-        [ $rows, $fieldNames ] = $this->executeQuery( $this->getQuery() );
+        [ $rows, $fieldNames ] = $this->getExportData( $this->getQuery() );
 
         $content = $this->renderContent($rows, $fieldNames, $format);
 
@@ -132,7 +132,7 @@ abstract class ExportBase implements QueryBase
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
      */
-    protected function executeQuery( array $query ): array
+    public function getExportData( array $query ): array
     {
         [ $queryString, $parameters ] = $query;
 
