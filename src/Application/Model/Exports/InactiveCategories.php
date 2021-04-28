@@ -16,6 +16,9 @@
 namespace D3\DataWizard\Application\Model\Exports;
 
 use D3\DataWizard\Application\Model\ExportBase;
+use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Application\Model\Category;
+use OxidEsales\Eshop\Application\Model\Object2Category;
 use OxidEsales\Eshop\Core\Registry;
 
 class InactiveCategories extends ExportBase
@@ -33,36 +36,42 @@ class InactiveCategories extends ExportBase
     }
 
     /**
-     * @return string
-     */
-    public function getDescription() : string
-    {
-        return '';
-    }
-
-    /**
      * @return array
      */
     public function getQuery() : array
     {
+        $categoryTableName          = oxNew(Category::class)->getCoreTableName();
+        $object2categoryTableName   = oxNew(Object2Category::class)->getCoreTableName();
+        $articleTableName           = oxNew(Article::class)->getCoreTableName();
+
+        $treeTitle  = Registry::getLang()->translateString('D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TREE');
+        $titleTitle = Registry::getLang()->translateString('D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TITLE');
+        $countTitle = Registry::getLang()->translateString('D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_COUNT');
+
         return [
             "SELECT
                 oc.OXID,
                 oc.OXSHOPID,
-                oc.oxtitle as 'Titel',
+                oc.oxtitle as :titleTitle,
                 (
                     SELECT GROUP_CONCAT(oxtitle ORDER BY oxleft ASC SEPARATOR ' > ') 
-                    from oxcategories 
+                    from ".$categoryTableName." 
                     WHERE OXLEFT < oc.oxleft AND OXRIGHT > oc.oxright AND OXROOTID = oc.OXROOTID AND OXSHOPID = oc.OXSHOPID
-                ) as 'Baum',
-                COUNT(oa.oxid) as 'Anzahl'
-                FROM oxcategories oc
-                LEFT JOIN oxobject2category o2c ON oc.OXID = o2c.OXCATNID
-                LEFT JOIN oxarticles oa ON o2c.OXOBJECTID = oa.OXID
-                WHERE oc.OXACTIVE = ? AND oa.OXACTIVE = ?
+                ) as :treeTitle,
+                COUNT(oa.oxid) as :countTitle
+                FROM ".$categoryTableName." oc
+                LEFT JOIN ".$object2categoryTableName." o2c ON oc.OXID = o2c.OXCATNID
+                LEFT JOIN ".$articleTableName." oa ON o2c.OXOBJECTID = oa.OXID
+                WHERE oc.OXACTIVE = :categoryActive AND oa.OXACTIVE = :articleActive
                 GROUP BY oc.oxid
                 ORDER BY oc.oxleft ASC",
-            [0, 1]
+            [
+                'categoryActive'    => 0,
+                'articleActive'     => 1,
+                'titleTitle'        => $titleTitle,
+                'treeTitle'         => $treeTitle,
+                'countTitle'        => $countTitle
+            ]
         ];
     }
 }

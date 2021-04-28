@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exports\InactiveCategories;
+use D3\DataWizard\Application\Model\Exports\KeyFigures;
 use OxidEsales\Eshop\Core\Registry;
 
 class Configuration

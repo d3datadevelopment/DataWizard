@@ -30,9 +30,10 @@ $aLang = array(
 
     'D3_DATAWIZARD_GROUP_ARTICLES'                    => 'Artikel',
     'D3_DATAWIZARD_GROUP_CATEGORIES'                  => 'Kategorien',
-    'D3_DATAWIZARD_GROUP_REMARKS'                     => 'Bewertungen',
-    'D3_DATAWIZARD_GROUP_USERS'                       => 'Benutzer',
     'D3_DATAWIZARD_GROUP_ORDERS'                      => 'Bestellungen',
+    'D3_DATAWIZARD_GROUP_REMARKS'                     => 'Bewertungen',
+    'D3_DATAWIZARD_GROUP_SHOP'                        => 'Shop',
+    'D3_DATAWIZARD_GROUP_USERS'                       => 'Benutzer',
 
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV-Format',
@@ -45,7 +46,15 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar',
     'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
 
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikel'
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikel',
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TREE'   => 'Baum',
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TITLE'  => 'Titel',
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_COUNT'  => 'Anzahl',
+
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES'                => 'Bestellungskennzahlen nach Monat',
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_ORDERSPERMONTH' => 'Bestellungen pro Monat',
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_BASKETSIZE'     => 'Warenkorbhöhe',
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_MONTH'          => 'Monat',
 
 // Abracadata
 // Harry Potter

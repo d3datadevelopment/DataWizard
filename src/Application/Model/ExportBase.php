@@ -29,6 +29,14 @@ use OxidEsales\Eshop\Core\Registry;
 abstract class ExportBase implements QueryBase
 {
     /**
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return '';
+    }
+    
+    /**
      * @param string $format
      *
      * @throws DBALException

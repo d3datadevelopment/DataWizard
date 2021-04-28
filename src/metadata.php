@@ -26,7 +26,7 @@ $logo = '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="he
  */
 $aModule = [
     'id'          => $sModuleId,
-    'title'       => $logo.' Data Wizard framework',
+    'title'       => $logo.' Data Wizard',
     'description' => [
         'de' => '',
         'en' => '',
