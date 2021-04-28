@@ -21,6 +21,7 @@ use OxidEsales\Eshop\Core\Registry;
 
 class Configuration
 {
+    const GROUP_SHOP     = 'D3_DATAWIZARD_GROUP_SHOP';
     const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
     const GROUP_ARTICLES = 'D3_DATAWIZARD_GROUP_ARTICLES';
     const GROUP_USERS    = 'D3_DATAWIZARD_GROUP_USERS';
@@ -38,6 +39,7 @@ class Configuration
     {
         if (false === Registry::getConfig()->getConfigParam('d3datawizard_hideexamples', false)) {
             $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
+            $this->registerExport(self::GROUP_SHOP, oxNew(KeyFigures::class));
         }
     }
 
