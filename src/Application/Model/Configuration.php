@@ -28,6 +28,7 @@ class Configuration
     const GROUP_ORDERS   = 'D3_DATAWIZARD_GROUP_ORDERS';
     const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
 
+    protected $actions = [];
     protected $exports = [];
 
     public function __construct()
@@ -45,11 +46,28 @@ class Configuration
 
     /**
      * @param            $group
+     * @param ActionBase $action
+     */
+    public function registerAction($group, ActionBase $action)
+    {
+        $this->actions[$group][md5(serialize($action))] = $action;
+    }
+
+    /**
+     * @param            $group
      * @param ExportBase $export
      */
     public function registerExport($group, ExportBase $export)
     {
         $this->exports[$group][md5(serialize($export))] = $export;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupedActions(): array
+    {
+        return $this->actions;
     }
 
     /**
@@ -68,9 +86,28 @@ class Configuration
         return array_keys($this->exports);
     }
 
+    public function getActionsByGroup($group)
+    {
+        return $this->actions[$group];
+    }
+
     public function getExportsByGroup($group)
     {
         return $this->exports[$group];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllActions() : array
+    {
+        $all = [];
+
+        foreach ($this->getGroups() as $group) {
+            $all = array_merge($all, $this->getActionsByGroup($group));
+        }
+
+        return $all;
     }
 
     /**
@@ -85,6 +122,16 @@ class Configuration
         }
 
         return $all;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return ActionBase
+     */
+    public function getActionById($id) : ActionBase
+    {
+        return $this->getAllExports()[$id];
     }
 
     /**

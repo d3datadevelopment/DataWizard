@@ -23,6 +23,7 @@ $aLang = array(
     'charset'                                         => 'UTF-8',
     'd3mxDataWizard'                                  => '<i class="fas fa-fw fa-hat-wizard"></i> Data Wizard',
     'd3mxDataWizard_Export'                           => 'Exporte',
+    'd3mxDataWizard_Action'                           => 'Aktionen',
 
     'SHOP_MODULE_GROUP_d3datawizard_general'          => 'Grundeinstellungen',
     'SHOP_MODULE_d3datawizard_debug'                  => 'zeigt Abfragen anstatt diese auszuführen',
