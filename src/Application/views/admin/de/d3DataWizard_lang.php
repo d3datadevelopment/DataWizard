@@ -23,6 +23,7 @@ $aLang = array(
     'charset'                                         => 'UTF-8',
     'd3mxDataWizard'                                  => '<i class="fas fa-fw fa-hat-wizard"></i> Data Wizard',
     'd3mxDataWizard_Export'                           => 'Exporte',
+    'd3mxDataWizard_Action'                           => 'Aktionen',
 
     'SHOP_MODULE_GROUP_d3datawizard_general'          => 'Grundeinstellungen',
     'SHOP_MODULE_d3datawizard_debug'                  => 'zeigt Abfragen anstatt diese auszuführen',
@@ -38,6 +39,8 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV-Format',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty-Format',
+
+    'D3_DATAWIZARD_ACTION_SUBMIT'                     => 'Aktion starten',
 
     'D3_DATAWIZARD_DEBUG'                             => 'Debug: %1$s',
 
@@ -56,7 +59,9 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_BASKETSIZE'     => 'Warenkorbhöhe',
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_MONTH'          => 'Monat',
 
-// Abracadata
-// Harry Potter
-// Magic
+    'D3_DATAWIZARD_ERR_ACTIONSELECT'                  => 'Aktion kann nicht ausgeführt werden. Aktionen können keine SELECTs exportieren.',
+    'D3_DATAWIZARD_ERR_NOACTION_INSTALLED'            => 'Es sind keine Aktionen installiert oder aktiviert.',
+    'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
+    'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',
+    'D3_DATAWIZARD_ACTIONS_FIXARTEXTENDSITEMS'        => 'fehlende oxartextends-Einträge nachtragen',
 );

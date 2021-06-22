@@ -28,9 +28,9 @@ use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 
-class d3ExportWizard extends AdminDetailsController
+class d3ActionWizard extends AdminDetailsController
 {
-    protected $_sThisTemplate = 'd3ExportWizard.tpl';
+    protected $_sThisTemplate = 'd3ActionWizard.tpl';
 
     /** @var Configuration */
     protected $configuration;
@@ -44,12 +44,12 @@ class d3ExportWizard extends AdminDetailsController
 
     public function getGroups()
     {
-        return $this->configuration->getExportGroups();
+        return $this->configuration->getActionGroups();
     }
 
-    public function getGroupExports($group)
+    public function getGroupActions($group)
     {
-        return $this->configuration->getExportsByGroup($group);
+        return $this->configuration->getActionsByGroup($group);
     }
 
     /**
@@ -58,13 +58,13 @@ class d3ExportWizard extends AdminDetailsController
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      */
-    public function doExport()
+    public function doAction()
     {
         try {
-            $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
-            $export = $this->configuration->getExportById($id);
+            $id = Registry::getRequest()->getRequestEscapedParameter('actionid');
+            $action = $this->configuration->getActionById($id);
 
-            [ $queryString, $parameters ] = $export->getQuery();
+            [ $queryString, $parameters ] = $action->getQuery();
 
             if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
                 throw oxNew(
@@ -73,7 +73,7 @@ class d3ExportWizard extends AdminDetailsController
                 );
             }
 
-            $export->run(Registry::getRequest()->getRequestEscapedParameter('exportformat'));
+            $action->run();
         } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
             Registry::getUtilsView()->addErrorToDisplay($e);
         }

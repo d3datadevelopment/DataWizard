@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Actions\FixArtextendsItems;
 use D3\DataWizard\Application\Model\Exports\InactiveCategories;
 use D3\DataWizard\Application\Model\Exports\KeyFigures;
 use OxidEsales\Eshop\Core\Registry;
@@ -28,6 +29,7 @@ class Configuration
     const GROUP_ORDERS   = 'D3_DATAWIZARD_GROUP_ORDERS';
     const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
 
+    protected $actions = [];
     protected $exports = [];
 
     public function __construct()
@@ -38,9 +40,20 @@ class Configuration
     public function configure()
     {
         if (false === Registry::getConfig()->getConfigParam('d3datawizard_hideexamples', false)) {
+            $this->registerAction(self::GROUP_ARTICLES, oxNew(FixArtextendsItems::class));
+
             $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
             $this->registerExport(self::GROUP_SHOP, oxNew(KeyFigures::class));
         }
+    }
+
+    /**
+     * @param            $group
+     * @param ActionBase $action
+     */
+    public function registerAction($group, ActionBase $action)
+    {
+        $this->actions[$group][md5(serialize($action))] = $action;
     }
 
     /**
@@ -55,6 +68,14 @@ class Configuration
     /**
      * @return array
      */
+    public function getGroupedActions(): array
+    {
+        return $this->actions;
+    }
+
+    /**
+     * @return array
+     */
     public function getGroupedExports(): array
     {
         return $this->exports;
@@ -63,14 +84,51 @@ class Configuration
     /**
      * @return array
      */
-    public function getGroups(): array
+    public function getActionGroups(): array
+    {
+        return array_keys($this->actions);
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportGroups(): array
     {
         return array_keys($this->exports);
     }
 
+    /**
+     * @param $group
+     *
+     * @return mixed
+     */
+    public function getActionsByGroup($group)
+    {
+        return $this->actions[$group];
+    }
+
+    /**
+     * @param $group
+     *
+     * @return mixed
+     */
     public function getExportsByGroup($group)
     {
         return $this->exports[$group];
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllActions() : array
+    {
+        $all = [];
+
+        foreach ($this->getActionGroups() as $group) {
+            $all = array_merge($all, $this->getActionsByGroup($group));
+        }
+
+        return $all;
     }
 
     /**
@@ -80,11 +138,21 @@ class Configuration
     {
         $all = [];
 
-        foreach ($this->getGroups() as $group) {
+        foreach ($this->getExportGroups() as $group) {
             $all = array_merge($all, $this->getExportsByGroup($group));
         }
 
         return $all;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return ActionBase
+     */
+    public function getActionById($id) : ActionBase
+    {
+        return $this->getAllActions()[$id];
     }
 
     /**

@@ -37,12 +37,14 @@ $aModule = [
     'email'       => 'support@shopmodule.com',
     'url'         => 'https://www.oxidmodule.com/',
     'controllers' => [
-        'd3ExportWizard'            => D3\DataWizard\Application\Controller\Admin\d3ExportWizard::class
+        'd3ExportWizard'            => D3\DataWizard\Application\Controller\Admin\d3ExportWizard::class,
+        'd3ActionWizard'            => D3\DataWizard\Application\Controller\Admin\d3ActionWizard::class
     ],
     'extend'      => [],
     'events'      => [],
     'templates'   => [
         'd3ExportWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ExportWizard.tpl',
+        'd3ActionWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ActionWizard.tpl',
     ],
     'settings'    => [
         [

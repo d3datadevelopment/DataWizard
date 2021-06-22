@@ -3,6 +3,7 @@
     <OXMENU id="d3mxd3modules">
         <MAINMENU id="d3mxDataWizard">
             <SUBMENU id="d3mxDataWizard_Export" cl="d3ExportWizard" disableForDemoShop="1" />
+            <SUBMENU id="d3mxDataWizard_Action" cl="d3ActionWizard" disableForDemoShop="1" />
         </MAINMENU>
     </OXMENU>
 </OX>

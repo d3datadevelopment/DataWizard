@@ -15,7 +15,7 @@
     }
     /* Image courtesy of gradientmagic.com */
     body {
-        background-image: linear-gradient(339deg, rgba(47, 47, 47,0.02) 0%, rgba(47, 47, 47,0.02) 42%,transparent 42%, transparent 99%,rgba(17, 17, 17,0.02) 99%, rgba(17, 17, 17,0.02) 100%),linear-gradient(257deg, rgba(65, 65, 65,0.02) 0%, rgba(65, 65, 65,0.02) 11%,transparent 11%, transparent 92%,rgba(53, 53, 53,0.02) 92%, rgba(53, 53, 53,0.02) 100%),linear-gradient(191deg, rgba(5, 5, 5,0.02) 0%, rgba(5, 5, 5,0.02) 1%,transparent 1%, transparent 45%,rgba(19, 19, 19,0.02) 45%, rgba(19, 19, 19,0.02) 100%),linear-gradient(29deg, rgba(28, 28, 28,0.02) 0%, rgba(28, 28, 28,0.02) 33%,transparent 33%, transparent 40%,rgba(220, 220, 220,0.02) 40%, rgba(220, 220, 220,0.02) 100%),linear-gradient(90deg, rgb(255,255,255),rgb(255,255,255));
+        background-image: linear-gradient(22.5deg, rgba(66, 66, 66, 0.02) 0%, rgba(66, 66, 66, 0.02) 11%,rgba(135, 135, 135, 0.02) 11%, rgba(135, 135, 135, 0.02) 24%,rgba(29, 29, 29, 0.02) 24%, rgba(29, 29, 29, 0.02) 38%,rgba(15, 15, 15, 0.02) 38%, rgba(15, 15, 15, 0.02) 50%,rgba(180, 180, 180, 0.02) 50%, rgba(180, 180, 180, 0.02) 77%,rgba(205, 205, 205, 0.02) 77%, rgba(205, 205, 205, 0.02) 100%),linear-gradient(67.5deg, rgba(10, 10, 10, 0.02) 0%, rgba(10, 10, 10, 0.02) 22%,rgba(52, 52, 52, 0.02) 22%, rgba(52, 52, 52, 0.02) 29%,rgba(203, 203, 203, 0.02) 29%, rgba(203, 203, 203, 0.02) 30%,rgba(69, 69, 69, 0.02) 30%, rgba(69, 69, 69, 0.02) 75%,rgba(231, 231, 231, 0.02) 75%, rgba(231, 231, 231, 0.02) 95%,rgba(138, 138, 138, 0.02) 95%, rgba(138, 138, 138, 0.02) 100%),linear-gradient(112.5deg, rgba(221, 221, 221, 0.02) 0%, rgba(221, 221, 221, 0.02) 17%,rgba(190, 190, 190, 0.02) 17%, rgba(190, 190, 190, 0.02) 39%,rgba(186, 186, 186, 0.02) 39%, rgba(186, 186, 186, 0.02) 66%,rgba(191, 191, 191, 0.02) 66%, rgba(191, 191, 191, 0.02) 68%,rgba(16, 16, 16, 0.02) 68%, rgba(16, 16, 16, 0.02) 70%,rgba(94, 94, 94, 0.02) 70%, rgba(94, 94, 94, 0.02) 100%),linear-gradient(90deg, #ffffff,#ffffff);
     }
     h4 .btn {
         font-size: 1.3rem;
@@ -26,7 +26,7 @@
 </style>
 
 [{capture name="d3script"}][{strip}]
-    function startExport(id, format) {
+    function startAction(id) {
         let elements = document.getElementsByClassName('errorbox');
         for (var i = 0; i < elements.length; i++){
             elements[i].style.display = 'none';
@@ -37,8 +37,7 @@
         }, 3000);
         document.getElementById('mask').className='on';
         document.getElementById('popup2').className='d3loader-2 on';
-        document.getElementById('exportid').value = id;
-        document.getElementById('exportformat').value = format;
+        document.getElementById('actionid').value = id;
         document.getElementById('myedit').submit();
     }
 [{/strip}][{/capture}]
@@ -47,9 +46,8 @@
 <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post" style="padding: 0;margin: 0;height:0;">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
-    <input type="hidden" name="fnc" value="doExport">
-    <input type="hidden" name="exportid" id="exportid" value="">
-    <input type="hidden" name="exportformat" id="exportformat" value="CSV">
+    <input type="hidden" name="fnc" value="doAction">
+    <input type="hidden" name="actionid" id="actionid" value="">
 
     [{assign var="groups" value=$oView->getGroups()}]
     [{if $groups|@count}]
@@ -67,38 +65,22 @@
                     <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-parent="#accordion">
                         <div class="card-body pb-0">
                             <div class="row">
-                                [{foreach from=$oView->getGroupExports($group) key="id" item="export"}]
+                                [{foreach from=$oView->getGroupActions($group) key="id" item="action"}]
                                     <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
                                         <div class="card">
                                             <h5 class="card-header">
-                                                [{$export->getTitle()}]
+                                                [{$action->getTitle()}]
                                             </h5>
                                             <div class="card-body">
                                                 <p class="card-text">
-                                                    [{$export->getDescription()}]
+                                                    [{$action->getDescription()}]
                                                 </p>
 
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-primary" onclick="startExport('[{$id}]', 'CSV')">
+                                                    <button type="button" class="btn btn-primary" onclick="startAction('[{$id}]')">
                                                         <i class="fas fa-magic"></i>
-                                                        [{oxmultilang ident=$export->getButtonText()}]
+                                                        [{oxmultilang ident=$action->getButtonText()}]
                                                     </button>
-                                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <span class="sr-only">
-                                                            <i class="fas fa-magic"></i>
-                                                            [{oxmultilang ident=$export->getButtonText()}]
-                                                        </span>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        [{block name="dataWizardExportFormat"}]
-                                                            <button class="dropdown-item" onclick="startExport('[{$id}]', 'CSV')">
-                                                                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]
-                                                            </button>
-                                                            <button class="dropdown-item" onclick="startExport('[{$id}]', 'Pretty')">
-                                                                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]
-                                                            </button>
-                                                        [{/block}]
-                                                    </div>
                                                 </div>
 
                                             </div>
@@ -116,7 +98,7 @@
         </div>
     [{else}]
         <div class="alert alert-primary" role="alert">
-            [{oxmultilang ident="D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED"}]
+            [{oxmultilang ident="D3_DATAWIZARD_ERR_NOACTION_INSTALLED"}]
         </div>
     [{/if}]
 </form>
