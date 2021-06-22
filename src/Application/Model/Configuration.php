@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Actions\FixArtextendsItems;
 use D3\DataWizard\Application\Model\Exports\InactiveCategories;
 use D3\DataWizard\Application\Model\Exports\KeyFigures;
 use OxidEsales\Eshop\Core\Registry;
@@ -39,6 +40,8 @@ class Configuration
     public function configure()
     {
         if (false === Registry::getConfig()->getConfigParam('d3datawizard_hideexamples', false)) {
+            $this->registerAction(self::GROUP_ARTICLES, oxNew(FixArtextendsItems::class));
+
             $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
             $this->registerExport(self::GROUP_SHOP, oxNew(KeyFigures::class));
         }
@@ -81,16 +84,34 @@ class Configuration
     /**
      * @return array
      */
-    public function getGroups(): array
+    public function getActionGroups(): array
+    {
+        return array_keys($this->actions);
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportGroups(): array
     {
         return array_keys($this->exports);
     }
 
+    /**
+     * @param $group
+     *
+     * @return mixed
+     */
     public function getActionsByGroup($group)
     {
         return $this->actions[$group];
     }
 
+    /**
+     * @param $group
+     *
+     * @return mixed
+     */
     public function getExportsByGroup($group)
     {
         return $this->exports[$group];
@@ -103,7 +124,7 @@ class Configuration
     {
         $all = [];
 
-        foreach ($this->getGroups() as $group) {
+        foreach ($this->getActionGroups() as $group) {
             $all = array_merge($all, $this->getActionsByGroup($group));
         }
 
@@ -117,7 +138,7 @@ class Configuration
     {
         $all = [];
 
-        foreach ($this->getGroups() as $group) {
+        foreach ($this->getExportGroups() as $group) {
             $all = array_merge($all, $this->getExportsByGroup($group));
         }
 
@@ -131,7 +152,7 @@ class Configuration
      */
     public function getActionById($id) : ActionBase
     {
-        return $this->getAllExports()[$id];
+        return $this->getAllActions()[$id];
     }
 
     /**

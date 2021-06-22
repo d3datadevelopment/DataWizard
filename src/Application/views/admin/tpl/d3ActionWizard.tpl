@@ -26,7 +26,7 @@
 </style>
 
 [{capture name="d3script"}][{strip}]
-    function startExport(id, format) {
+    function startAction(id) {
         let elements = document.getElementsByClassName('errorbox');
         for (var i = 0; i < elements.length; i++){
             elements[i].style.display = 'none';
@@ -37,8 +37,7 @@
         }, 3000);
         document.getElementById('mask').className='on';
         document.getElementById('popup2').className='d3loader-2 on';
-        document.getElementById('exportid').value = id;
-        document.getElementById('exportformat').value = format;
+        document.getElementById('actionid').value = id;
         document.getElementById('myedit').submit();
     }
 [{/strip}][{/capture}]
@@ -47,9 +46,8 @@
 <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post" style="padding: 0;margin: 0;height:0;">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
-    <input type="hidden" name="fnc" value="doExport">
-    <input type="hidden" name="exportid" id="exportid" value="">
-    <input type="hidden" name="exportformat" id="exportformat" value="CSV">
+    <input type="hidden" name="fnc" value="doAction">
+    <input type="hidden" name="actionid" id="actionid" value="">
 
     [{assign var="groups" value=$oView->getGroups()}]
     [{if $groups|@count}]
@@ -67,27 +65,21 @@
                     <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-parent="#accordion">
                         <div class="card-body pb-0">
                             <div class="row">
-                                [{foreach from=$oView->getGroupActions($group) key="id" item="export"}]
+                                [{foreach from=$oView->getGroupActions($group) key="id" item="action"}]
                                     <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
                                         <div class="card">
                                             <h5 class="card-header">
-                                                [{$export->getTitle()}]
+                                                [{$action->getTitle()}]
                                             </h5>
                                             <div class="card-body">
                                                 <p class="card-text">
-                                                    [{$export->getDescription()}]
+                                                    [{$action->getDescription()}]
                                                 </p>
 
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-primary" onclick="startAction('[{$id}]')">
                                                         <i class="fas fa-magic"></i>
-                                                        [{oxmultilang ident=$export->getButtonText()}]
-                                                    </button>
-                                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <span class="sr-only">
-                                                            <i class="fas fa-magic"></i>
-                                                            [{oxmultilang ident=$export->getButtonText()}]
-                                                        </span>
+                                                        [{oxmultilang ident=$action->getButtonText()}]
                                                     </button>
                                                 </div>
 

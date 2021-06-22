@@ -40,6 +40,8 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV-Format',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty-Format',
 
+    'D3_DATAWIZARD_ACTION_SUBMIT'                     => 'Aktion starten',
+
     'D3_DATAWIZARD_DEBUG'                             => 'Debug: %1$s',
 
     'D3_DATAWIZARD_ERR_NOEXPORTSELECT'                => 'Export kann nicht ausgeführt werden. Exporte erfordern SELECT Query.',
@@ -57,7 +59,9 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_BASKETSIZE'     => 'Warenkorbhöhe',
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_MONTH'          => 'Monat',
 
-// Abracadata
-// Harry Potter
-// Magic
+    'D3_DATAWIZARD_ERR_ACTIONSELECT'                  => 'Aktion kann nicht ausgeführt werden. Aktionen können keine SELECTs exportieren.',
+    'D3_DATAWIZARD_ERR_NOACTION_INSTALLED'            => 'Es sind keine Aktionen installiert oder aktiviert.',
+    'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
+    'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',
+    'D3_DATAWIZARD_ACTIONS_FIXARTEXTENDSITEMS'        => 'fehlende oxartextends-Einträge nachtragen',
 );

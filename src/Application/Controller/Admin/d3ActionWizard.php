@@ -44,7 +44,7 @@ class d3ActionWizard extends AdminDetailsController
 
     public function getGroups()
     {
-        return $this->configuration->getGroups();
+        return $this->configuration->getActionGroups();
     }
 
     public function getGroupActions($group)

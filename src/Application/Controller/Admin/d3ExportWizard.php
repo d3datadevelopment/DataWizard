@@ -44,7 +44,7 @@ class d3ExportWizard extends AdminDetailsController
 
     public function getGroups()
     {
-        return $this->configuration->getGroups();
+        return $this->configuration->getExportGroups();
     }
 
     public function getGroupExports($group)

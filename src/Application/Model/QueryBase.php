@@ -22,11 +22,6 @@ interface QueryBase
     /**
      * @return string
      */
-    public function getExportFilenameBase() : string;
-
-    /**
-     * @return string
-     */
     public function getTitle() : string;
 
     /**
