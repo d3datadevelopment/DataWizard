@@ -17,7 +17,7 @@ Translated with www.DeepL.com/Translator (free version)
 In the console in the shop root (above source and vendor), execute the following command:
 
 ```bash
-php composer require d3/datawizard:"dev-rel_1.x"
+php composer require d3/datawizard
 ``` 
 
 Activate in the admin area of the shop under "Extensions -> Modules".

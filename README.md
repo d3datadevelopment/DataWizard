@@ -15,7 +15,7 @@ Im Lieferumfang sind Beispielexporte enthalten. Diese sollen als Implementierung
 Auf der Konsole im Shoproot (oberhalb von source und vendor) folgenden Befehl ausführen:
 
 ```bash
-php composer require d3/datawizard:"dev-rel_1.x"
+php composer require d3/datawizard
 ``` 
 
 ## Erweiterbarkeit
