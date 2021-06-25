@@ -23,6 +23,10 @@
     h5.card-header {
         font-size: 1.1rem;
     }
+    .formElements label {
+        display: inline-block;
+        margin: .5rem 0;
+    }
 </style>
 
 [{capture name="d3script"}][{strip}]
@@ -74,9 +78,17 @@
                                                 [{$export->getTitle()}]
                                             </h5>
                                             <div class="card-body">
-                                                <p class="card-text">
-                                                    [{$export->getDescription()}]
-                                                </p>
+                                                [{if $export->getDescription()}]
+                                                    <p class="card-text">
+                                                        [{$export->getDescription()}]
+                                                    </p>
+                                                [{/if}]
+
+                                                [{if $export->hasFormElements()}]
+                                                        [{foreach from=$export->getFormElements() item="formElement"}]
+                                                            [{$formElement}]
+                                                        [{/foreach}]
+                                                [{/if}]
 
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-primary" onclick="startExport('[{$id}]', 'CSV')">

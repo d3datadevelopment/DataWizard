@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use FormManager\Inputs\Input;
+
 interface QueryBase
 {
     public function run();
@@ -38,4 +40,19 @@ interface QueryBase
      * @return array [string $query, array $parameters]
      */
     public function getQuery() : array;
+
+    /**
+     * @param Input $input
+     */
+    public function registerFormElement(Input $input);
+
+    /**
+     * @return bool
+     */
+    public function hasFormElements(): bool;
+
+    /**
+     * @return array
+     */
+    public function getFormElements(): array;
 }

@@ -23,6 +23,10 @@
     h5.card-header {
         font-size: 1.1rem;
     }
+    .formElements label {
+        display: inline-block;
+        margin: .5rem 0;
+    }
 </style>
 
 [{capture name="d3script"}][{strip}]
@@ -72,9 +76,17 @@
                                                 [{$action->getTitle()}]
                                             </h5>
                                             <div class="card-body">
-                                                <p class="card-text">
-                                                    [{$action->getDescription()}]
-                                                </p>
+                                                [{if $action->getDescription()}]
+                                                    <p class="card-text">
+                                                        [{$action->getDescription()}]
+                                                    </p>
+                                                [{/if}]
+
+                                                [{if $action->hasFormElements()}]
+                                                    [{foreach from=$action->getFormElements() item="formElement"}]
+                                                        [{$formElement}]
+                                                    [{/foreach}]
+                                                [{/if}]
 
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-primary" onclick="startAction('[{$id}]')">

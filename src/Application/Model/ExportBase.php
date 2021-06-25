@@ -15,11 +15,15 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
+use FormManager\Inputs\Checkbox;
+use FormManager\Inputs\Input;
+use FormManager\Inputs\Radio;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -28,6 +32,8 @@ use OxidEsales\Eshop\Core\Registry;
 
 abstract class ExportBase implements QueryBase
 {
+    protected $formElements = [];
+
     /**
      * @return string
      */
@@ -50,6 +56,15 @@ abstract class ExportBase implements QueryBase
      */
     public function run($format = RendererBridge::FORMAT_CSV)
     {
+        if ($this->hasFormElements()) {
+            /** @var Input $element */
+            foreach ($this->getFormElements() as $element) {
+                if (false === $element->isValid()) {
+                    throw oxNew(InputUnvalidException::class, $this, $element);
+                }
+            }
+        }
+
         [ $rows, $fieldNames ] = $this->getExportData( $this->getQuery() );
 
         $content = $this->renderContent($rows, $fieldNames, $format);
@@ -159,5 +174,39 @@ abstract class ExportBase implements QueryBase
         $fieldNames = array_keys( $rows[0] );
 
         return [ $rows, $fieldNames ];
+    }
+
+    /**
+     * @param Input $input
+     */
+    public function registerFormElement(Input $input)
+    {
+        switch (get_class($input)) {
+            case Radio::class:
+            case Checkbox::class:
+                $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
+                $input->setAttribute('class', 'form-check-input');
+                break;
+            default:
+                $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
+                $input->setAttribute('class', 'form-control');
+        }
+        $this->formElements[] = $input;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFormElements(): bool
+    {
+        return (bool) count($this->formElements);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFormElements(): array
+    {
+        return $this->formElements;
     }
 }

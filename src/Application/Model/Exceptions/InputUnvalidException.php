@@ -17,19 +17,26 @@ namespace D3\DataWizard\Application\Model\Exceptions;
 
 use D3\DataWizard\Application\Model\QueryBase;
 use Exception;
+use FormManager\Inputs\Input;
+use OxidEsales\Eshop\Core\Exception\StandardException;
 
-class TaskException extends DataWizardException
+class InputUnvalidException extends DataWizardException
 {
     /** @var QueryBase */
     public $task;
 
-    public function __construct( QueryBase $task, $sMessage = "not set", $iCode = 0, Exception $previous = null )
+    public function __construct( QueryBase $task, Input $inputElement, $iCode = 0, Exception $previous = null )
     {
+        $messages = [];
+        foreach ($inputElement->getError()->getIterator() as $item) {
+            $messages[] = $inputElement->label->innerHTML.' -> '.$item->getMessage();
+        }
+
         $sMessage = implode(
             ' - ',
             [
                 $task->getTitle(),
-                $sMessage
+                implode(', ', $messages)
             ]
         );
         parent::__construct( $sMessage, $iCode, $previous );

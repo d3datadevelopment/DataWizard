@@ -55,6 +55,8 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_COUNT'  => 'Anzahl',
 
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES'                => 'Bestellungskennzahlen nach Monat',
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_FIELD_STARTDATE'=> 'Startdatum (optional)',
+    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_FIELD_ENDDATE'  => 'Enddatum (optional)',
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_ORDERSPERMONTH' => 'Bestellungen pro Monat',
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_BASKETSIZE'     => 'Warenkorbhöhe',
     'D3_DATAWIZARD_EXPORTS_KEYFIGURES_MONTH'          => 'Monat',

@@ -15,6 +15,10 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
+use FormManager\Inputs\Checkbox;
+use FormManager\Inputs\Input;
+use FormManager\Inputs\Radio;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -22,6 +26,8 @@ use OxidEsales\Eshop\Core\Registry;
 
 abstract class ActionBase implements QueryBase
 {
+    protected $formElements = [];
+
     /**
      * @return string
      */
@@ -36,6 +42,15 @@ abstract class ActionBase implements QueryBase
      */
     public function run()
     {
+        if ($this->hasFormElements()) {
+            /** @var Input $element */
+            foreach ($this->getFormElements() as $element) {
+                if (false === $element->isValid()) {
+                    throw oxNew(InputUnvalidException::class, $this, $element);
+                }
+            }
+        }
+
         $this->executeAction( $this->getQuery() );
     }
 
@@ -80,5 +95,39 @@ abstract class ActionBase implements QueryBase
     public function getButtonText() : string
     {
         return "D3_DATAWIZARD_ACTION_SUBMIT";
+    }
+
+    /**
+     * @param Input $input
+     */
+    public function registerFormElement(Input $input)
+    {
+        switch (get_class($input)) {
+            case Radio::class:
+            case Checkbox::class:
+                $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
+                $input->setAttribute('class', 'form-check-input');
+                break;
+            default:
+                $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
+                $input->setAttribute('class', 'form-control');
+        }
+        $this->formElements[] = $input;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFormElements(): bool
+    {
+        return (bool) count($this->formElements);
+    }
+
+    /**
+     * @return array
+     */
+    public function getFormElements(): array
+    {
+        return $this->formElements;
     }
 }

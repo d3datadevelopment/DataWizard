@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Actions\FixArtextendsItems;
+use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exports\InactiveCategories;
 use D3\DataWizard\Application\Model\Exports\KeyFigures;
 use OxidEsales\Eshop\Core\Registry;
@@ -53,7 +54,7 @@ class Configuration
      */
     public function registerAction($group, ActionBase $action)
     {
-        $this->actions[$group][md5(serialize($action))] = $action;
+        $this->actions[$group][md5(get_class($action))] = $action;
     }
 
     /**
@@ -62,7 +63,7 @@ class Configuration
      */
     public function registerExport($group, ExportBase $export)
     {
-        $this->exports[$group][md5(serialize($export))] = $export;
+        $this->exports[$group][md5(get_class($export))] = $export;
     }
 
     /**
@@ -162,6 +163,12 @@ class Configuration
      */
     public function getExportById($id) : ExportBase
     {
-        return $this->getAllExports()[$id];
+        $allExports = $this->getAllExports();
+
+        if (false == $allExports[$id]) {
+            throw oxNew(DataWizardException::class, 'no export with id '.$id);
+        }
+
+        return $allExports[$id];
     }
 }

@@ -19,7 +19,7 @@ use Exception;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 
-class DebugException extends StandardException implements DataWizardException
+class DebugException extends DataWizardException
 {
     public function __construct($sMessage = "not set", $iCode = 0, Exception $previous = null )
     {
