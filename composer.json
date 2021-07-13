@@ -33,7 +33,10 @@
   },
   "extra": {
     "oxideshop": {
-      "source-directory": "/src",
+      "blacklist-filter": [
+        "*.md",
+        "composer.json"
+      ],
       "target-directory": "d3/datawizard"
     }
   },
