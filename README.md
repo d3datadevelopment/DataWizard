@@ -18,6 +18,8 @@ Auf der Konsole im Shoproot (oberhalb von source und vendor) folgenden Befehl au
 php composer require d3/datawizard
 ``` 
 
+Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".
+
 ## Erweiterbarkeit
 
 Das Modul stellt das technische Grundgerüst der Exporte dar und erhebt keinen Anspruch auf Vollständigkeit. Um den Umfang an die individuellen Anforderungen anzupassen, sind folgende Erweiterungen vorbereitet:
