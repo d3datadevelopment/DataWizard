@@ -24,7 +24,7 @@ use OxidEsales\Eshop\Core\Registry;
 class InactiveCategories extends ExportBase
 {
     /**
-     * Kategorien -deaktiviert, mit aktiven Artikel
+     * Kategorien -deaktiviert, mit aktiven Artikeln
      */
 
     /**

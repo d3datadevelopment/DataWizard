@@ -50,7 +50,7 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
     'D3_DATAWIZARD_ERR_EXPORTFILEERROR'               => 'Exportdatei "%1$s" kann nicht angelegt werden',
 
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikel',
+    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikeln',
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TREE'   => 'Baum',
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TITLE'  => 'Titel',
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_COUNT'  => 'Anzahl',
