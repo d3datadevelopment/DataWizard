@@ -41,9 +41,12 @@ class RendererBridge
      */
     public function getRenderer(string $format = self::FORMAT_CSV): RendererInterface
     {
-        $rendererList = $this->getRendererList();
+        $format = strtolower($format);
 
-        if (in_array($format, array_keys($rendererList))) {
+        $rendererList = array_change_key_case($this->getRendererList(), CASE_LOWER);
+        $rendererListTypes = array_keys(array_change_key_case($rendererList, CASE_LOWER));
+
+        if (in_array($format, $rendererListTypes, true)) {
             return $rendererList[$format];
         }
 
