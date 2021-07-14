@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model\Exceptions;
 
+use Exception;
 use OxidEsales\Eshop\Core\Registry;
 
 class ExportFileException extends DataWizardException

@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model\Exceptions;
 
 use Exception;
-use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 
 class NoSuitableRendererException extends DataWizardException
