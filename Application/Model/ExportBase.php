@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\ModCfg\Application\Model\d3filesystem;
@@ -44,6 +45,7 @@ abstract class ExportBase implements QueryBase
     
     /**
      * @param string $format
+     * @param $path
      *
      * @throws DBALException
      * @throws DatabaseConnectionException
@@ -53,8 +55,9 @@ abstract class ExportBase implements QueryBase
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
+     * @return string
      */
-    public function run($format = RendererBridge::FORMAT_CSV)
+    public function run( string $format = RendererBridge::FORMAT_CSV, $path = null): string
     {
         if ($this->hasFormElements()) {
             /** @var Input $element */
@@ -70,11 +73,18 @@ abstract class ExportBase implements QueryBase
         $content = $this->renderContent($rows, $fieldNames, $format);
 
         /** @var $oFS d3filesystem */
-        $oFS = oxNew(d3filesystem::class);
-        $oFS->startDirectDownload(
-            $oFS->filterFilename($this->getExportFileName($format)),
-            $content
-        );
+        $oFS = oxNew( d3filesystem::class );
+        if (is_null($path)) {
+            $oFS->startDirectDownload( $oFS->filterFilename( $this->getExportFileName( $format ) ), $content );
+        } else {
+            $filePath = $oFS->trailingslashit($path).$oFS->filterFilename( $this->getExportFileName( $format ) );
+            if (false === $oFS->createFile($filePath, $content,true)) {
+                throw oxNew(ExportFileException::class, $filePath);
+            }
+            return $filePath;
+        }
+
+        return '';
     }
 
     /**

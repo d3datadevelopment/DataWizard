@@ -48,6 +48,7 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED'            => 'Es sind keine Exporte installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar',
     'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
+    'D3_DATAWIZARD_ERR_EXPORTFILEERROR'               => 'Exportdatei "%1$s" kann nicht angelegt werden',
 
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikel',
     'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TREE'   => 'Baum',
