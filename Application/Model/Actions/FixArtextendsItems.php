@@ -25,7 +25,7 @@ use OxidEsales\Eshop\Core\Registry;
 class FixArtextendsItems extends ActionBase
 {
     /**
-     * fehlende oxartextends-Eintr‰ge nachtragen
+     * fehlende oxartextends-Eintr√§ge nachtragen
      */
 
     /**

@@ -10,8 +10,6 @@ All exports are grouped together for better clarity.
 
 Sample exports are included in the scope of delivery. These are intended to serve as an implementation reference for individual exports. The display of the sample exports can be deactivated in the basic module settings.
 
-Translated with www.DeepL.com/Translator (free version)
-
 ## Installation
 
 In the console in the shop root (above source and vendor), execute the following command:
@@ -20,9 +18,9 @@ In the console in the shop root (above source and vendor), execute the following
 php composer require d3/datawizard
 ``` 
 
-Activate in the admin area of the shop under "Extensions -> Modules".
+Activate the module in the admin area of the shop in "Extensions -> Modules".
 
-# Extensibility
+## Extensibility
 
 The module represents the technical basic framework of the exports and does not claim to be complete. In order to adapt the scope to individual requirements, the following extensions are prepared:
 
@@ -32,24 +30,24 @@ The module represents the technical basic framework of the exports and does not 
 
 Independently of this, all extension options are available that the OXID Shop provides for modules.
 
-## Add exports
+### Add exports
 
-### Define export
+#### Define export
 
 Each export is defined in a separate class. This export class must extend the class `D3\DataWizard\Application\Model\ExportBase`. All necessary functions are predefined in it. The following methods are available:
 
-#### mandatory method calls:
+##### mandatory method calls:
 - getTitle() - defines the title in the admin area and the base of the later export file name.
 - getQuery() - contains the query as a prepared statement that defines the data to be exported
 
-#### optional method calls:
+##### optional method calls:
 - getDescription() - contains a short additional description of the export, this will be shown in the admin area
 - getButtonText() - defines the text of the submit button in the admin area
 - getExportFilenameBase() - defines the base of the later export filename
 - executeQuery() - returns the compiled export data
 - further methods, the adaptation of which, however, can lead to changed module behaviour and should therefore only be changed with caution
 
-### Register exports
+#### Register exports
 
 In order to be able to use the created export in the module, it must be registered. For this purpose there is the class `D3\DataWizard\Application\Model\Configuration`. This is to be overloaded with the possibilities of the OXID shop and the method `configure()` contained therein is to be supplemented. The following call is available for registering an export:
 
@@ -64,7 +62,7 @@ The first parameter contains the language identifier for the export group. Typic
 See [CHANGELOG](CHANGELOG.md) for further informations.
 
 ## Licence of this software (d3/datawizard)
-(status: 06.05.2021)
+(status: 2021-05-06)
 
 ```
 Copyright (c) D3 Data Development (Inh. Thomas Dartsch)
@@ -92,7 +90,7 @@ Gradients available on the site are free to use on personal and commercial proje
 The following software packages are not part of this module. However, they are required for use. The linked packages are under the following licences:
 
 ### league/csv [MIT]
-(https://github.com/thephpleague/csv - status: 06.05.2021)
+(https://github.com/thephpleague/csv - status: 2021-05-06)
 
 ```
 Copyright (c) 2013-2017 ignace nyamagana butera
@@ -116,7 +114,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 ### mathieuviossat/arraytotexttable [MIT]
-(https://github.com/viossat/arraytotexttable - status: 06.05.2021)
+(https://github.com/viossat/arraytotexttable - status: 2021-05-06)
 
 ```
 Copyright (c) 2015 Mathieu Viossat

@@ -18,13 +18,20 @@ namespace D3\DataWizard\Application\Model\Exceptions;
 use D3\DataWizard\Application\Model\QueryBase;
 use Exception;
 use FormManager\Inputs\Input;
-use OxidEsales\Eshop\Core\Exception\StandardException;
 
 class InputUnvalidException extends DataWizardException
 {
     /** @var QueryBase */
     public $task;
 
+    /**
+     * InputUnvalidException constructor.
+     * @param QueryBase $task
+     * @param Input $inputElement
+     * @param int $iCode
+     * @param Exception|null $previous
+     * @throws Exception
+     */
     public function __construct( QueryBase $task, Input $inputElement, $iCode = 0, Exception $previous = null )
     {
         $messages = [];

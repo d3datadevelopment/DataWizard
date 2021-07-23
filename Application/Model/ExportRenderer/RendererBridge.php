@@ -23,18 +23,31 @@ class RendererBridge
     const FORMAT_PRETTY = 'Pretty';
 
     /**
+     * @return array
+     */
+    public function getRendererList(): array
+    {
+        return [
+            self::FORMAT_CSV    => oxNew(Csv::class),
+            self::FORMAT_PRETTY => oxNew(Pretty::class)
+        ];
+    }
+
+    /**
      * @param string $format
      *
-     * @throws NoSuitableRendererException
      * @return RendererInterface
+     * @throws NoSuitableRendererException
      */
-    public function getRenderer($format = self::FORMAT_CSV): RendererInterface
+    public function getRenderer(string $format = self::FORMAT_CSV): RendererInterface
     {
-        switch ($format) {
-            case self::FORMAT_CSV:
-                return oxNew(Csv::class);
-            case self::FORMAT_PRETTY:
-                return oxNew(Pretty::class);
+        $format = strtolower($format);
+
+        $rendererList = array_change_key_case($this->getRendererList(), CASE_LOWER);
+        $rendererListTypes = array_keys(array_change_key_case($rendererList, CASE_LOWER));
+
+        if (in_array($format, $rendererListTypes, true)) {
+            return $rendererList[$format];
         }
 
         /** @var NoSuitableRendererException $e */

@@ -18,12 +18,12 @@ namespace D3\DataWizard\Application\Model\Exceptions;
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
 
-class NoSuitableRendererException extends DataWizardException
+class ExportFileException extends DataWizardException
 {
     public function __construct($sMessage = "not set", $iCode = 0, Exception $previous = null )
     {
         $sMessage = sprintf(
-            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOSUITABLERENDERER'),
+            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_EXPORTFILEERROR'),
             $sMessage
         );
 
