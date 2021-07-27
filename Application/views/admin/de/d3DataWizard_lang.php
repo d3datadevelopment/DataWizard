@@ -27,13 +27,13 @@ $aLang = array(
 
     'SHOP_MODULE_GROUP_d3datawizard_general'          => 'Grundeinstellungen',
     'SHOP_MODULE_d3datawizard_debug'                  => 'zeigt Abfragen anstatt diese auszuführen',
-    'SHOP_MODULE_d3datawizard_hideexamples'           => 'Beispielexporte ausblenden',
 
     'D3_DATAWIZARD_GROUP_ARTICLES'                    => 'Artikel',
     'D3_DATAWIZARD_GROUP_CATEGORIES'                  => 'Kategorien',
     'D3_DATAWIZARD_GROUP_ORDERS'                      => 'Bestellungen',
     'D3_DATAWIZARD_GROUP_REMARKS'                     => 'Bewertungen',
     'D3_DATAWIZARD_GROUP_SHOP'                        => 'Shop',
+    'D3_DATAWIZARD_GROUP_CMS'                         => 'CMS-Texte',
     'D3_DATAWIZARD_GROUP_USERS'                       => 'Benutzer',
 
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten',
@@ -50,21 +50,8 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
     'D3_DATAWIZARD_ERR_EXPORTFILEERROR'               => 'Exportdatei "%1$s" kann nicht angelegt werden',
 
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES'        => 'deaktivierte Kategorien, mit aktiven Artikeln',
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TREE'   => 'Baum',
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_TITLE'  => 'Titel',
-    'D3_DATAWIZARD_EXPORTS_INACTIVECATEGORIES_COUNT'  => 'Anzahl',
-
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES'                => 'Bestellungskennzahlen nach Monat',
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_FIELD_STARTDATE'=> 'Startdatum (optional)',
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_FIELD_ENDDATE'  => 'Enddatum (optional)',
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_ORDERSPERMONTH' => 'Bestellungen pro Monat',
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_BASKETSIZE'     => 'Warenkorbhöhe',
-    'D3_DATAWIZARD_EXPORTS_KEYFIGURES_MONTH'          => 'Monat',
-
     'D3_DATAWIZARD_ERR_ACTIONSELECT'                  => 'Aktion kann nicht ausgeführt werden. Aktionen können keine SELECTs exportieren.',
     'D3_DATAWIZARD_ERR_NOACTION_INSTALLED'            => 'Es sind keine Aktionen installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
     'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',
-    'D3_DATAWIZARD_ACTIONS_FIXARTEXTENDSITEMS'        => 'fehlende oxartextends-Einträge nachtragen',
 );

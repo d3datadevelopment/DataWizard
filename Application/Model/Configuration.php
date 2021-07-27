@@ -29,6 +29,7 @@ class Configuration
     const GROUP_USERS    = 'D3_DATAWIZARD_GROUP_USERS';
     const GROUP_ORDERS   = 'D3_DATAWIZARD_GROUP_ORDERS';
     const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
+    const GROUP_CMS      = 'D3_DATAWIZARD_GROUP_CMS';
 
     protected $actions = [];
     protected $exports = [];
@@ -40,12 +41,7 @@ class Configuration
 
     public function configure()
     {
-        if (false === Registry::getConfig()->getConfigParam('d3datawizard_hideexamples', false)) {
-            $this->registerAction(self::GROUP_ARTICLES, oxNew(FixArtextendsItems::class));
-
-            $this->registerExport(self::GROUP_CATEGORY, oxNew(InactiveCategories::class));
-            $this->registerExport(self::GROUP_SHOP, oxNew(KeyFigures::class));
-        }
+        // extend to add exports and actions via 'registerAction()' or 'registerExport()' method
     }
 
     /**
