@@ -45,6 +45,9 @@ $aModule = [
     'templates'   => [
         'd3ExportWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ExportWizard.tpl',
         'd3ActionWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ActionWizard.tpl',
+        'd3Wizards.tpl'              => 'd3/datawizard/Application/views/admin/tpl/inc/Wizards.tpl',
+        'd3ExportSubmit.tpl'         => 'd3/datawizard/Application/views/admin/tpl/inc/exportSubmit.tpl',
+        'd3ActionSubmit.tpl'         => 'd3/datawizard/Application/views/admin/tpl/inc/actionSubmit.tpl',
     ],
     'settings'    => [
         [

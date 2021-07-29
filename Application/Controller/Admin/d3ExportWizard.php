@@ -47,7 +47,7 @@ class d3ExportWizard extends AdminDetailsController
         return $this->configuration->getExportGroups();
     }
 
-    public function getGroupExports($group)
+    public function getGroupTasks($group)
     {
         return $this->configuration->getExportsByGroup($group);
     }
@@ -58,10 +58,10 @@ class d3ExportWizard extends AdminDetailsController
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      */
-    public function doExport()
+    public function runTask()
     {
         try {
-            $id = Registry::getRequest()->getRequestEscapedParameter('exportid');
+            $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
             $export = $this->configuration->getExportById($id);
 
             [ $queryString, $parameters ] = $export->getQuery();
@@ -73,7 +73,7 @@ class d3ExportWizard extends AdminDetailsController
                 );
             }
 
-            $export->run(Registry::getRequest()->getRequestEscapedParameter('exportformat'));
+            $export->run(Registry::getRequest()->getRequestEscapedParameter('format'));
         } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
             Registry::getUtilsView()->addErrorToDisplay($e);
         }

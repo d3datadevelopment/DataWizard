@@ -47,7 +47,7 @@ class d3ActionWizard extends AdminDetailsController
         return $this->configuration->getActionGroups();
     }
 
-    public function getGroupActions($group)
+    public function getGroupTasks($group)
     {
         return $this->configuration->getActionsByGroup($group);
     }
@@ -58,10 +58,10 @@ class d3ActionWizard extends AdminDetailsController
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      */
-    public function doAction()
+    public function runTask()
     {
         try {
-            $id = Registry::getRequest()->getRequestEscapedParameter('actionid');
+            $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
             $action = $this->configuration->getActionById($id);
 
             [ $queryString, $parameters ] = $action->getQuery();
