@@ -79,9 +79,20 @@
                                             </h5>
                                             <div class="card-body">
                                                 [{if $item->getDescription()}]
-                                                    <p class="card-text">
-                                                        [{$item->getDescription()}]
-                                                    </p>
+                                                    [{assign var="description" value=$item->getDescription()}]
+                                                    [{assign var="sectionlength" value="100"}]
+
+                                                    [{if $description|count_characters:true <= $sectionlength}]
+                                                        <p class="card-text">[{$description}]</p>
+                                                    [{else}]
+                                                        [{assign var="shorttext" value=$description|truncate:$sectionlength:''}]
+                                                        <p class="card-text" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer">
+                                                            [{$shorttext}]...
+                                                        </p>
+                                                        <p class="card-text collapse" id="collapseExample">
+                                                            ...[{$description|replace:$shorttext:''}]
+                                                        </p>
+                                                    [{/if}]
                                                 [{/if}]
 
                                                 [{if $item->hasFormElements()}]
