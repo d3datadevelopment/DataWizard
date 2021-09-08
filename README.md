@@ -1,4 +1,5 @@
-> [english version](README.en.md)
+[![deutsche Version](https://logos.oxidmodule.com/de2_xs.svg)](README.md)
+[![english version](https://logos.oxidmodule.com/en2_xs.svg)](README.en.md)
 
 # D³ Data Wizard für OXID eShop
 
@@ -8,7 +9,7 @@ Die Exporte werden über Datenbankabfragen oder fertige Datenlisten definiert. E
 
 Alle Exporte sind für eine bessere Übersichtlichkeit in Gruppen zusammengefasst.
 
-Im Lieferumfang sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen. Die Anzeige der Beispielexporte kann in den Modulgrundeinstellungen deaktiviert werden.
+Im Paket d3/datawizardtasks sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen.
 
 ![Adminbereich](assets/administration_exports.jpg "Adminbereich")
 

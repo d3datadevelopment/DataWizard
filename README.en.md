@@ -1,4 +1,5 @@
-> [deutsche Version](README.md)
+[![deutsche Version](https://logos.oxidmodule.com/de2_xs.svg)](README.md)
+[![english version](https://logos.oxidmodule.com/en2_xs.svg)](README.en.md)
 
 # D³ Data Wizard for OXID eShop
 
@@ -8,7 +9,7 @@ The exports are defined via database queries or ready-made data lists. Various e
 
 All exports are grouped together for better clarity.
 
-Sample exports are included in the scope of delivery. These are intended to serve as an implementation reference for individual exports. The display of the sample exports can be deactivated in the basic module settings.
+Sample exports are included in the package d3/datawizardtasks. These are intended to serve as an implementation reference for individual exports.
 
 ![administration area](assets/administration_exports.jpg "administration area")
 
