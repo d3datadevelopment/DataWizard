@@ -10,6 +10,8 @@ Alle Exporte sind für eine bessere Übersichtlichkeit in Gruppen zusammengefass
 
 Im Lieferumfang sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen. Die Anzeige der Beispielexporte kann in den Modulgrundeinstellungen deaktiviert werden.
 
+![Adminbereich](assets/administration_exports.jpg "Adminbereich")
+
 ## Schnellinstallation
 
 Auf der Konsole im Shoproot (oberhalb von source und vendor) folgenden Befehl ausführen:

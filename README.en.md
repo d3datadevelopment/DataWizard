@@ -10,6 +10,8 @@ All exports are grouped together for better clarity.
 
 Sample exports are included in the scope of delivery. These are intended to serve as an implementation reference for individual exports. The display of the sample exports can be deactivated in the basic module settings.
 
+![administration area](assets/administration_exports.jpg "administration area")
+
 ## Installation
 
 In the console in the shop root (above source and vendor), execute the following command:
