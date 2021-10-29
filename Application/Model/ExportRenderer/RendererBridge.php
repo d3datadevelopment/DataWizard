@@ -33,6 +33,21 @@ class RendererBridge
         ];
     }
 
+    public function getTranslatedRendererIdList()
+    {
+        $rendererList = $this->getRendererList();
+        array_walk($rendererList, [$this, 'translateRendererId']);
+        return $rendererList;
+    }
+
+    /**
+     * @param RendererInterface $instance
+     */
+    protected function translateRendererId(RendererInterface &$instance)
+    {
+        $instance = $instance->getTitleTranslationId();
+    }
+
     /**
      * @param string $format
      *

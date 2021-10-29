@@ -11,12 +11,12 @@
     </button>
     <div class="dropdown-menu">
         [{block name="dataWizardFormat"}]
-            <button class="dropdown-item" onclick="startTask('[{$id}]', 'CSV')">
-                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV"}]
-            </button>
-            <button class="dropdown-item" onclick="startTask('[{$id}]', 'Pretty')">
-                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_PRETTY"}]
-            </button>
+            [{assign var="rendererBridge" value=$item->getRendererBridge()}]
+            [{foreach from=$rendererBridge->getTranslatedRendererIdList() key="key" item="translationId"}]
+                <button class="dropdown-item" onclick="startTask('[{$id}]', '[{$key}]')">
+                    [{oxmultilang ident=$translationId}]
+                </button>
+            [{/foreach}]
         [{/block}]
     </div>
 </div>

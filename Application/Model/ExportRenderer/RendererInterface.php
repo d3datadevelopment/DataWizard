@@ -29,4 +29,9 @@ interface RendererInterface
      * @return string
      */
     public function getFileExtension() : string;
+
+    /**
+     * @return string
+     */
+    public function getTitleTranslationId() : string;
 }

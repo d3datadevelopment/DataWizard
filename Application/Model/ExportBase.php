@@ -103,7 +103,15 @@ abstract class ExportBase implements QueryBase
      */
     public function getRenderer($format): ExportRenderer\RendererInterface
     {
-        return oxNew(RendererBridge::class)->getRenderer($format);
+        return $this->getRendererBridge()->getRenderer($format);
+    }
+
+    /**
+     * @return RendererBridge
+     */
+    public function getRendererBridge()
+    {
+        return oxNew(RendererBridge::class);
     }
 
     /**

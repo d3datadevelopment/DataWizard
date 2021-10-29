@@ -38,4 +38,12 @@ class Pretty implements RendererInterface
     {
         return 'txt';
     }
+
+    /**
+     * @return string
+     */
+    public function getTitleTranslationId(): string
+    {
+        return "D3_DATAWIZARD_EXPORT_FORMAT_PRETTY";
+    }
 }

@@ -74,4 +74,12 @@ class Csv implements RendererInterface
 
         return $csv;
     }
+
+    /**
+     * @return string
+     */
+    public function getTitleTranslationId(): string
+    {
+        return 'D3_DATAWIZARD_EXPORT_FORMAT_CSV';
+    }
 }
