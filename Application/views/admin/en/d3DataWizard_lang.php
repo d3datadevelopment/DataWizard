@@ -39,6 +39,7 @@ $aLang = array(
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'generate export',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV format',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty format',
+    'D3_DATAWIZARD_EXPORT_FORMAT_JSON'                => 'JSON format',
 
     'D3_DATAWIZARD_ACTION_SUBMIT'                     => 'run action',
 

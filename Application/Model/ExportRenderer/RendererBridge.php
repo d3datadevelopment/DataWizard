@@ -21,6 +21,7 @@ class RendererBridge
 {
     const FORMAT_CSV    = 'CSV';
     const FORMAT_PRETTY = 'Pretty';
+    const FORMAT_JSON   = 'JSON';
 
     /**
      * @return array
@@ -29,7 +30,8 @@ class RendererBridge
     {
         return [
             self::FORMAT_CSV    => oxNew(Csv::class),
-            self::FORMAT_PRETTY => oxNew(Pretty::class)
+            self::FORMAT_PRETTY => oxNew(Pretty::class),
+            self::FORMAT_JSON   => oxNew(Json::class)
         ];
     }
 
