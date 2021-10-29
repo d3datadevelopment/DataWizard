@@ -36,13 +36,12 @@ class Csv implements RendererInterface
             $csv = $this->getCsv();
             $csv->insertOne( $fieldNames );
             $csv->insertAll( $rows );
+            return $csv->toString();
         } catch (Exception $e) {
             /** @var RenderException $newException */
             $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
             throw $newException;
         }
-
-        return $csv->getContent();
     }
 
     public function getFileExtension(): string
