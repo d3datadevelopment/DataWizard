@@ -22,11 +22,13 @@ interface QueryBase
     public function run();
 
     /**
+     * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
     public function getTitle() : string;
 
     /**
+     * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
     public function getDescription() : string;

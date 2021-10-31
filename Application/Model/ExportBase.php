@@ -36,6 +36,7 @@ abstract class ExportBase implements QueryBase
     protected $formElements = [];
 
     /**
+     * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
     public function getDescription() : string
@@ -185,7 +186,7 @@ abstract class ExportBase implements QueryBase
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTCONTENT' )
+                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true )
             );
         }
 
