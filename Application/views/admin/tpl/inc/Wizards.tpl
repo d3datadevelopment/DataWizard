@@ -101,7 +101,9 @@
                                                     [{/foreach}]
                                                 [{/if}]
 
-                                                [{include file=$submit}]
+                                                [{block name="exportSubmit"}]
+                                                    [{include file=$submit}]
+                                                [{/block}]
                                             </div>
                                         </div>
                                     </div>
