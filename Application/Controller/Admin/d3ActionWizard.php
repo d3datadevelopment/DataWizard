@@ -61,22 +61,32 @@ class d3ActionWizard extends AdminDetailsController
     public function runTask()
     {
         try {
-            $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
-            $action = $this->configuration->getActionById($id);
-
-            [ $queryString, $parameters ] = $action->getQuery();
-
-            if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
-                throw oxNew(
-                    DebugException::class,
-                    d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
-                );
-            }
-
-            $action->run();
+            $this->execute();
         } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
+            Registry::getLogger()->error($e->getMessage());
             Registry::getUtilsView()->addErrorToDisplay($e);
         }
+    }
+
+    /**
+     * @throws DatabaseConnectionException
+     * @throws DatabaseErrorException
+     */
+    protected function execute()
+    {
+        $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
+        $action = $this->configuration->getActionById($id);
+
+        [ $queryString, $parameters ] = $action->getQuery();
+
+        if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
+            throw oxNew(
+                DebugException::class,
+                d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
+            );
+        }
+
+        $action->run();
     }
 
     public function getUserMessages()
