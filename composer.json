@@ -43,6 +43,7 @@
   "suggest": {
     "d3/datawizardtasks": "useful example tasks for Data Wizard",
     "d3/datawizardcli": "command line implementation for fully automated Data Wizard tasks"
+    "d3/datawizardlink": "remote http link for Data Wizard module exports"
   },
   "autoload": {
     "psr-4": {
