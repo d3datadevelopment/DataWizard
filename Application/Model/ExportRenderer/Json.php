@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
+use JsonException;
 
 class Json implements RendererInterface
 {
@@ -28,12 +29,15 @@ class Json implements RendererInterface
      */
     public function getContent($rows, $fieldNames): string
     {
-        $flags = JSON_PRETTY_PRINT;
-        $json  = json_encode( $rows, $flags );
-        if ( $json === false ) {
-            throw oxNew( RenderException::class, json_last_error_msg(), json_last_error());
+        try {
+            $flags = JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR;
+            $json  = json_encode( $rows, $flags );
+            return $json;
+        } catch ( JsonException $e) {
+            /** @var RenderException $newException */
+            $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
+            throw $newException;
         }
-        return $json;
     }
 
     public function getFileExtension(): string
