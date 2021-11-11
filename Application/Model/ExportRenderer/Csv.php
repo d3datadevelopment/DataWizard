@@ -36,7 +36,7 @@ class Csv implements RendererInterface
             $csv = $this->getCsv();
             $csv->insertOne( $fieldNames );
             $csv->insertAll( $rows );
-            return $csv->toString();
+            return method_exists($csv, 'getContent') ? $csv->getContent() : (string) $csv;
         } catch (Exception $e) {
             /** @var RenderException $newException */
             $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
