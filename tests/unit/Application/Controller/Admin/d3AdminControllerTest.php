@@ -69,7 +69,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers d3ActionWizard::runTask()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::runTask()
      * @test
      * @throws ReflectionException
      */
@@ -90,7 +91,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers d3ActionWizard::runTask()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::runTask()
      * @test
      * @param $exceptionClass
      * @throws ReflectionException
@@ -146,7 +148,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers d3ActionWizard::execute()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::execute()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::execute()
      * @test
      * @throws ReflectionException
      * @dataProvider executePassDataProvider
@@ -207,7 +210,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers d3ActionWizard::getUserMessages()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getUserMessages()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::getUserMessages()
      * @test
      * @throws ReflectionException
      */
@@ -222,7 +226,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers d3ActionWizard::getHelpURL()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getHelpURL()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::getHelpURL()
      * @test
      * @throws ReflectionException
      */
