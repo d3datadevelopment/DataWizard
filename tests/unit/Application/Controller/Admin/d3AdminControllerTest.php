@@ -37,6 +37,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     /** @var d3ActionWizard|d3ExportWizard */
     protected $_oController;
 
+    protected $testClassName;
+
     public function tearDown() : void
     {
         parent::tearDown();
@@ -76,8 +78,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
      */
     public function runTaskPass()
     {
-        /** @var d3ActionWizard|MockObject $controllerMock */
-        $controllerMock = $this->getMockBuilder(d3ActionWizard::class)
+        /** @var d3ActionWizard|d3ExportWizard|MockObject $controllerMock */
+        $controllerMock = $this->getMockBuilder($this->testClassName)
             ->onlyMethods(['execute'])
             ->getMock();
         $controllerMock->expects($this->once())->method('execute')->willReturn(true);
@@ -106,8 +108,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
             ->getMock();
         $this->setValue($exceptionMock, 'message', 'exc_msg');
 
-        /** @var d3ActionWizard|MockObject $controllerMock */
-        $controllerMock = $this->getMockBuilder(d3ActionWizard::class)
+        /** @var d3ActionWizard|d3ExportWizard|MockObject $controllerMock */
+        $controllerMock = $this->getMockBuilder($this->testClassName)
             ->onlyMethods(['execute'])
             ->getMock();
         $controllerMock->expects($this->once())->method('execute')->willThrowException($exceptionMock);
@@ -237,6 +239,23 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
             $this->callMethod(
                 $this->_oController,
                 'getHelpURL'
+            )
+        );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::d3GetConfig
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::d3GetConfig
+     * @test
+     * @throws ReflectionException
+     */
+    public function canGetConfig()
+    {
+        $this->assertInstanceOf(
+            Config::class,
+            $this->callMethod(
+                $this->_oController,
+                'd3GetConfig'
             )
         );
     }

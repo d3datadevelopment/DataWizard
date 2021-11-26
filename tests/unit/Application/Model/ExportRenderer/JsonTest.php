@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model\ExportRenderer;
 
+use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\ExportRenderer\Json;
 
 class JsonTest extends ExportRendererTest
@@ -33,11 +34,15 @@ class JsonTest extends ExportRendererTest
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Json::getContent
      * @test
      * @throws \ReflectionException
+     * @dataProvider canGetContentDataProvider
      */
-    public function canGetContent()
+    public function canGetContent($valueList, $expectException)
     {
         $fieldList = ['field1', 'field2'];
-        $valueList = ['value1', 'value2'];
+
+        if ($expectException) {
+            $this->expectException(RenderException::class);
+        }
 
         $this->assertJson(
             $this->callMethod(
@@ -46,5 +51,16 @@ class JsonTest extends ExportRendererTest
                 [$valueList, $fieldList]
             )
         );
+    }
+
+    /**
+     * @return \string[][]
+     */
+    public function canGetContentDataProvider(): array
+    {
+        return [
+            'valid' => [['value1', 'value2'], false],
+            'invalid'   => [["text" => "\xB1\x31"], true]  // malformed UTF8 chars
+        ];
     }
 }

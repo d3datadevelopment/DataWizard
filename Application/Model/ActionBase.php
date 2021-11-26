@@ -103,15 +103,12 @@ abstract class ActionBase implements QueryBase
      */
     public function registerFormElement(Input $input)
     {
-        switch (get_class($input)) {
-            case Radio::class:
-            case Checkbox::class:
-                $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
-                $input->setAttribute('class', 'form-check-input');
-                break;
-            default:
-                $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
-                $input->setAttribute('class', 'form-control');
+        if ($input instanceof Radio || $input instanceof Checkbox) {
+            $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
+            $input->setAttribute('class', 'form-check-input');
+        } else {
+            $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
+            $input->setAttribute('class', 'form-control');
         }
         $this->formElements[] = $input;
     }

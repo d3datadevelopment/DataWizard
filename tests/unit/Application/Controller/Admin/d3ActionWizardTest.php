@@ -18,6 +18,7 @@ namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 use D3\DataWizard\Application\Controller\Admin\d3ActionWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
+use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
@@ -30,15 +31,17 @@ class d3ActionWizardTest extends d3AdminControllerTest
     /** @var d3ActionWizard */
     protected $_oController;
 
+    protected $testClassName = d3ActionWizard::class;
+
     public function setUp() : void
     {
         parent::setUp();
 
-        $this->_oController = oxNew(d3ActionWizard::class);
+        $this->_oController = oxNew($this->testClassName);
     }
 
     /**
-     * @covers d3ActionWizard::getGroups()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getGroups()
      * @test
      * @throws ReflectionException
      */
@@ -63,7 +66,7 @@ class d3ActionWizardTest extends d3AdminControllerTest
     }
 
     /**
-     * @covers d3ActionWizard::getGroupTasks()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getGroupTasks()
      * @test
      * @throws ReflectionException
      * @dataProvider canGetGroupTasksDataProvider
@@ -101,7 +104,7 @@ class d3ActionWizardTest extends d3AdminControllerTest
     }
 
     /**
-     * @covers d3ActionWizard::execute()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::execute()
      * @test
      * @throws ReflectionException
      * @dataProvider executePassDataProvider
@@ -112,8 +115,30 @@ class d3ActionWizardTest extends d3AdminControllerTest
         $requestMock = $this->getMockBuilder(get_class(Registry::getRequest()))
             ->onlyMethods(['getRequestEscapedParameter'])
             ->getMock();
-        $requestMock->expects($this->atLeastOnce())->method('getRequestEscapedParameter')->with('taskid')->willReturn('testTaskId');
+        $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback([$this, 'executePassRequestCallback']);
         Registry::set(Request::class, $requestMock);
+
+        /** @var Config|MockObject $configMock */
+        $configMock = $this->getMockBuilder(Config::class)
+            ->onlyMethods(['getConfigParam'])
+            ->getMock();
+        $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturnCallback(
+            function ($argName) use ($blDebug) {
+                switch ($argName) {
+                    case 'd3datawizard_debug':
+                        return $blDebug;
+                    default:
+                        return Registry::getConfig()->getConfigParam($argName);
+                }
+            }
+        );
+
+        /** @var d3ActionWizard|MockObject $controllerMock */
+        $controllerMock = $this->getMockBuilder(d3ActionWizard::class)
+            ->onlyMethods(['d3GetConfig'])
+            ->getMock();
+        $controllerMock->method('d3GetConfig')->willReturn($configMock);
+        $this->_oController = $controllerMock;
 
         /** @var d3TestAction|MockObject $actionMock */
         $actionMock = $this->getMockBuilder(d3TestAction::class)
@@ -133,13 +158,6 @@ class d3ActionWizardTest extends d3AdminControllerTest
         $configurationMock->expects($this->atLeastOnce())->method('getActionById')->with('testTaskId')->willReturn($actionMock);
         $this->setValue($this->_oController, 'configuration', $configurationMock);
 
-        /** @var Config|MockObject $configMock */
-        $configMock = $this->getMockBuilder(Config::class)
-            ->onlyMethods(['getConfigParam'])
-            ->getMock();
-        $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturn($blDebug);
-        Registry::set(Config::class, $configMock);
-
         if ($blDebug) {
             $this->expectException(DebugException::class);
         }
@@ -148,6 +166,18 @@ class d3ActionWizardTest extends d3AdminControllerTest
             $this->_oController,
             'execute'
         );
+    }
+
+    public function executePassRequestCallback($varName)
+    {
+        switch ($varName) {
+            case 'taskid':
+                return 'testTaskId';
+            case 'format':
+                return RendererBridge::FORMAT_CSV;
+            default:
+                return oxNew(Request::class)->getRequestEscapedParameter($varName);
+        }
     }
 
     /**

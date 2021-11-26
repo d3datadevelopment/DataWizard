@@ -19,6 +19,8 @@ use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\ExportRenderer\Csv;
 use League\Csv\Exception;
 use League\Csv\Writer;
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class CsvTest extends ExportRendererTest
@@ -93,6 +95,7 @@ class CsvTest extends ExportRendererTest
             'no exception' => [false]
         ];
     }
+
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
      * @test
@@ -105,6 +108,72 @@ class CsvTest extends ExportRendererTest
             $this->callMethod(
                 $this->_oModel,
                 'getCsv'
+            )
+        );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
+     * @test
+     * @throws \ReflectionException
+     */
+    public function canGetCsvNoSettings()
+    {
+        /** @var Config|MockObject $configMock */
+        $configMock = $this->getMockBuilder(Config::class)
+            ->onlyMethods(['getConfigParam'])
+            ->getMock();
+        $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturnCallback(
+            function ($argName) {
+                switch ($argName) {
+                    case 'sGiCsvFieldEncloser':
+                    case 'sCSVSign':
+                        return false;
+                    default:
+                        return Registry::getConfig()->getConfigParam($argName);
+                }
+            }
+        );
+
+        $modelMock = $this->getMockBuilder(Csv::class)
+            ->onlyMethods(['d3GetConfig'])
+            ->getMock();
+        $modelMock->method('d3GetConfig')->willReturn($configMock);
+        $this->_oModel = $modelMock;
+
+        $csv = $this->callMethod(
+            $this->_oModel,
+            'getCsv'
+        );
+
+        $this->assertInstanceOf(
+            Writer::class,
+            $csv
+        );
+
+        $this->assertSame(
+            '"',
+            $csv->getEnclosure()
+        );
+
+        $this->assertSame(
+            ';',
+            $csv->getDelimiter()
+        );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::d3GetConfig
+     * @test
+     * @throws \ReflectionException
+     */
+    public function canGetConfig()
+    {
+        $this->assertInstanceOf(
+            Config::class,
+            $this->callMethod(
+                $this->_oModel,
+                'd3GetConfig'
             )
         );
     }

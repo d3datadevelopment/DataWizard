@@ -13,6 +13,6 @@ class d3TestAction extends ActionBase
 
     public function getQuery(): array
     {
-        return "SELECT 1";
+        return ["UPDATE 1"];
     }
 }
