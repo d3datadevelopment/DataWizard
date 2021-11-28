@@ -69,23 +69,7 @@ abstract class ExportBase implements QueryBase
             }
         }
 
-        [ $rows, $fieldNames ] = $this->getExportData( $this->getQuery() );
-
-        $content = $this->renderContent($rows, $fieldNames, $format);
-
-        /** @var $oFS d3filesystem */
-        $oFS = oxNew( d3filesystem::class );
-        if (is_null($path)) {
-            $oFS->startDirectDownload( $oFS->filterFilename( $this->getExportFileName( $format ) ), $content );
-        } else {
-            $filePath = $oFS->trailingslashit($path).$oFS->filterFilename( $this->getExportFileName( $format ) );
-            if (false === $oFS->createFile($filePath, $content,true)) {
-                throw oxNew(ExportFileException::class, $filePath);
-            }
-            return $filePath;
-        }
-
-        return '';
+        return $this->executeExport($format, $path);
     }
 
     /**
@@ -180,7 +164,7 @@ abstract class ExportBase implements QueryBase
             );
         }
 
-        $rows = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->getAll( $queryString, $parameters );
+        $rows = $this->d3GetDb()->getAll( $queryString, $parameters );
 
         if ( count( $rows ) <= 0 ) {
             throw oxNew(
@@ -200,15 +184,12 @@ abstract class ExportBase implements QueryBase
      */
     public function registerFormElement(Input $input)
     {
-        switch (get_class($input)) {
-            case Radio::class:
-            case Checkbox::class:
-                $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
-                $input->setAttribute('class', 'form-check-input');
-                break;
-            default:
-                $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
-                $input->setAttribute('class', 'form-control');
+        if ($input instanceof Radio || $input instanceof Checkbox) {
+            $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
+            $input->setAttribute('class', 'form-check-input');
+        } else {
+            $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
+            $input->setAttribute('class', 'form-control');
         }
         $this->formElements[] = $input;
     }
@@ -227,5 +208,55 @@ abstract class ExportBase implements QueryBase
     public function getFormElements(): array
     {
         return $this->formElements;
+    }
+
+    /**
+     * @param string $format
+     * @param $path
+     * @return string
+     * @throws DBALException
+     * @throws DatabaseConnectionException
+     * @throws DatabaseErrorException
+     * @throws Exceptions\NoSuitableRendererException
+     * @throws StandardException
+     * @throws d3ShopCompatibilityAdapterException
+     * @throws d3_cfg_mod_exception
+     */
+    protected function executeExport(string $format, $path): string
+    {
+        [$rows, $fieldNames] = $this->getExportData($this->getQuery());
+
+        $content = $this->renderContent($rows, $fieldNames, $format);
+
+        /** @var $oFS d3filesystem */
+        $oFS = $this->getFileSystem();
+        if (is_null($path)) {
+            $oFS->startDirectDownload($oFS->filterFilename($this->getExportFileName($format)), $content);
+        } else {
+            $filePath = $oFS->trailingslashit($path) . $oFS->filterFilename($this->getExportFileName($format));
+            if (false === $oFS->createFile($filePath, $content, true)) {
+                throw oxNew(ExportFileException::class, $filePath);
+            }
+            return $filePath;
+        }
+
+        return '';
+    }
+
+    /**
+     * @return \OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface|null
+     * @throws DatabaseConnectionException
+     */
+    protected function d3GetDb(): ?\OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface
+    {
+        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+    }
+
+    /**
+     * @return d3filesystem|mixed
+     */
+    protected function getFileSystem()
+    {
+        return oxNew(d3filesystem::class);
     }
 }

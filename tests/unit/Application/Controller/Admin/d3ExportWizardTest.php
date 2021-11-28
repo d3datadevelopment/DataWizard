@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 
-use D3\DataWizard\Application\Controller\Admin\d3ActionWizard;
 use D3\DataWizard\Application\Controller\Admin\d3ExportWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
