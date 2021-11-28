@@ -23,6 +23,7 @@ use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
@@ -79,7 +80,7 @@ class d3ActionWizard extends AdminDetailsController
 
         [ $queryString, $parameters ] = $action->getQuery();
 
-        if (Registry::getConfig()->getConfigParam('d3datawizard_debug')) {
+        if ($this->d3GetConfig()->getConfigParam('d3datawizard_debug')) {
             throw oxNew(
                 DebugException::class,
                 d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
@@ -87,6 +88,14 @@ class d3ActionWizard extends AdminDetailsController
         }
 
         $action->run();
+    }
+
+    /**
+     * @return Config
+     */
+    public function d3GetConfig()
+    {
+        return Registry::getConfig();
     }
 
     public function getUserMessages()

@@ -27,8 +27,17 @@ class Pretty implements RendererInterface
      */
     public function getContent($rows, $fieldNames) : string
     {
-        $renderer = oxNew(ArrayToTextTable::class, $rows);
+        $renderer = $this->getArrayToTextTableInstance($rows);
         return $renderer->getTable();
+    }
+
+    /**
+     * @param $rows
+     * @return ArrayToTextTable
+     */
+    public function getArrayToTextTableInstance($rows)
+    {
+        return oxNew(ArrayToTextTable::class, $rows);
     }
 
     /**
