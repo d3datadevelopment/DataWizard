@@ -149,7 +149,13 @@ class Configuration
      */
     public function getActionById($id) : ActionBase
     {
-        return $this->getAllActions()[$id];
+        $allActions = $this->getAllActions();
+
+        if (false == $allActions[$id]) {
+            throw oxNew(DataWizardException::class, 'no action with id '.$id);
+        }
+
+        return $allActions[$id];
     }
 
     /**

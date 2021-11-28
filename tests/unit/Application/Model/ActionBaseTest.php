@@ -15,11 +15,13 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
 
+use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use FormManager\Inputs\Hidden;
 use FormManager\Inputs\Number;
 use FormManager\Inputs\Radio;
+use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
@@ -246,5 +248,69 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
             'validElements' => [[$validMock, $validMock], false],
             'invalidElements' => [[$validMock, $invalidField], true]
         ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @test
+     * @throws ReflectionException
+     * @dataProvider canExecuteActionDataProvider
+     */
+    public function canExecuteAction($query, $throwsException)
+    {
+        /** @var Database|MockObject $dbMock */
+        $dbMock = $this->getMockBuilder(Database::class)
+            ->onlyMethods(['execute'])
+            ->getMock();
+        $dbMock->expects($this->exactly((int) !$throwsException))->method('execute')->willReturn(true);
+
+        /** @var d3TestAction|MockObject $modelMock */
+        $modelMock = $this->getMockBuilder(d3TestAction::class)
+            ->onlyMethods(['d3GetDb'])
+            ->getMock();
+        $modelMock->expects($this->exactly((int) !$throwsException))->method('d3GetDb')->willReturn($dbMock);
+
+        $this->_oModel = $modelMock;
+
+        try {
+            $this->callMethod(
+                $this->_oModel,
+                'executeAction',
+                [[$query, ['parameters']]]
+            );
+        } catch (TaskException $e) {
+            if ($throwsException) {
+                $this->assertStringContainsString('ACTIONSELECT', $e->getMessage());
+            } else {
+                $this->assertStringContainsString('ACTIONRESULT', $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @return array[]
+     */
+    public function canExecuteActionDataProvider(): array
+    {
+        return [
+            'Select throws exception'   => ['SELECT 1', true],
+            'Update dont throws exception'   => ['UPDATE 1', false],
+        ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::d3GetDb
+     * @test
+     * @throws ReflectionException
+     */
+    public function canGetDb()
+    {
+        $this->assertInstanceOf(
+            Database::class,
+            $this->callMethod(
+                $this->_oModel,
+                'd3GetDb'
+            )
+        );
     }
 }

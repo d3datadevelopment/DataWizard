@@ -19,6 +19,7 @@ use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
+use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -76,7 +77,7 @@ abstract class ActionBase implements QueryBase
             );
         }
 
-        $affected = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->execute( $queryString, $parameters );
+        $affected = $this->d3GetDb()->execute( $queryString, $parameters );
 
         throw oxNew(
             Exceptions\TaskException::class,
@@ -88,6 +89,15 @@ abstract class ActionBase implements QueryBase
                 $affected
             )
         );
+    }
+
+    /**
+     * @return DatabaseInterface|null
+     * @throws DatabaseConnectionException
+     */
+    public function d3GetDb()
+    {
+        return DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC );
     }
 
     /**
