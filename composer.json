@@ -31,9 +31,6 @@
     "mathieuviossat/arraytotexttable": "^1.0",
     "form-manager/form-manager": "^5.1 || ^6.1"
   },
-  "require-dev": {
-    "oxid-esales/oxideshop-ce": "6.8 - 6.9"
-  },
   "extra": {
     "oxideshop": {
       "blacklist-filter": [
