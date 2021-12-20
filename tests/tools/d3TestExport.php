@@ -13,6 +13,6 @@ class d3TestExport extends ExportBase
 
     public function getQuery(): array
     {
-        return "SELECT 1";
+        return ["SELECT 1"];
     }
 }

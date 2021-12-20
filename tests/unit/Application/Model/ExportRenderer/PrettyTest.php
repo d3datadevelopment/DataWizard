@@ -18,6 +18,7 @@ namespace D3\DataWizard\tests\unit\Application\Model\ExportRenderer;
 use D3\DataWizard\Application\Model\ExportRenderer\Pretty;
 use MathieuViossat\Util\ArrayToTextTable;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class PrettyTest extends ExportRendererTest
 {
@@ -34,7 +35,7 @@ class PrettyTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Pretty::getContent
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetContent()
     {
@@ -69,7 +70,7 @@ class PrettyTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Pretty::getArrayToTextTableInstance
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetArrayToTextTableInstance()
     {

@@ -35,7 +35,7 @@ class RendererBridge
         ];
     }
 
-    public function getTranslatedRendererIdList()
+    public function getTranslatedRendererIdList(): array
     {
         $rendererList = $this->getRendererList();
         array_walk($rendererList, [$this, 'translateRendererId']);

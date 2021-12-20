@@ -17,7 +17,9 @@ namespace D3\DataWizard\tests\unit\Application\Model\Exceptions;
 
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class ExportFileExceptionTest extends d3ModCfgUnitTestCase
 {
@@ -27,13 +29,13 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Exceptions\ExportFileException::__construct
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canConstruct()
     {
         $code = '500';
 
-        $exception = oxNew(\Exception::class);
+        $exception = oxNew( Exception::class);
 
         /** @var ExportFileException|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(ExportFileException::class)

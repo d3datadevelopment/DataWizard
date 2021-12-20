@@ -19,14 +19,11 @@ use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\ModCfg\Application\Model\d3database;
-use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
-use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
-use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 
 class d3ActionWizard extends AdminDetailsController
@@ -43,7 +40,7 @@ class d3ActionWizard extends AdminDetailsController
         $this->configuration = oxNew(Configuration::class);
     }
 
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->configuration->getActionGroups();
     }
@@ -55,9 +52,6 @@ class d3ActionWizard extends AdminDetailsController
 
     /**
      * @throws DatabaseConnectionException
-     * @throws StandardException
-     * @throws d3ShopCompatibilityAdapterException
-     * @throws d3_cfg_mod_exception
      */
     public function runTask()
     {
@@ -93,7 +87,7 @@ class d3ActionWizard extends AdminDetailsController
     /**
      * @return Config
      */
-    public function d3GetConfig()
+    public function d3GetConfig(): Config
     {
         return Registry::getConfig();
     }

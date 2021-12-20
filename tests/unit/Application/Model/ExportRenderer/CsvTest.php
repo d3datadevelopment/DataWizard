@@ -22,6 +22,7 @@ use League\Csv\Writer;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class CsvTest extends ExportRendererTest
 {
@@ -38,7 +39,7 @@ class CsvTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getContent
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @dataProvider canGetContentDataProvider
      */
     public function canGetContent($blThrowException)
@@ -48,25 +49,21 @@ class CsvTest extends ExportRendererTest
         $valueList = ['value1', 'value2'];
 
         /** @var Writer|MockObject $csvMock */
-        $csvMockBuilder = $this->getMockBuilder(Writer::class);
+        $csvMockBuilder = $this->getMockBuilder( Writer::class);
         $csvMockBuilder->disableOriginalConstructor();
-        $onlyMethods = ['insertOne', 'insertAll'];
-        if (method_exists($csvMockBuilder->getMock(), 'getContent')) {
-            $onlyMethods[] = 'getContent';
-        } else {
-            $csvMockBuilder->addMethods(['getContent']);
-        }
+        $onlyMethods = ['__toString', 'insertOne', 'insertAll'];
         $csvMockBuilder->onlyMethods($onlyMethods);
         $csvMock = $csvMockBuilder->getMock();
 
+        $csvMock->method('insertOne')->willReturn(1);
+        $csvMock->method('insertAll')->willReturn(1);
+
         if ($blThrowException) {
-            $csvMock->expects($this->atLeastOnce())->method('getContent')->willThrowException(oxNew(Exception::class));
+            $csvMock->expects($this->atLeastOnce())->method('__toString')->willThrowException(oxNew(Exception::class));
             $this->expectException(RenderException::class);
         } else {
-            $csvMock->expects($this->atLeastOnce())->method('getContent')->willReturn($expected);
+            $csvMock->expects($this->atLeastOnce())->method('__toString')->willReturn($expected);
         }
-        $csvMock->expects($this->atLeastOnce())->method('insertOne')->with($fieldList)->willReturn(1);
-        $csvMock->expects($this->atLeastOnce())->method('insertAll')->with($valueList)->willReturn(1);
 
         /** @var Csv|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(Csv::class)
@@ -99,7 +96,7 @@ class CsvTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetCsv()
     {
@@ -115,7 +112,7 @@ class CsvTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetCsvNoSettings()
     {
@@ -165,7 +162,7 @@ class CsvTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::d3GetConfig
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetConfig()
     {

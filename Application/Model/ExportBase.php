@@ -25,6 +25,7 @@ use Doctrine\DBAL\DBALException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
+use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -94,7 +95,7 @@ abstract class ExportBase implements QueryBase
     /**
      * @return RendererBridge
      */
-    public function getRendererBridge()
+    public function getRendererBridge(): RendererBridge
     {
         return oxNew(RendererBridge::class);
     }
@@ -244,10 +245,10 @@ abstract class ExportBase implements QueryBase
     }
 
     /**
-     * @return \OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface|null
+     * @return DatabaseInterface|null
      * @throws DatabaseConnectionException
      */
-    protected function d3GetDb(): ?\OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface
+    protected function d3GetDb(): ?DatabaseInterface
     {
         return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
     }

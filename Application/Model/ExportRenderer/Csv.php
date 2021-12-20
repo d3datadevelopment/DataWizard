@@ -37,7 +37,7 @@ class Csv implements RendererInterface
             $csv = $this->getCsv();
             $csv->insertOne( $fieldNames );
             $csv->insertAll( $rows );
-            return method_exists($csv, 'getContent') ? $csv->getContent() : (string) $csv;
+            return (string) $csv;
         } catch (Exception $e) {
             /** @var RenderException $newException */
             $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
@@ -86,7 +86,7 @@ class Csv implements RendererInterface
     /**
      * @return Config
      */
-    public function d3GetConfig()
+    public function d3GetConfig(): Config
     {
         return Registry::getConfig();
     }

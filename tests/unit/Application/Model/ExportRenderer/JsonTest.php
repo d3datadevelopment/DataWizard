@@ -17,6 +17,7 @@ namespace D3\DataWizard\tests\unit\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\ExportRenderer\Json;
+use ReflectionException;
 
 class JsonTest extends ExportRendererTest
 {
@@ -33,7 +34,7 @@ class JsonTest extends ExportRendererTest
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Json::getContent
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @dataProvider canGetContentDataProvider
      */
     public function canGetContent($valueList, $expectException)

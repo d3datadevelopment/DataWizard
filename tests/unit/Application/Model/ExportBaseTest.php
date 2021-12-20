@@ -99,7 +99,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         );
     }
 
-    public function canGetHasFormElementsDataProvider()
+    public function canGetHasFormElementsDataProvider(): array
     {
         return [
             'hasFormElements'   => [['abc', 'def'], true],

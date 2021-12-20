@@ -21,6 +21,7 @@ use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class ConfigurationTest extends d3ModCfgUnitTestCase
 {
@@ -44,7 +45,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::__construct
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canConstruct()
     {
@@ -65,7 +66,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::configure()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canConfigure()
     {
@@ -80,7 +81,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::registerAction
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canRegisterAction()
     {
@@ -113,7 +114,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::registerExport
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canRegisterExport()
     {
@@ -166,7 +167,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getGroupedActions()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetGroupedActions()
     {
@@ -190,7 +191,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getGroupedExports()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetGroupedExports()
     {
@@ -214,7 +215,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getActionGroups()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetActionGroups()
     {
@@ -238,7 +239,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getExportGroups()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetExportGroups()
     {
@@ -262,7 +263,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getActionsByGroup()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetActionsByGroup()
     {
@@ -287,7 +288,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getExportsByGroup()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetExportsByGroup()
     {
@@ -312,7 +313,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getAllActions()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetAllActions()
     {
@@ -343,7 +344,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getAllExports()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetAllExports()
     {
@@ -374,7 +375,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getActionById()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @dataProvider canGetActionByIdDataProvider
      */
     public function canGetActionById($id, $throwException)
@@ -409,7 +410,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\Configuration::getExportById()
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @dataProvider canGetActionByIdDataProvider
      */
     public function canGetExportById($id, $throwException)

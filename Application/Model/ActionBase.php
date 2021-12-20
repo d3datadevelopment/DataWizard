@@ -95,7 +95,7 @@ abstract class ActionBase implements QueryBase
      * @return DatabaseInterface|null
      * @throws DatabaseConnectionException
      */
-    public function d3GetDb()
+    public function d3GetDb(): ?DatabaseInterface
     {
         return DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC );
     }

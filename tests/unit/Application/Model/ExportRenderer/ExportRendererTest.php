@@ -15,6 +15,7 @@ namespace D3\DataWizard\tests\unit\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
+use ReflectionException;
 
 abstract class ExportRendererTest extends d3ModCfgUnitTestCase
 {
@@ -33,7 +34,7 @@ abstract class ExportRendererTest extends d3ModCfgUnitTestCase
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Json::getFileExtension
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Pretty::getFileExtension
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetFileExtension()
     {
@@ -51,7 +52,7 @@ abstract class ExportRendererTest extends d3ModCfgUnitTestCase
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Json::getTitleTranslationId
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Pretty::getTitleTranslationId
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetTitleTranslationId()
     {

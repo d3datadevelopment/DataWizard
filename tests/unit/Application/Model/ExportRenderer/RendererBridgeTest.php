@@ -23,6 +23,7 @@ use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class RendererBridgeTest extends d3ModCfgUnitTestCase
 {
@@ -46,7 +47,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\RendererBridge::getRendererList
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetRendererList()
     {
@@ -62,7 +63,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\RendererBridge::getTranslatedRendererIdList
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canGetTranslatedRendererIdList()
     {
@@ -84,7 +85,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\RendererBridge::translateRendererId
      * @test
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function canTranslateRendererId()
     {
@@ -108,7 +109,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
      * @test
      * @param $format
      * @param $blThrowException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @dataProvider canGetRendererDataProvider
      */
     public function canGetRenderer($format, $blThrowException)

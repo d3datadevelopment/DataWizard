@@ -45,7 +45,7 @@ class d3ExportWizard extends AdminDetailsController
         $this->configuration = oxNew(Configuration::class);
     }
 
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->configuration->getExportGroups();
     }
@@ -101,7 +101,7 @@ class d3ExportWizard extends AdminDetailsController
     /**
      * @return Config
      */
-    public function d3GetConfig()
+    public function d3GetConfig(): Config
     {
         return Registry::getConfig();
     }
