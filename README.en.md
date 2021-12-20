@@ -18,7 +18,7 @@ Sample exports are included in the package d3/datawizardtasks. These are intende
 In the console in the shop root (above source and vendor), execute the following command:
 
 ```bash
-php composer require d3/datawizard
+php composer require d3/datawizard:^1.0
 ``` 
 
 Activate the module in the admin area of the shop in "Extensions -> Modules".

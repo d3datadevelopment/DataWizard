@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0.0 (2021-12-20)
+
+#### Added
+- add tests
+
+#### Changed
+- restrict dependencies to OXID 6.2, use 2.x for newer installations
+
+---
+
 ## 1.4.0.0 (2021-11-11)
 
 #### Added
