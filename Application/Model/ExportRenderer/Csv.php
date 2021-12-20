@@ -19,6 +19,7 @@ use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use League\Csv\EncloseField;
 use League\Csv\Exception;
 use League\Csv\Writer;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 
 class Csv implements RendererInterface
@@ -59,13 +60,13 @@ class Csv implements RendererInterface
 
         EncloseField::addTo($csv, "\t\x1f");
 
-        $sEncloser = Registry::getConfig()->getConfigParam('sGiCsvFieldEncloser');
+        $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser');
         if (false == $sEncloser) {
             $sEncloser = '"';
         }
         $csv->setEnclosure($sEncloser);
 
-        $sDelimiter = Registry::getConfig()->getConfigParam('sCSVSign');
+        $sDelimiter = $this->d3GetConfig()->getConfigParam('sCSVSign');
         if (false == $sDelimiter) {
             $sDelimiter = ';';
         }
@@ -80,5 +81,13 @@ class Csv implements RendererInterface
     public function getTitleTranslationId(): string
     {
         return 'D3_DATAWIZARD_EXPORT_FORMAT_CSV';
+    }
+
+    /**
+     * @return Config
+     */
+    public function d3GetConfig()
+    {
+        return Registry::getConfig();
     }
 }

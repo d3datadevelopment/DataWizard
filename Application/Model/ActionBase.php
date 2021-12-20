@@ -19,6 +19,7 @@ use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
+use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
@@ -76,7 +77,7 @@ abstract class ActionBase implements QueryBase
             );
         }
 
-        $affected = DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC )->execute( $queryString, $parameters );
+        $affected = $this->d3GetDb()->execute( $queryString, $parameters );
 
         throw oxNew(
             Exceptions\TaskException::class,
@@ -88,6 +89,15 @@ abstract class ActionBase implements QueryBase
                 $affected
             )
         );
+    }
+
+    /**
+     * @return DatabaseInterface|null
+     * @throws DatabaseConnectionException
+     */
+    public function d3GetDb()
+    {
+        return DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC );
     }
 
     /**
@@ -103,15 +113,12 @@ abstract class ActionBase implements QueryBase
      */
     public function registerFormElement(Input $input)
     {
-        switch (get_class($input)) {
-            case Radio::class:
-            case Checkbox::class:
-                $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
-                $input->setAttribute('class', 'form-check-input');
-                break;
-            default:
-                $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
-                $input->setAttribute('class', 'form-control');
+        if ($input instanceof Radio || $input instanceof Checkbox) {
+            $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
+            $input->setAttribute('class', 'form-check-input');
+        } else {
+            $input->setTemplate('<p class="formElements">{{ label }} {{ input }}</p>');
+            $input->setAttribute('class', 'form-control');
         }
         $this->formElements[] = $input;
     }
