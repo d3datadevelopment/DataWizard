@@ -18,7 +18,7 @@ Im Paket d3/datawizardtasks sind Beispielexporte enthalten. Diese sollen als Imp
 Auf der Konsole im Shoproot (oberhalb von source und vendor) folgenden Befehl ausführen:
 
 ```bash
-php composer require d3/datawizard
+php composer require d3/datawizard:^2.0
 ``` 
 
 Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".

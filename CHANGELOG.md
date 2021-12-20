@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0.0
+
+#### Added
+- add tests
+- make installable in OXID 6.4
+
+#### Changed
+- adjust code to PHP 7.3 and up
+
+---
+
 ## 1.4.0.0 (2021-11-11)
 
 #### Added
