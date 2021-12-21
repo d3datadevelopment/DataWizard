@@ -1,11 +1,12 @@
 # Changelog
 
-## 1.5.0.0 (2021-12-20)
+## 1.5.0.0 (2021-12-21)
 
 #### Added
 - add tests
 
 #### Changed
+- adjust to CLI extension which can export to STDOUT
 - restrict dependencies to OXID 6.2, use 2.x for newer installations
 
 ---
