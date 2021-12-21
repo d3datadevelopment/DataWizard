@@ -224,9 +224,7 @@ abstract class ExportBase implements QueryBase
      */
     protected function executeExport(string $format, $path): string
     {
-        [$rows, $fieldNames] = $this->getExportData($this->getQuery());
-
-        $content = $this->renderContent($rows, $fieldNames, $format);
+        $content = $this->getContent( $format );
 
         /** @var $oFS d3filesystem */
         $oFS = $this->getFileSystem();
@@ -258,5 +256,22 @@ abstract class ExportBase implements QueryBase
     protected function getFileSystem()
     {
         return oxNew(d3filesystem::class);
+    }
+
+    /**
+     * @param string $format
+     *
+     * @return string
+     * @throws DatabaseConnectionException
+     * @throws DatabaseErrorException
+     * @throws Exceptions\NoSuitableRendererException
+     */
+    public function getContent( string $format ): string
+    {
+        [ $rows, $fieldNames ] = $this->getExportData( $this->getQuery() );
+
+        $content = $this->renderContent( $rows, $fieldNames, $format );
+
+        return $content;
     }
 }

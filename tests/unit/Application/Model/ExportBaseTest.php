@@ -285,16 +285,12 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'getQuery',
-                'getExportData',
-                'renderContent',
+                'getContent',
                 'getFileSystem',
                 'getExportFileName'
             ])
             ->getMock();
-        $modelMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['arg1', 'arg2']]);
-        $modelMock->expects($this->atLeastOnce())->method('getExportData')->willReturn([[1, 2], ['field1', 'field2']]);
-        $modelMock->expects($this->atLeastOnce())->method('renderContent')->willReturn('some content');
+        $modelMock->expects($this->atLeastOnce())->method('getContent')->willReturn('some content');
         $modelMock->expects($this->atLeastOnce())->method('getFileSystem')->willReturn($fsMock);
         $modelMock->expects($this->atLeastOnce())->method('getExportFileName')->willReturn('exportFileName');
 
@@ -603,5 +599,36 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             'empty SELECT'   => [' SELECT 1', false, []],
             'fulfilled SELECT'   => [' SELECT 1', false, [['field1' => 'content1', 'field2' => 'content2']]],
         ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getContent
+     * @test
+     * @throws ReflectionException
+     */
+    public function canGetContent()
+    {
+        /** @var d3TestExport|MockObject $modelMock */
+        $modelMock = $this->getMockBuilder(d3TestExport::class)
+        ->onlyMethods([
+            'getQuery',
+            'getExportData',
+            'renderContent'
+        ])
+        ->getMock();
+        $modelMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['arg1', 'arg2']]);
+        $modelMock->expects($this->atLeastOnce())->method('getExportData')->willReturn([[1, 2], ['field1', 'field2']]);
+        $modelMock->expects($this->atLeastOnce())->method('renderContent')->willReturn('some content');
+
+        $this->_oModel = $modelMock;
+
+        $this->assertSame(
+            'some content',
+            $this->callMethod(
+                $this->_oModel,
+                'getContent',
+                ['CSV']
+            )
+        );
     }
 }
