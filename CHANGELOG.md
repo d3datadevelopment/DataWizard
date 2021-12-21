@@ -1,6 +1,13 @@
 # Changelog
 
-## 2.0.0.0
+## 2.1.0.0 (2021-12-21)
+
+#### Changed
+- adjust to CLI extension which can export to STDOUT
+
+---
+
+## 2.0.0.0 (2021-12-20)
 
 #### Added
 - add tests
