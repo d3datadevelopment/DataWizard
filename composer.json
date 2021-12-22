@@ -29,7 +29,8 @@
     "oxid-esales/oxideshop-ce": "6.8 - 6.10",
     "league/csv": "^9.0",
     "mathieuviossat/arraytotexttable": "^1.0",
-    "form-manager/form-manager": "^6.1"
+    "form-manager/form-manager": "^6.1",
+    "d3/modcfg": "^6.0"
   },
   "extra": {
     "oxideshop": {
