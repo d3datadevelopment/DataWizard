@@ -9,19 +9,39 @@ Die Exporte werden über Datenbankabfragen oder fertige Datenlisten definiert. E
 
 Alle Exporte bzw. Tasks sind für eine bessere Übersichtlichkeit in Gruppen zusammengefasst.
 
-Im Paket d3/datawizardtasks sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen.
+Im Paket `d3/datawizardtasks` sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen.
 
 ![Adminbereich](assets/administration_exports.jpg "Adminbereich")
 
-## Schnellinstallation
+## Inhaltsverzeichnis
 
-Auf der Konsole im Shoproot (oberhalb von source und vendor) folgenden Befehl ausführen:
+- [Installation](#installation)
+- [Verwendung](#verwendung)
+- [Erweiterbarkeit](#erweiterbarkeit)
+    - [Erweiterungspakete](#erweiterungspakete)
+- [Changelog](#changelog)
+- [Beitragen](#beitragen)
+- [Lizenz](#lizenz)
+- [weitere Lizenzen und Nutzungsbedingungen](#weitere-lizenzen-und-nutzungsbedingungen)
+
+## Installation
+
+Dieses Paket erfordert einen mit Composer installierten OXID eShop in einer in der [composer.json](composer.json) definierten Version.
+
+Öffnen Sie eine Kommandozeile und navigieren Sie zum Stammverzeichnis des Shops (Elternverzeichnis von source und vendor). Führen Sie den folgenden Befehl aus. Passen Sie die Pfadangaben an Ihre Installationsumgebung an.
+
 
 ```bash
 php composer require d3/datawizard:^2.0
 ``` 
 
 Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".
+
+## Verwendung
+
+Dieses Paket enthält keine Exporte oder Aktionen. In [Erweiterungspakete](#erweiterungspakete) finden Sie installierbare Beispieleinträge.
+
+Melden Sie sich im Adminbereich Ihres Shops an und navigieren Sie zu "D³ Module -> Data Wizard". Wechseln Sie je nach Wunsch zu "Exporte" oder "Aktionen". Wählen Sie den gewünschten Eintrag und starten Sie den Export bzw. die Aktion.
 
 ## Erweiterbarkeit
 
@@ -33,7 +53,7 @@ Das Modul stellt das technische Grundgerüst der Exporte dar und erhebt keinen A
 
 Unabhängig dessen stehen alle Erweiterungsmöglichkeiten zur Verfügung, die der OXID Shop für Module bereitstellt.
 
-## Erweiterungspakete
+### Erweiterungspakete
 
 - `d3/datawizardtasks` - liefert Beispielexporte und deren Implementierungsreferenz
 - `d3/datawizardcli` - ermöglicht die Ausführung der Exporte oder Tasks über die Eingabeaufforderung (z.B. als Cronjobs)
@@ -43,8 +63,20 @@ Unabhängig dessen stehen alle Erweiterungsmöglichkeiten zur Verfügung, die de
 
 Siehe [CHANGELOG](CHANGELOG.md) für weitere Informationen.
 
-## Lizenz dieser Software (d3/datawizard)
+## Beitragen
+
+Wenn Sie eine Verbesserungsvorschlag haben, legen Sie einen Fork des Respoitories an und erstellen Sie einen Pull Request. Alternativ können Sie einfach ein Issue erstellen. Fügen Sie das Projekt zu Ihren Favoriten hinzu. Vielen Dank.
+
+- Erstellen Sie einen Fork des Projekts
+- Erstellen Sie einen Feature Branch (git checkout -b feature/AmazingFeature)
+- Fügen Sie Ihre Änderungen hinzu (git commit -m 'Add some AmazingFeature')
+- Übertragen Sie den Branch (git push origin feature/AmazingFeature)
+- Öffnen Sie einen Pull Request
+
+## Lizenz
 (Stand: 06.05.2021)
+
+Vertrieben unter der GPLv3 Lizenz.
 
 ```
 Copyright (c) D3 Data Development (Inh. Thomas Dartsch)

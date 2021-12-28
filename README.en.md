@@ -9,19 +9,38 @@ The exports are defined via database queries or ready-made data lists. Various e
 
 All exports and tasks are grouped together for better clarity.
 
-Sample exports are included in the package d3/datawizardtasks. These are intended to serve as an implementation reference for individual exports.
+Sample exports are included in the package `d3/datawizardtasks`. These are intended to serve as an implementation reference for individual exports.
 
 ![administration area](assets/administration_exports.jpg "administration area")
 
+## Table of content
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Extensibility](#extensibility)
+    - [Extension packages](#extension-packages)
+- [Changelog](#changelog)
+- [Contributing](#contributing)
+- [License](#license)
+- [Further licences and terms of use](#further-licences-and-terms-of-use)
+
 ## Installation
 
-In the console in the shop root (above source and vendor), execute the following command:
+This package requires an Composer installed OXID eShop as defined in [composer.json](composer.json).
+
+Open a command line interface and navigate to the shop root directory (parent of source and vendor). Execute the following command. Adapt the paths to your environment.
 
 ```bash
 php composer require d3/datawizard:^2.0
 ``` 
 
 Activate the module in the admin area of the shop in "Extensions -> Modules".
+
+## Usage
+
+These package doesn't contain any export or action items. See [Extension packages](#extension_packages) for installable example items.
+
+Log in to the admin area of your shop and navigate to "D³ Modules -> Data Wizard". Go to "Exports" or "Actions" (as desired). Choose your desired item and export or execute it.
 
 ## Extensibility
 
@@ -33,7 +52,7 @@ The module represents the technical basic framework of the exports and does not 
 
 Independently of this, all extension options are available that the OXID Shop provides for modules.
 
-## Extension packages
+### Extension packages
 
 - `d3/datawizardtasks` - provides sample exports and their implementation reference
 - `d3/datawizardcli` - provides the execution of exports or tasks via the command prompt (e.g. as cronjobs)
@@ -43,8 +62,20 @@ Independently of this, all extension options are available that the OXID Shop pr
 
 See [CHANGELOG](CHANGELOG.md) for further informations.
 
-## Licence of this software (d3/datawizard)
+## Contributing
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue. Don't forget to give the project a star! Thanks again!
+
+- Fork the Project
+- Create your Feature Branch (git checkout -b feature/AmazingFeature)
+- Commit your Changes (git commit -m 'Add some AmazingFeature')
+- Push to the Branch (git push origin feature/AmazingFeature)
+- Open a Pull Request
+
+## Licence
 (status: 2021-05-06)
+
+Distributed under the GPLv3 license.
 
 ```
 Copyright (c) D3 Data Development (Inh. Thomas Dartsch)
