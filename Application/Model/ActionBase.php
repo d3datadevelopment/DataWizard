@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -33,7 +33,7 @@ abstract class ActionBase implements QueryBase
      * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return '';
     }
@@ -53,7 +53,7 @@ abstract class ActionBase implements QueryBase
             }
         }
 
-        $this->executeAction( $this->getQuery() );
+        $this->executeAction($this->getQuery());
     }
 
     /**
@@ -63,21 +63,21 @@ abstract class ActionBase implements QueryBase
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
      */
-    public function executeAction( array $query ): int
+    public function executeAction(array $query): int
     {
         [ $queryString, $parameters ] = $query;
 
         $queryString = trim($queryString);
 
-        if ( strtolower( substr( $queryString, 0, 6 ) ) === 'select' ) {
+        if (strtolower(substr($queryString, 0, 6)) === 'select') {
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_ACTIONSELECT' )
+                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_ACTIONSELECT')
             );
         }
 
-        $affected = $this->d3GetDb()->execute( $queryString, $parameters );
+        $affected = $this->d3GetDb()->execute($queryString, $parameters);
 
         throw oxNew(
             Exceptions\TaskException::class,
@@ -97,13 +97,13 @@ abstract class ActionBase implements QueryBase
      */
     public function d3GetDb(): ?DatabaseInterface
     {
-        return DatabaseProvider::getDb( DatabaseProvider::FETCH_MODE_ASSOC );
+        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
     }
 
     /**
      * @return string
      */
-    public function getButtonText() : string
+    public function getButtonText(): string
     {
         return "D3_DATAWIZARD_ACTION_SUBMIT";
     }

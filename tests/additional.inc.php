@@ -12,6 +12,7 @@
  */
 
 // Include datawizard test config
+
 namespace D3\DataWizard\tests;
 
 use D3\ModCfg\Tests\additional_abstract;
@@ -36,4 +37,5 @@ class additional extends additional_abstract
 
 try {
     d3GetModCfgDIC()->get(additional::class);
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}

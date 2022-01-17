@@ -34,7 +34,7 @@ class d3ExportWizardTest extends d3AdminControllerTest
 
     protected $testClassName = d3ExportWizard::class;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -100,7 +100,7 @@ class d3ExportWizardTest extends d3AdminControllerTest
     {
         return [
             ['test1'],
-            ['test2']
+            ['test2'],
         ];
     }
 
@@ -146,7 +146,7 @@ class d3ExportWizardTest extends d3AdminControllerTest
         $exportMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
                 'getQuery',
-                'run'
+                'run',
             ])
             ->getMock();
         $exportMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);

@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -32,7 +32,7 @@ class InputUnvalidException extends DataWizardException
      * @param Exception|null $previous
      * @throws Exception
      */
-    public function __construct( QueryBase $task, Input $inputElement, $iCode = 0, Exception $previous = null )
+    public function __construct(QueryBase $task, Input $inputElement, $iCode = 0, Exception $previous = null)
     {
         $messages = [];
         foreach ($inputElement->getError()->getIterator() as $item) {
@@ -43,10 +43,10 @@ class InputUnvalidException extends DataWizardException
             ' - ',
             [
                 $task->getTitle(),
-                implode(', ', $messages)
+                implode(', ', $messages),
             ]
         );
-        parent::__construct( $sMessage, $iCode, $previous );
+        parent::__construct($sMessage, $iCode, $previous);
 
         $this->task = $task;
     }

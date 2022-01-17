@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -25,7 +25,7 @@ class Pretty implements RendererInterface
      *
      * @return string
      */
-    public function getContent($rows, $fieldNames) : string
+    public function getContent($rows, $fieldNames): string
     {
         $renderer = $this->getArrayToTextTableInstance($rows);
         return $renderer->getTable();

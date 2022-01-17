@@ -33,7 +33,7 @@ class d3ActionWizardTest extends d3AdminControllerTest
 
     protected $testClassName = d3ActionWizard::class;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -99,7 +99,7 @@ class d3ActionWizardTest extends d3AdminControllerTest
     {
         return [
             ['test1'],
-            ['test2']
+            ['test2'],
         ];
     }
 
@@ -144,7 +144,7 @@ class d3ActionWizardTest extends d3AdminControllerTest
         $actionMock = $this->getMockBuilder(d3TestAction::class)
             ->onlyMethods([
                 'getQuery',
-                'run'
+                'run',
             ])
             ->getMock();
         $actionMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);

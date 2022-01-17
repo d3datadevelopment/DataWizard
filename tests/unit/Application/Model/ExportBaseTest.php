@@ -36,14 +36,14 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     /** @var d3TestExport */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->_oModel = oxNew(d3TestExport::class);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -140,7 +140,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $inputMock = $this->getMockBuilder($inputClass)
             ->onlyMethods([
                 'setTemplate',
-                'setAttribute'
+                'setAttribute',
             ])
             ->getMock();
         $inputMock->expects($this->atLeastOnce())->method('setTemplate');
@@ -165,7 +165,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         return [
             'Radio' => [Radio::class],
             'Checkbox' => [Radio::class],
-            'Hidden' => [Hidden::class]
+            'Hidden' => [Hidden::class],
         ];
     }
 
@@ -183,7 +183,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
                 'hasFormElements',
-                'executeExport'
+                'executeExport',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(false);
@@ -214,7 +214,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             ->onlyMethods([
                 'hasFormElements',
                 'executeExport',
-                'getFormElements'
+                'getFormElements',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(true);
@@ -256,7 +256,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
 
         return [
             'validElements' => [[$validMock, $validMock], false],
-            'invalidElements' => [[$validMock, $invalidField], true]
+            'invalidElements' => [[$validMock, $invalidField], true],
         ];
     }
 
@@ -274,7 +274,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
                 'startDirectDownload',
                 'filterFilename',
                 'trailingslashit',
-                'createFile'
+                'createFile',
             ])
             ->getMock();
         $fsMock->expects($this->exactly((int) !isset($path)))->method('startDirectDownload')->willReturn(true);
@@ -287,7 +287,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             ->onlyMethods([
                 'getContent',
                 'getFileSystem',
-                'getExportFileName'
+                'getExportFileName',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getContent')->willReturn('some content');
@@ -371,7 +371,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'getRendererBridge'
+                'getRendererBridge',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getRendererBridge')->willReturn($rendererBridgeMock);
@@ -425,7 +425,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'getRenderer'
+                'getRenderer',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getRenderer')->with($format)->willReturn($rendererMock);
@@ -463,7 +463,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'getRenderer'
+                'getRenderer',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getRenderer')->with($format)->willReturn($rendererMock);
@@ -490,7 +490,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'getTitle'
+                'getTitle',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getTitle')->willReturn('someTitle');
@@ -516,7 +516,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
                 'getExportFilenameBase',
-                'getFileExtension'
+                'getFileExtension',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getExportFilenameBase')->willReturn('base');
@@ -551,7 +551,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'd3GetDb'
+                'd3GetDb',
             ])
             ->getMock();
         $modelMock->expects($this->exactly((int) !$throwsException))->method('d3GetDb')->willReturn($dbMock);
@@ -570,13 +570,13 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
                     [
                         [
                             'field1'    => 'content1',
-                            'field2'    => 'content2'
-                        ]
+                            'field2'    => 'content2',
+                        ],
                     ],
                     [
                         'field1',
-                        'field2'
-                    ]
+                        'field2',
+                    ],
                 ],
                 $result
             );
@@ -613,7 +613,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         ->onlyMethods([
             'getQuery',
             'getExportData',
-            'renderContent'
+            'renderContent',
         ])
         ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['arg1', 'arg2']]);

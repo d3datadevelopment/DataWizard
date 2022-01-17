@@ -29,7 +29,7 @@ class CsvTest extends ExportRendererTest
     /** @var Csv */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +49,7 @@ class CsvTest extends ExportRendererTest
         $valueList = ['value1', 'value2'];
 
         /** @var Writer|MockObject $csvMock */
-        $csvMockBuilder = $this->getMockBuilder( Writer::class);
+        $csvMockBuilder = $this->getMockBuilder(Writer::class);
         $csvMockBuilder->disableOriginalConstructor();
         $onlyMethods = ['__toString', 'insertOne', 'insertAll'];
         $csvMockBuilder->onlyMethods($onlyMethods);
@@ -89,7 +89,7 @@ class CsvTest extends ExportRendererTest
     {
         return [
             'exception' => [true],
-            'no exception' => [false]
+            'no exception' => [false],
         ];
     }
 

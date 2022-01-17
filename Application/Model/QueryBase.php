@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -25,23 +25,23 @@ interface QueryBase
      * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
-    public function getTitle() : string;
+    public function getTitle(): string;
 
     /**
      * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
-    public function getDescription() : string;
+    public function getDescription(): string;
 
     /**
      * @return string
      */
-    public function getButtonText() : string;
+    public function getButtonText(): string;
 
     /**
      * @return array [string $query, array $parameters]
      */
-    public function getQuery() : array;
+    public function getQuery(): array;
 
     /**
      * @param Input $input

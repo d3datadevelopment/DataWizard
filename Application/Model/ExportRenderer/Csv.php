@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -35,12 +35,12 @@ class Csv implements RendererInterface
     {
         try {
             $csv = $this->getCsv();
-            $csv->insertOne( $fieldNames );
-            $csv->insertAll( $rows );
+            $csv->insertOne($fieldNames);
+            $csv->insertAll($rows);
             return (string) $csv;
         } catch (Exception $e) {
             /** @var RenderException $newException */
-            $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e );
+            $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e);
             throw $newException;
         }
     }

@@ -24,7 +24,7 @@ class JsonTest extends ExportRendererTest
     /** @var Json */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -61,7 +61,7 @@ class JsonTest extends ExportRendererTest
     {
         return [
             'valid' => [['value1', 'value2'], false],
-            'invalid'   => [["text" => "\xB1\x31"], true]  // malformed UTF8 chars
+            'invalid'   => [["text" => "\xB1\x31"], true],  // malformed UTF8 chars
         ];
     }
 }

@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -40,11 +40,11 @@ abstract class ExportBase implements QueryBase
      * Ensure that the translations are equally available in the frontend and the backend
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return '';
     }
-    
+
     /**
      * @param string $format
      * @param $path
@@ -59,7 +59,7 @@ abstract class ExportBase implements QueryBase
      * @throws d3_cfg_mod_exception
      * @return string
      */
-    public function run( string $format = RendererBridge::FORMAT_CSV, $path = null): string
+    public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
     {
         if ($this->hasFormElements()) {
             /** @var Input $element */
@@ -76,7 +76,7 @@ abstract class ExportBase implements QueryBase
     /**
      * @return string
      */
-    public function getButtonText() : string
+    public function getButtonText(): string
     {
         return "D3_DATAWIZARD_EXPORT_SUBMIT";
     }
@@ -128,7 +128,7 @@ abstract class ExportBase implements QueryBase
     /**
      * @return string
      */
-    public function getExportFilenameBase() : string
+    public function getExportFilenameBase(): string
     {
         return $this->getTitle();
     }
@@ -139,7 +139,7 @@ abstract class ExportBase implements QueryBase
      * @return string
      * @throws Exceptions\NoSuitableRendererException
      */
-    public function getExportFileName($format) : string
+    public function getExportFileName($format): string
     {
         return $this->getExportFilenameBase().'_'.date('Y-m-d_H-i-s').'.'.$this->getFileExtension($format);
     }
@@ -151,31 +151,31 @@ abstract class ExportBase implements QueryBase
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
      */
-    public function getExportData( array $query ): array
+    public function getExportData(array $query): array
     {
         [ $queryString, $parameters ] = $query;
 
         $queryString = trim($queryString);
 
-        if ( strtolower( substr( $queryString, 0, 6 ) ) !== 'select' ) {
+        if (strtolower(substr($queryString, 0, 6)) !== 'select') {
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTSELECT' )
+                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
             );
         }
 
-        $rows = $this->d3GetDb()->getAll( $queryString, $parameters );
+        $rows = $this->d3GetDb()->getAll($queryString, $parameters);
 
-        if ( count( $rows ) <= 0 ) {
+        if (count($rows) <= 0) {
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString( 'D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true )
+                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
             );
         }
 
-        $fieldNames = array_keys( $rows[0] );
+        $fieldNames = array_keys($rows[0]);
 
         return [ $rows, $fieldNames ];
     }
@@ -225,7 +225,7 @@ abstract class ExportBase implements QueryBase
      */
     protected function executeExport(string $format, $path): string
     {
-        $content = $this->getContent( $format );
+        $content = $this->getContent($format);
 
         /** @var $oFS d3filesystem */
         $oFS = $this->getFileSystem();
@@ -267,11 +267,11 @@ abstract class ExportBase implements QueryBase
      * @throws DatabaseErrorException
      * @throws Exceptions\NoSuitableRendererException
      */
-    public function getContent( string $format ): string
+    public function getContent(string $format): string
     {
-        [ $rows, $fieldNames ] = $this->getExportData( $this->getQuery() );
+        [ $rows, $fieldNames ] = $this->getExportData($this->getQuery());
 
-        $content = $this->renderContent( $rows, $fieldNames, $format );
+        $content = $this->renderContent($rows, $fieldNames, $format);
 
         return $content;
     }

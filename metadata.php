@@ -38,7 +38,7 @@ $aModule = [
     'url'         => 'https://www.oxidmodule.com/',
     'controllers' => [
         'd3ExportWizard'            => D3\DataWizard\Application\Controller\Admin\d3ExportWizard::class,
-        'd3ActionWizard'            => D3\DataWizard\Application\Controller\Admin\d3ActionWizard::class
+        'd3ActionWizard'            => D3\DataWizard\Application\Controller\Admin\d3ActionWizard::class,
     ],
     'extend'      => [],
     'events'      => [],
@@ -54,8 +54,8 @@ $aModule = [
             'group'     => $sModuleId.'_general',
             'name'      => $sModuleId.'_debug',
             'type'      => 'bool',
-            'value'     => false
-        ]
+            'value'     => false,
+        ],
     ],
-    'blocks'      => []
+    'blocks'      => [],
 ];

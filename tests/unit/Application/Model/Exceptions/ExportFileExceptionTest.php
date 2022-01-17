@@ -35,7 +35,7 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
     {
         $code = '500';
 
-        $exception = oxNew( Exception::class);
+        $exception = oxNew(Exception::class);
 
         /** @var ExportFileException|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(ExportFileException::class)
@@ -74,5 +74,4 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
             )
         );
     }
-
 }

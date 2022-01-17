@@ -25,7 +25,7 @@ class PrettyTest extends ExportRendererTest
     /** @var Pretty */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -17,7 +17,7 @@ $sLangName = "Deutsch";
 // -------------------------------
 // RESOURCE IDENTITFIER = STRING
 // -------------------------------
-$aLang = array(
+$aLang = [
 
 //Navigation
     'charset'                                         => 'UTF-8',
@@ -55,4 +55,4 @@ $aLang = array(
     'D3_DATAWIZARD_ERR_NOACTION_INSTALLED'            => 'Es sind keine Aktionen installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
     'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',
-);
+];

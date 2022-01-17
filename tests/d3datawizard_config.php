@@ -12,4 +12,3 @@
  */
 
 const D3DATAWIZARD_REQUIRE_MODCFG = true;
-

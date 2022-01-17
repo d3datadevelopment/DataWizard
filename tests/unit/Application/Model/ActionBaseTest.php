@@ -31,14 +31,14 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
     /** @var d3TestAction */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->_oModel = oxNew(d3TestAction::class);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -135,7 +135,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
         $inputMock = $this->getMockBuilder($inputClass)
             ->onlyMethods([
                 'setTemplate',
-                'setAttribute'
+                'setAttribute',
             ])
             ->getMock();
         $inputMock->expects($this->atLeastOnce())->method('setTemplate');
@@ -160,7 +160,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
         return [
             'Radio' => [Radio::class],
             'Checkbox' => [Radio::class],
-            'Hidden' => [Hidden::class]
+            'Hidden' => [Hidden::class],
         ];
     }
 
@@ -175,7 +175,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
             ->onlyMethods([
                 'hasFormElements',
                 'executeAction',
-                'getQuery'
+                'getQuery',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(false);
@@ -204,7 +204,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
                 'hasFormElements',
                 'executeAction',
                 'getQuery',
-                'getFormElements'
+                'getFormElements',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(true);
@@ -246,7 +246,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
 
         return [
             'validElements' => [[$validMock, $validMock], false],
-            'invalidElements' => [[$validMock, $invalidField], true]
+            'invalidElements' => [[$validMock, $invalidField], true],
         ];
     }
 

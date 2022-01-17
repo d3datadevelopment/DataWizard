@@ -35,7 +35,7 @@ class DebugExceptionTest extends d3ModCfgUnitTestCase
     {
         $code = '500';
 
-        $exception = oxNew( Exception::class);
+        $exception = oxNew(Exception::class);
 
         /** @var DebugException|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(DebugException::class)
@@ -74,5 +74,4 @@ class DebugExceptionTest extends d3ModCfgUnitTestCase
             )
         );
     }
-
 }

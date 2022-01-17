@@ -28,14 +28,14 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     /** @var Configuration */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->_oModel = oxNew(Configuration::class);
     }
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -148,16 +148,16 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
      * @param $array
      * @return array|false
      */
-    public function array_flatten($array) {
+    public function array_flatten($array)
+    {
         if (!is_array($array)) {
             return false;
         }
-        $result = array();
+        $result = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $result = array_merge($result, $this->array_flatten($value));
-            }
-            else {
+            } else {
                 $result[$key] = $value;
             }
         }
@@ -321,7 +321,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
         $modelMock = $this->getMockBuilder(Configuration::class)
             ->onlyMethods([
                 'getActionGroups',
-                'getActionsByGroup'
+                'getActionsByGroup',
             ])
             ->getMock();
         $modelMock->expects($this->once())->method('getActionGroups')->willReturn(['123', '456']);
@@ -352,7 +352,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
         $modelMock = $this->getMockBuilder(Configuration::class)
             ->onlyMethods([
                 'getExportGroups',
-                'getExportsByGroup'
+                'getExportsByGroup',
             ])
             ->getMock();
         $modelMock->expects($this->once())->method('getExportGroups')->willReturn(['123', '456']);

@@ -37,7 +37,7 @@ class TaskExceptionTest extends d3ModCfgUnitTestCase
     {
         $code = '500';
 
-        $exception = oxNew( Exception::class);
+        $exception = oxNew(Exception::class);
 
         /** @var ExportBase|MockObject $taskMock */
         $taskMock = $this->getMockBuilder(d3TestExport::class)
@@ -82,5 +82,4 @@ class TaskExceptionTest extends d3ModCfgUnitTestCase
             )
         );
     }
-
 }

@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -19,13 +19,13 @@ use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 
 class Configuration
 {
-    const GROUP_SHOP     = 'D3_DATAWIZARD_GROUP_SHOP';
-    const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
-    const GROUP_ARTICLES = 'D3_DATAWIZARD_GROUP_ARTICLES';
-    const GROUP_USERS    = 'D3_DATAWIZARD_GROUP_USERS';
-    const GROUP_ORDERS   = 'D3_DATAWIZARD_GROUP_ORDERS';
-    const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
-    const GROUP_CMS      = 'D3_DATAWIZARD_GROUP_CMS';
+    public const GROUP_SHOP     = 'D3_DATAWIZARD_GROUP_SHOP';
+    public const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
+    public const GROUP_ARTICLES = 'D3_DATAWIZARD_GROUP_ARTICLES';
+    public const GROUP_USERS    = 'D3_DATAWIZARD_GROUP_USERS';
+    public const GROUP_ORDERS   = 'D3_DATAWIZARD_GROUP_ORDERS';
+    public const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
+    public const GROUP_CMS      = 'D3_DATAWIZARD_GROUP_CMS';
 
     protected $actions = [];
     protected $exports = [];
@@ -113,7 +113,7 @@ class Configuration
     /**
      * @return array
      */
-    public function getAllActions() : array
+    public function getAllActions(): array
     {
         $all = [];
 
@@ -127,7 +127,7 @@ class Configuration
     /**
      * @return array
      */
-    public function getAllExports() : array
+    public function getAllExports(): array
     {
         $all = [];
 
@@ -143,7 +143,7 @@ class Configuration
      *
      * @return ActionBase
      */
-    public function getActionById($id) : ActionBase
+    public function getActionById($id): ActionBase
     {
         $allActions = $this->getAllActions();
 
@@ -159,7 +159,7 @@ class Configuration
      *
      * @return ExportBase
      */
-    public function getExportById($id) : ExportBase
+    public function getExportById($id): ExportBase
     {
         $allExports = $this->getAllExports();
 

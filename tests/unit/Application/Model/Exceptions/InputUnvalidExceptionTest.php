@@ -38,7 +38,7 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
     {
         $code = '500';
 
-        $exception = oxNew( Exception::class);
+        $exception = oxNew(Exception::class);
 
         $invalidField = new Number(null, [
             'required' => true,
@@ -93,5 +93,4 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
             )
         );
     }
-
 }

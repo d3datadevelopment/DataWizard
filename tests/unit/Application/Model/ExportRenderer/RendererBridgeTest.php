@@ -30,7 +30,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     /** @var RendererBridge */
     protected $_oModel;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -122,7 +122,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
             [
                 'CSV' => $this->getMockBuilder(Csv::class)->getMock(),
                 'Pretty' => $this->getMockBuilder(Pretty::class)->getMock(),
-                'JSON' => $this->getMockBuilder(Json::class)->getMock()
+                'JSON' => $this->getMockBuilder(Json::class)->getMock(),
             ]
         );
 
@@ -146,7 +146,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     {
         return [
             'existing renderer'=> [RendererBridge::FORMAT_JSON, false],
-            'unknown renderer'=> ['unknownRenderer', true]
+            'unknown renderer'=> ['unknownRenderer', true],
         ];
     }
 }

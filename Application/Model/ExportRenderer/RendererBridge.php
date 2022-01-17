@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -19,9 +19,9 @@ use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
 
 class RendererBridge
 {
-    const FORMAT_CSV    = 'CSV';
-    const FORMAT_PRETTY = 'Pretty';
-    const FORMAT_JSON   = 'JSON';
+    public const FORMAT_CSV    = 'CSV';
+    public const FORMAT_PRETTY = 'Pretty';
+    public const FORMAT_JSON   = 'JSON';
 
     /**
      * @return array
@@ -31,7 +31,7 @@ class RendererBridge
         return [
             self::FORMAT_CSV    => oxNew(Csv::class),
             self::FORMAT_PRETTY => oxNew(Pretty::class),
-            self::FORMAT_JSON   => oxNew(Json::class)
+            self::FORMAT_JSON   => oxNew(Json::class),
         ];
     }
 

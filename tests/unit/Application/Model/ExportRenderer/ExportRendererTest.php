@@ -22,7 +22,7 @@ abstract class ExportRendererTest extends d3ModCfgUnitTestCase
     /** @var RendererInterface */
     protected $_oModel;
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         parent::tearDown();
 

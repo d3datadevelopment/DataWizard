@@ -39,7 +39,7 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
 
     protected $testClassName;
 
-    public function tearDown() : void
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -169,7 +169,7 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
         $actionMock = $this->getMockBuilder(d3TestAction::class)
             ->onlyMethods([
                 'getQuery',
-                'run'
+                'run',
             ])
             ->getMock();
         $actionMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);

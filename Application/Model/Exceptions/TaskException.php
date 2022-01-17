@@ -3,7 +3,7 @@
 /**
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * https://www.d3data.de
  *
  * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
@@ -23,16 +23,16 @@ class TaskException extends DataWizardException
     /** @var QueryBase */
     public $task;
 
-    public function __construct( QueryBase $task, $sMessage = "not set", $iCode = 0, Exception $previous = null )
+    public function __construct(QueryBase $task, $sMessage = "not set", $iCode = 0, Exception $previous = null)
     {
         $sMessage = implode(
             ' - ',
             [
                 $task->getTitle(),
-                $sMessage
+                $sMessage,
             ]
         );
-        parent::__construct( $sMessage, $iCode, $previous );
+        parent::__construct($sMessage, $iCode, $previous);
 
         $this->task = $task;
     }

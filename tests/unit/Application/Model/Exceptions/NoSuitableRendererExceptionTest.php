@@ -35,7 +35,7 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
     {
         $code = '500';
 
-        $exception = oxNew( Exception::class);
+        $exception = oxNew(Exception::class);
 
         /** @var NoSuitableRendererException|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(NoSuitableRendererException::class)
@@ -74,5 +74,4 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
             )
         );
     }
-
 }
