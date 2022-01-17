@@ -1,0 +1,4 @@
+* text=auto
+
+/.gitattributes export-ignore
+/.php-cs-fixer.php export-ignore
