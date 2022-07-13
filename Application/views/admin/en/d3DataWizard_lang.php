@@ -42,6 +42,7 @@ $aLang = [
     'D3_DATAWIZARD_EXPORT_FORMAT_JSON'                => 'JSON format',
 
     'D3_DATAWIZARD_ACTION_SUBMIT'                     => 'run action',
+    'D3_DATAWIZARD_ACTION_SUBMIT_CONFIRM'             => 'Should the action be executed?',
 
     'D3_DATAWIZARD_DEBUG'                             => 'Debug: %1$s',
 
