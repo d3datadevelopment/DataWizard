@@ -65,7 +65,7 @@ Siehe [CHANGELOG](CHANGELOG.md) für weitere Informationen.
 
 ## Beitragen
 
-Wenn Sie eine Verbesserungsvorschlag haben, legen Sie einen Fork des Respoitories an und erstellen Sie einen Pull Request. Alternativ können Sie einfach ein Issue erstellen. Fügen Sie das Projekt zu Ihren Favoriten hinzu. Vielen Dank.
+Wenn Sie eine Verbesserungsvorschlag haben, legen Sie einen Fork des Repositories an und erstellen Sie einen Pull Request. Alternativ können Sie einfach ein Issue erstellen. Fügen Sie das Projekt zu Ihren Favoriten hinzu. Vielen Dank.
 
 - Erstellen Sie einen Fork des Projekts
 - Erstellen Sie einen Feature Branch (git checkout -b feature/AmazingFeature)
