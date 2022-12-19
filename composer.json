@@ -26,7 +26,7 @@
   ],
   "require": {
     "php": ">=7.3",
-    "oxid-esales/oxideshop-ce": "6.8 - 6.12",
+    "oxid-esales/oxideshop-ce": "6.8 - 6.13",
     "league/csv": "^9.0",
     "mathieuviossat/arraytotexttable": "^1.0",
     "form-manager/form-manager": "^6.1",
