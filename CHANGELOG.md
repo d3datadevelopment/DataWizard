@@ -4,27 +4,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://git.d3data.de/D3Public/DataWizard/compare/2.1.0.0...rel_2.x)
+## [Unreleased](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.0...rel_2.x)
+
+## [2.1.1.0](https://git.d3data.de/D3Public/DataWizard/compare/2.1.0.0...2.1.1.0) - 2022-12-24
+### Added
+- installable in OXID 6.5.0 and 6.5.1
+- request confirmation before execute action
+
+### Changed
+- documentation extended
 
 ## [2.1.0.0](https://git.d3data.de/D3Public/DataWizard/compare/2.0.0.0...2.1.0.0) - 2021-12-21
-#### Changed
+### Changed
 - adjust to CLI extension which can export to STDOUT
 
 ## [2.0.0.0](https://git.d3data.de/D3Public/DataWizard/compare/1.4.0.0...2.0.0.0) - 2021-12-20
-#### Added
+### Added
 - add tests
 - make installable in OXID 6.4
 
-#### Changed
+### Changed
 - adjust code to PHP 7.3 and up
 
 ## [1.4.0.0](https://git.d3data.de/D3Public/DataWizard/compare/1.3.1.0...1.4.0.0) - 2021-11-11
-#### Added
+### Added
 - add JSON export renderer
 - add tpl block for easier extension
 - enable controller based exception handling
 
-#### Changed
+### Changed
 - change deprecated CSV export code
 - show registered export renderers in admin submit without required tpl block extension
 - force get translations from admin
