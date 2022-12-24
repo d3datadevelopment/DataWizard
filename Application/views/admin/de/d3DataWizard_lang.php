@@ -11,6 +11,7 @@
  * @link      https://www.oxidmodule.com
  */
 
+// @codeCoverageIgnoreStart
 declare(strict_types=1);
 
 $sLangName = "Deutsch";
@@ -57,3 +58,4 @@ $aLang = [
     'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
     'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',
 ];
+// @codeCoverageIgnoreEnd
