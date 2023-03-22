@@ -48,36 +48,38 @@
 [{/strip}][{/capture}]
 [{oxscript add=$smarty.capture.d3script}]
 
-<form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post" style="padding: 0;margin: 0;height:0;">
-    [{$oViewConf->getHiddenSid()}]
-    <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
-    <input type="hidden" name="fnc" value="runTask">
-    <input type="hidden" name="taskid" id="taskid" value="">
-    <input type="hidden" name="format" id="format" value="CSV">
+[{assign var="groups" value=$oView->getGroups()}]
+[{if $groups|@count}]
+    <div id="accordion">
+        [{foreach from=$oView->getGroups() item="group"}]
+            <div class="card mb-2">
+                <div class="card-header p-1" id="heading[{$group}]">
+                    <h4 class="mb-0">
+                        <span class="btn p-1" data-toggle="collapse" data-target="#collapse[{$group}]" aria-expanded="false" aria-controls="collapse[{$group}]">
+                            [{oxmultilang ident=$group}]
+                        </span>
+                    </h4>
+                </div>
 
-    [{assign var="groups" value=$oView->getGroups()}]
-    [{if $groups|@count}]
-        <div id="accordion">
-            [{foreach from=$oView->getGroups() item="group"}]
-                <div class="card mb-2">
-                    <div class="card-header p-1" id="heading[{$group}]">
-                        <h4 class="mb-0">
-                            <span class="btn p-1" data-toggle="collapse" data-target="#collapse[{$group}]" aria-expanded="false" aria-controls="collapse[{$group}]">
-                                [{oxmultilang ident=$group}]
-                            </span>
-                        </h4>
-                    </div>
+                <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-parent="#accordion">
+                    <div class="card-body pb-0">
+                        <div class="row">
+                            [{foreach from=$oView->getGroupTasks($group) key="id" item="item"}]
+                                <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
+                                    <div class="card">
+                                        <h5 class="card-header">
+                                            [{$item->getTitle()}]
+                                        </h5>
+                                        <div class="card-body">
 
-                    <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-parent="#accordion">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                [{foreach from=$oView->getGroupTasks($group) key="id" item="item"}]
-                                    <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
-                                        <div class="card">
-                                            <h5 class="card-header">
-                                                [{$item->getTitle()}]
-                                            </h5>
-                                            <div class="card-body">
+                                            <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post">
+                                                [{$oViewConf->getHiddenSid()}]
+                                                <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
+                                                <input type="hidden" name="fnc" value="runTask">
+                                                <input type="hidden" name="taskid" id="taskid" value="">
+                                                <input type="hidden" name="format" id="format" value="CSV">
+
+
                                                 [{if $item->getDescription()}]
                                                     [{assign var="description" value=$item->getDescription()}]
                                                     [{assign var="sectionlength" value="100"}]
@@ -104,25 +106,27 @@
                                                 [{block name="exportSubmit"}]
                                                     [{include file=$submit}]
                                                 [{/block}]
-                                            </div>
+
+                                            </form>
+
                                         </div>
                                     </div>
-                                [{/foreach}]
-                            </div>
-
-                            <div class="clear"></div>
+                                </div>
+                            [{/foreach}]
                         </div>
+
+                        <div class="clear"></div>
                     </div>
                 </div>
+            </div>
 
-            [{/foreach}]
-        </div>
-    [{else}]
-        <div class="alert alert-primary" role="alert">
-            [{oxmultilang ident=$d3dw_noitemmessageid}]
-        </div>
-    [{/if}]
-</form>
+        [{/foreach}]
+    </div>
+[{else}]
+    <div class="alert alert-primary" role="alert">
+        [{oxmultilang ident=$d3dw_noitemmessageid}]
+    </div>
+[{/if}]
 
 <div id="mask" class=""></div>
 <div id="popup2" class="d3loader-2">
