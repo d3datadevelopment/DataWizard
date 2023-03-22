@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0.1 (2023-03-22)
+### Fixed
+- wrong cascaded HTML elements
+
 ## 1.5.0.0 (2021-12-21)
 
 #### Added

@@ -32,7 +32,7 @@ $aModule = [
         'en' => '',
     ],
     'thumbnail'   => '',
-    'version'     => '1.5.0.0',
+    'version'     => '1.5.0.1',
     'author'      => 'D&sup3; Data Development (Inh.: Thomas Dartsch)',
     'email'       => 'support@shopmodule.com',
     'url'         => 'https://www.oxidmodule.com/',
