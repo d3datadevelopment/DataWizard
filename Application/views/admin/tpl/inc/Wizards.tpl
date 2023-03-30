@@ -41,9 +41,9 @@
         }, 3000);
         document.getElementById('mask').className='on';
         document.getElementById('popup2').className='d3loader-2 on';
-        document.getElementById('taskid').value = id;
-        document.getElementById('format').value = format;
-        document.getElementById('myedit').submit();
+        form = document.getElementById('form_' + id);
+        form.format.value = format;
+        form.submit();
     }
 [{/strip}][{/capture}]
 [{oxscript add=$smarty.capture.d3script}]
@@ -72,12 +72,12 @@
                                         </h5>
                                         <div class="card-body">
 
-                                            <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post">
+                                            <form name="myedit" id="form_[{$id}]" action="[{$oViewConf->getSelfLink()}]" method="post">
                                                 [{$oViewConf->getHiddenSid()}]
                                                 <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
                                                 <input type="hidden" name="fnc" value="runTask">
-                                                <input type="hidden" name="taskid" id="taskid" value="">
-                                                <input type="hidden" name="format" id="format" value="CSV">
+                                                <input type="hidden" name="taskid" value="[{$id}]">
+                                                <input type="hidden" name="format" value="CSV">
 
 
                                                 [{if $item->getDescription()}]
@@ -91,7 +91,7 @@
                                                         <p class="card-text" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer">
                                                             [{$shorttext}]...
                                                         </p>
-                                                        <p class="card-text collapse" id="collapseExample">
+                                                        <p class="card-text collapse" id="collapseExample_[{$id}]">
                                                             ...[{$description|replace:$shorttext:''}]
                                                         </p>
                                                     [{/if}]
