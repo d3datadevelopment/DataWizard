@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.1...rel_2.x)
 
-## [2.1.1.0](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.0...2.1.1.1) - 2023-03-22
+## [2.1.1.1](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.1...2.1.1.2) - 2023-03-30
+### Fixed
+- fix JavaScript for multiple forms
+
+## [2.1.1.1](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.0...2.1.1.1) - 2023-03-22
 ### Fixed
 - wrong cascaded HTML elements
 
