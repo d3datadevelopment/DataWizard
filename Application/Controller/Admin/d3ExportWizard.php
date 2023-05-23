@@ -45,6 +45,11 @@ class d3ExportWizard extends AdminDetailsController
         $this->configuration = oxNew(Configuration::class);
     }
 
+    public function getViewId()
+    {
+        return 'd3mxDataWizard_Export';
+    }
+
     public function getGroups(): array
     {
         return $this->configuration->getExportGroups();
