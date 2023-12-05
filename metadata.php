@@ -31,7 +31,7 @@ $aModule = [
         'de' => '',
         'en' => '',
     ],
-    'thumbnail'   => 'logo.png',
+    'thumbnail'   => 'picture.svg',
     'version'     => '2.1.1.3',
     'author'      => 'D&sup3; Data Development (Inh.: Thomas Dartsch)',
     'email'       => 'support@shopmodule.com',
