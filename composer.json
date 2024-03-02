@@ -25,21 +25,12 @@
     "GPL-3.0-or-later"
   ],
   "require": {
-    "php": ">=7.3",
-    "oxid-esales/oxideshop-ce": "6.8 - 6.14",
+    "php": "^8.0",
+    "oxid-esales/oxideshop-ce": "7.0 - 7.0",
     "league/csv": "^9.0",
     "mathieuviossat/arraytotexttable": "^1.0",
     "form-manager/form-manager": "^6.1",
-    "d3/modcfg": "^6.0"
-  },
-  "extra": {
-    "oxideshop": {
-      "blacklist-filter": [
-        "*.md",
-        "composer.json"
-      ],
-      "target-directory": "d3/datawizard"
-    }
+    "d3/modcfg": "^7.0"
   },
   "suggest": {
     "d3/datawizardtasks": "useful example tasks for Data Wizard",
@@ -48,7 +39,7 @@
   },
   "autoload": {
     "psr-4": {
-      "D3\\DataWizard\\": "../../../source/modules/d3/datawizard"
+      "D3\\DataWizard\\": "./"
     }
   }
 }
