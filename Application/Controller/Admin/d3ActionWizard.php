@@ -18,20 +18,21 @@ namespace D3\DataWizard\Application\Controller\Admin;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
+use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
+use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\ModCfg\Application\Model\d3database;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
-use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class d3ActionWizard extends AdminDetailsController
 {
     protected $_sThisTemplate = 'd3ActionWizard.tpl';
 
-    /** @var Configuration */
-    protected $configuration;
+    protected Configuration $configuration;
 
     public function __construct()
     {
@@ -55,23 +56,28 @@ class d3ActionWizard extends AdminDetailsController
     }
 
     /**
-     * @throws DatabaseConnectionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function runTask()
+    public function runTask(): void
     {
         try {
             $this->execute();
-        } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
+        } catch (DataWizardException|DBALException $e) {
             Registry::getLogger()->error($e->getMessage());
             Registry::getUtilsView()->addErrorToDisplay($e);
         }
     }
 
     /**
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws DebugException
+     * @throws InputUnvalidException
+     * @throws NotFoundExceptionInterface
+     * @throws TaskException
      */
-    protected function execute()
+    protected function execute(): void
     {
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $action = $this->configuration->getActionById($id);
@@ -79,10 +85,12 @@ class d3ActionWizard extends AdminDetailsController
         [ $queryString, $parameters ] = $action->getQuery();
 
         if ($this->d3GetConfig()->getConfigParam('d3datawizard_debug')) {
-            throw oxNew(
+            /** @var DebugException $debug */
+            $debug = oxNew(
                 DebugException::class,
                 d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
             );
+            throw $debug;
         }
 
         $action->run();
@@ -96,12 +104,12 @@ class d3ActionWizard extends AdminDetailsController
         return Registry::getConfig();
     }
 
-    public function getUserMessages()
+    public function getUserMessages(): ?string
     {
         return null;
     }
 
-    public function getHelpURL()
+    public function getHelpURL(): ?string
     {
         return null;
     }

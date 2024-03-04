@@ -19,24 +19,25 @@ use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
-use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\ModCfg\Application\Model\d3database;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class d3ExportWizard extends AdminDetailsController
 {
     protected $_sThisTemplate = 'd3ExportWizard.tpl';
 
-    /** @var Configuration */
-    protected $configuration;
+    protected Configuration $configuration;
 
     public function __construct()
     {
@@ -61,12 +62,15 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
+     * @throws ContainerExceptionInterface
      * @throws DatabaseConnectionException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      */
-    public function runTask()
+    public function runTask(): void
     {
         try {
             $this->execute();
@@ -80,13 +84,15 @@ class d3ExportWizard extends AdminDetailsController
      * @throws DBALException
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
-     * @throws StandardException
      * @throws NoSuitableRendererException
-     * @throws TaskException
+     * @throws StandardException
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
      */
-    protected function execute()
+    protected function execute(): void
     {
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $export = $this->configuration->getExportById($id);
@@ -111,12 +117,12 @@ class d3ExportWizard extends AdminDetailsController
         return Registry::getConfig();
     }
 
-    public function getUserMessages()
+    public function getUserMessages(): ?string
     {
         return null;
     }
 
-    public function getHelpURL()
+    public function getHelpURL(): ?string
     {
         return null;
     }

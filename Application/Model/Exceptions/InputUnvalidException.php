@@ -21,8 +21,7 @@ use FormManager\Inputs\Input;
 
 class InputUnvalidException extends DataWizardException
 {
-    /** @var QueryBase */
-    public $task;
+    public QueryBase $task;
 
     /**
      * InputUnvalidException constructor.

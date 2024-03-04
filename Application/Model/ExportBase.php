@@ -17,24 +17,30 @@ namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
+use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
+use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
 use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception as DBALException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
-use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
-use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 abstract class ExportBase implements QueryBase
 {
-    protected $formElements = [];
+    protected array $formElements = [];
 
     /**
      * Ensure that the translations are equally available in the frontend and the backend
@@ -47,17 +53,19 @@ abstract class ExportBase implements QueryBase
 
     /**
      * @param string $format
-     * @param $path
+     * @param null   $path
      *
+     * @return string
+     * @throws ContainerExceptionInterface
      * @throws DBALException
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
-     * @throws Exceptions\NoSuitableRendererException
-     * @throws Exceptions\TaskException
+     * @throws Exception
+     * @throws NoSuitableRendererException
+     * @throws NotFoundExceptionInterface
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
-     * @return string
      */
     public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
     {
@@ -82,31 +90,22 @@ abstract class ExportBase implements QueryBase
     }
 
     /**
-     * @param $format
-     *
-     * @return ExportRenderer\RendererInterface
-     * @throws Exceptions\NoSuitableRendererException
+     * @throws NoSuitableRendererException
      */
-    public function getRenderer($format): ExportRenderer\RendererInterface
+    public function getRenderer(string $format): RendererInterface
     {
         return $this->getRendererBridge()->getRenderer($format);
     }
 
-    /**
-     * @return RendererBridge
-     */
     public function getRendererBridge(): RendererBridge
     {
         return oxNew(RendererBridge::class);
     }
 
     /**
-     * @param $format
-     *
-     * @return string
-     * @throws Exceptions\NoSuitableRendererException
+     * @throws NoSuitableRendererException
      */
-    public function getFileExtension($format): string
+    public function getFileExtension(string $format): string
     {
         return $this->getRenderer($format)->getFileExtension();
     }
@@ -148,8 +147,10 @@ abstract class ExportBase implements QueryBase
      * @param array $query
      *
      * @return array
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
+     * @throws DBALException
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getExportData(array $query): array
     {
@@ -165,7 +166,9 @@ abstract class ExportBase implements QueryBase
             );
         }
 
-        $rows = $this->d3GetDb()->getAll($queryString, $parameters);
+        /** @var Connection $connection */
+        $connection = ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
+        $rows = $connection->executeQuery($queryString, $parameters)->fetchAllAssociative();
 
         if (count($rows) <= 0) {
             throw oxNew(
@@ -180,10 +183,7 @@ abstract class ExportBase implements QueryBase
         return [ $rows, $fieldNames ];
     }
 
-    /**
-     * @param Input $input
-     */
-    public function registerFormElement(Input $input)
+    public function registerFormElement(Input $input): void
     {
         if ($input instanceof Radio || $input instanceof Checkbox) {
             $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');
@@ -213,12 +213,16 @@ abstract class ExportBase implements QueryBase
 
     /**
      * @param string $format
-     * @param $path
+     * @param        $path
+     *
      * @return string
+     * @throws ContainerExceptionInterface
      * @throws DBALException
      * @throws DatabaseConnectionException
      * @throws DatabaseErrorException
-     * @throws Exceptions\NoSuitableRendererException
+     * @throws Exception
+     * @throws NoSuitableRendererException
+     * @throws NotFoundExceptionInterface
      * @throws StandardException
      * @throws d3ShopCompatibilityAdapterException
      * @throws d3_cfg_mod_exception
@@ -227,13 +231,12 @@ abstract class ExportBase implements QueryBase
     {
         $content = $this->getContent($format);
 
-        /** @var $oFS d3filesystem */
         $oFS = $this->getFileSystem();
         if (is_null($path)) {
             $oFS->startDirectDownload($oFS->filterFilename($this->getExportFileName($format)), $content);
         } else {
             $filePath = $oFS->trailingslashit($path) . $oFS->filterFilename($this->getExportFileName($format));
-            if (false === $oFS->createFile($filePath, $content, true)) {
+            if (false === $oFS->createFile($filePath, $content)) {
                 throw oxNew(ExportFileException::class, $filePath);
             }
             return $filePath;
@@ -242,19 +245,7 @@ abstract class ExportBase implements QueryBase
         return '';
     }
 
-    /**
-     * @return DatabaseInterface|null
-     * @throws DatabaseConnectionException
-     */
-    protected function d3GetDb(): ?DatabaseInterface
-    {
-        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
-    }
-
-    /**
-     * @return d3filesystem|mixed
-     */
-    protected function getFileSystem()
+    protected function getFileSystem(): d3filesystem
     {
         return oxNew(d3filesystem::class);
     }
@@ -263,16 +254,16 @@ abstract class ExportBase implements QueryBase
      * @param string $format
      *
      * @return string
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
-     * @throws Exceptions\NoSuitableRendererException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Exception
+     * @throws NoSuitableRendererException
+     * @throws NotFoundExceptionInterface
      */
     public function getContent(string $format): string
     {
         [ $rows, $fieldNames ] = $this->getExportData($this->getQuery());
 
-        $content = $this->renderContent($rows, $fieldNames, $format);
-
-        return $content;
+        return $this->renderContent($rows, $fieldNames, $format);
     }
 }

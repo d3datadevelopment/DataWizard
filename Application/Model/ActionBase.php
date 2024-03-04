@@ -16,18 +16,20 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
+use D3\DataWizard\Application\Model\Exceptions\TaskException;
+use Doctrine\DBAL\Exception as DBALException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
-use OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface;
-use OxidEsales\Eshop\Core\DatabaseProvider;
-use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
-use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 abstract class ActionBase implements QueryBase
 {
-    protected $formElements = [];
+    protected array $formElements = [];
 
     /**
      * Ensure that the translations are equally available in the frontend and the backend
@@ -39,16 +41,21 @@ abstract class ActionBase implements QueryBase
     }
 
     /**
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
+     * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws InputUnvalidException
+     * @throws NotFoundExceptionInterface
+     * @throws TaskException
      */
-    public function run()
+    public function run(): void
     {
         if ($this->hasFormElements()) {
             /** @var Input $element */
             foreach ($this->getFormElements() as $element) {
                 if (false === $element->isValid()) {
-                    throw oxNew(InputUnvalidException::class, $this, $element);
+                    /** @var InputUnvalidException $exception */
+                    $exception = oxNew(InputUnvalidException::class, $this, $element);
+                    throw $exception;
                 }
             }
         }
@@ -59,28 +66,34 @@ abstract class ActionBase implements QueryBase
     /**
      * @param array $query
      *
-     * @return int
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws TaskException
+     * @throws DBALException
      */
-    public function executeAction(array $query): int
+    public function executeAction(array $query): void
     {
         [ $queryString, $parameters ] = $query;
 
         $queryString = trim($queryString);
 
         if (strtolower(substr($queryString, 0, 6)) === 'select') {
-            throw oxNew(
-                Exceptions\TaskException::class,
+            /** @var TaskException $exception */
+            $exception = oxNew(
+                TaskException::class,
                 $this,
                 Registry::getLang()->translateString('D3_DATAWIZARD_ERR_ACTIONSELECT')
             );
+            throw $exception;
         }
 
-        $affected = $this->d3GetDb()->execute($queryString, $parameters);
+        $connection = ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
+        $affected = (int) $connection->executeStatement($queryString, $parameters);
 
-        throw oxNew(
-            Exceptions\TaskException::class,
+        /** @var TaskException $exception */
+        $exception = oxNew(
+            TaskException::class,
             $this,
             sprintf(
                 Registry::getLang()->translateString(
@@ -89,15 +102,7 @@ abstract class ActionBase implements QueryBase
                 $affected
             )
         );
-    }
-
-    /**
-     * @return DatabaseInterface|null
-     * @throws DatabaseConnectionException
-     */
-    public function d3GetDb(): ?DatabaseInterface
-    {
-        return DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+        throw $exception;
     }
 
     /**
@@ -111,7 +116,7 @@ abstract class ActionBase implements QueryBase
     /**
      * @param Input $input
      */
-    public function registerFormElement(Input $input)
+    public function registerFormElement(Input $input): void
     {
         if ($input instanceof Radio || $input instanceof Checkbox) {
             $input->setTemplate('<p class="form-check">{{ input }} {{ label }}</p>');

@@ -27,8 +27,8 @@ class Configuration
     public const GROUP_REMARKS  = 'D3_DATAWIZARD_GROUP_REMARKS';
     public const GROUP_CMS      = 'D3_DATAWIZARD_GROUP_CMS';
 
-    protected $actions = [];
-    protected $exports = [];
+    protected array $actions = [];
+    protected array $exports = [];
 
     public function __construct()
     {
@@ -44,7 +44,7 @@ class Configuration
      * @param            $group
      * @param ActionBase $action
      */
-    public function registerAction($group, ActionBase $action)
+    public function registerAction($group, ActionBase $action): void
     {
         $this->actions[$group][md5(get_class($action))] = $action;
     }
@@ -53,7 +53,7 @@ class Configuration
      * @param            $group
      * @param ExportBase $export
      */
-    public function registerExport($group, ExportBase $export)
+    public function registerExport($group, ExportBase $export): void
     {
         $this->exports[$group][md5(get_class($export))] = $export;
     }
@@ -147,7 +147,7 @@ class Configuration
     {
         $allActions = $this->getAllActions();
 
-        if (false == $allActions[$id]) {
+        if ( ! $allActions[ $id ] ) {
             throw oxNew(DataWizardException::class, 'no action with id '.$id);
         }
 
@@ -163,7 +163,7 @@ class Configuration
     {
         $allExports = $this->getAllExports();
 
-        if (false == $allExports[$id]) {
+        if ( ! $allExports[ $id ] ) {
             throw oxNew(DataWizardException::class, 'no export with id '.$id);
         }
 
