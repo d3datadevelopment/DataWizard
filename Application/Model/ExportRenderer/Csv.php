@@ -60,16 +60,10 @@ class Csv implements RendererInterface
 
         EncloseField::addTo($csv, "\t\x1f");
 
-        $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser');
-        if (false == $sEncloser) {
-            $sEncloser = '"';
-        }
+        $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser') ?? '"';
         $csv->setEnclosure($sEncloser);
 
-        $sDelimiter = $this->d3GetConfig()->getConfigParam('sCSVSign');
-        if (false == $sDelimiter) {
-            $sDelimiter = ';';
-        }
+        $sDelimiter = $this->d3GetConfig()->getConfigParam('sCSVSign') ?? ';';
         $csv->setDelimiter($sDelimiter);
 
         return $csv;

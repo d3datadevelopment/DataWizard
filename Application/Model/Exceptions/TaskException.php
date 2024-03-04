@@ -20,8 +20,7 @@ use Exception;
 
 class TaskException extends DataWizardException
 {
-    /** @var QueryBase */
-    public $task;
+    public QueryBase $task;
 
     public function __construct(QueryBase $task, $sMessage = "not set", $iCode = 0, Exception $previous = null)
     {

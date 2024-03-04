@@ -45,7 +45,7 @@ class RendererBridge
     /**
      * @param RendererInterface $instance
      */
-    protected function translateRendererId(RendererInterface &$instance)
+    protected function translateRendererId(RendererInterface &$instance): void
     {
         $instance = $instance->getTitleTranslationId();
     }
@@ -60,8 +60,8 @@ class RendererBridge
     {
         $format = strtolower($format);
 
-        $rendererList = array_change_key_case($this->getRendererList(), CASE_LOWER);
-        $rendererListTypes = array_keys(array_change_key_case($rendererList, CASE_LOWER));
+        $rendererList = array_change_key_case($this->getRendererList());
+        $rendererListTypes = array_keys(array_change_key_case($rendererList));
 
         if (in_array($format, $rendererListTypes, true)) {
             return $rendererList[$format];
