@@ -14,11 +14,7 @@
 // @codeCoverageIgnoreStart
 declare(strict_types=1);
 
-$sLangName = "English";
-// -------------------------------
-// RESOURCE IDENTITFIER = STRING
-// -------------------------------
-$aLang = [
+return [
 
 //Navigation
     'charset'                                         => 'UTF-8',
