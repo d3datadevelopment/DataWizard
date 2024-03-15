@@ -24,8 +24,10 @@ use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\ModCfg\Application\Model\d3database;
 use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -85,7 +87,7 @@ class d3ActionWizard extends AdminDetailsController
 
         [ $queryString, $parameters ] = $action->getQuery();
 
-        if ($this->d3GetConfig()->getConfigParam('d3datawizard_debug')) {
+        if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
             /** @var DebugException $debug */
             $debug = oxNew(
                 DebugException::class,
@@ -98,11 +100,13 @@ class d3ActionWizard extends AdminDetailsController
     }
 
     /**
-     * @return Config
+     * @return ModuleSettingService
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function d3GetConfig(): Config
+    public function getSettingsService(): ModuleSettingServiceInterface
     {
-        return Registry::getConfig();
+        return ContainerFactory::getInstance()->getContainer()->get(ModuleSettingServiceInterface::class);
     }
 
     public function getUserMessages(): ?string

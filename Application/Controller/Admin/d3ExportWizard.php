@@ -26,11 +26,13 @@ use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -100,7 +102,7 @@ class d3ExportWizard extends AdminDetailsController
 
         [ $queryString, $parameters ] = $export->getQuery();
 
-        if ($this->d3GetConfig()->getConfigParam('d3datawizard_debug')) {
+        if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
             throw oxNew(
                 DebugException::class,
                 d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
@@ -111,11 +113,13 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
-     * @return Config
+     * @return ModuleSettingService
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function d3GetConfig(): Config
+    public function getSettingsService(): ModuleSettingServiceInterface
     {
-        return Registry::getConfig();
+        return ContainerFactory::getInstance()->getContainer()->get(ModuleSettingServiceInterface::class);
     }
 
     public function getUserMessages(): ?string
