@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
@@ -35,7 +36,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class d3ExportWizard extends AdminDetailsController
 {
-    protected $_sThisTemplate = 'd3ExportWizard.tpl';
+    protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ExportWizard';
 
     protected Configuration $configuration;
 
@@ -56,7 +57,7 @@ class d3ExportWizard extends AdminDetailsController
         return $this->configuration->getExportGroups();
     }
 
-    public function getGroupTasks($group)
+    public function getGroupTasks($group): array
     {
         return $this->configuration->getExportsByGroup($group);
     }

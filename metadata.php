@@ -13,9 +13,8 @@
 
 declare(strict_types=1);
 
-/**
- * Metadata version
- */
+use D3\DataWizard\Application\Model\Constants;
+
 $sMetadataVersion = '2.1';
 
 $sModuleId = 'd3datawizard';
@@ -32,7 +31,7 @@ $aModule = [
         'en' => '',
     ],
     'thumbnail'   => 'picture.svg',
-    'version'     => '2.1.1.3',
+    'version'     => '3.0.0.0',
     'author'      => 'D&sup3; Data Development (Inh.: Thomas Dartsch)',
     'email'       => 'support@shopmodule.com',
     'url'         => 'https://www.oxidmodule.com/',
@@ -43,11 +42,11 @@ $aModule = [
     'extend'      => [],
     'events'      => [],
     'templates'   => [
-        'd3ExportWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ExportWizard.tpl',
-        'd3ActionWizard.tpl'         => 'd3/datawizard/Application/views/admin/tpl/d3ActionWizard.tpl',
-        'd3Wizards.tpl'              => 'd3/datawizard/Application/views/admin/tpl/inc/Wizards.tpl',
-        'd3ExportSubmit.tpl'         => 'd3/datawizard/Application/views/admin/tpl/inc/exportSubmit.tpl',
-        'd3ActionSubmit.tpl'         => 'd3/datawizard/Application/views/admin/tpl/inc/actionSubmit.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/tpl/d3ExportWizard.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/tpl/d3ActionWizard.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/tpl/inc/d3Wizards.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/tpl/inc/exportSubmit.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/tpl/inc/actionSubmit.tpl',
     ],
     'settings'    => [
         [

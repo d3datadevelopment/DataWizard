@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
@@ -30,7 +31,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class d3ActionWizard extends AdminDetailsController
 {
-    protected $_sThisTemplate = 'd3ActionWizard.tpl';
+    protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ActionWizard';
 
     protected Configuration $configuration;
 
@@ -50,7 +51,7 @@ class d3ActionWizard extends AdminDetailsController
         return $this->configuration->getActionGroups();
     }
 
-    public function getGroupTasks($group)
+    public function getGroupTasks($group): array
     {
         return $this->configuration->getActionsByGroup($group);
     }
