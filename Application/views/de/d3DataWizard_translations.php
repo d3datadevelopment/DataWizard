@@ -14,12 +14,7 @@
 // @codeCoverageIgnoreStart
 declare(strict_types=1);
 
-$sLangName = "Deutsch";
-// -------------------------------
-// RESOURCE IDENTITFIER = STRING
-// -------------------------------
-$aLang = [
-
+return [
 //Navigation
     'charset'                                         => 'UTF-8',
     'd3mxDataWizard'                                  => '<i class="fas fa-fw fa-hat-wizard"></i> Data Wizard',
