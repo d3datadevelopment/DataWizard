@@ -93,9 +93,9 @@ class Configuration
     /**
      * @param $group
      *
-     * @return mixed
+     * @return array
      */
-    public function getActionsByGroup($group)
+    public function getActionsByGroup($group): array
     {
         return $this->actions[$group];
     }
@@ -103,9 +103,9 @@ class Configuration
     /**
      * @param $group
      *
-     * @return mixed
+     * @return array
      */
-    public function getExportsByGroup($group)
+    public function getExportsByGroup($group): array
     {
         return $this->exports[$group];
     }

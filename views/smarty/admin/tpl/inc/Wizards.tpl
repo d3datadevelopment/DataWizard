@@ -133,4 +133,4 @@
     </div>
 </div>
 
-[{include file="d3_cfg_mod_inc.tpl"}]
+[{include file="@d3modcfg_lib/admin/inc/inc.tpl"}]
