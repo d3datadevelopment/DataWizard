@@ -17,7 +17,7 @@ use D3\DataWizard\Application\Model\Constants;
 
 $sMetadataVersion = '2.1';
 
-$sModuleId = 'd3datawizard';
+$sModuleId = Constants::OXID_MODULE_ID;
 $logo = '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em">';
 
 /**
@@ -44,7 +44,7 @@ $aModule = [
     'templates'   => [
         '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/tpl/d3ExportWizard.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/tpl/d3ActionWizard.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/tpl/inc/d3Wizards.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/tpl/inc/Wizards.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/tpl/inc/exportSubmit.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/tpl/inc/actionSubmit.tpl',
     ],

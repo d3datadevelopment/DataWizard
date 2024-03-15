@@ -22,7 +22,7 @@ use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
