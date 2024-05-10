@@ -1,0 +1,136 @@
+{% include "headitem.html.twig" with {title: "GENERAL_ADMIN_TITLE"|translate} %}
+
+{{ style({ include: "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" }) }}
+{{ script({ include: "https://code.jquery.com/jquery-3.2.1.slim.min.js", dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js", dynamic: __oxid_include_dynamic }) }}
+{{ script({ include: "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js", dynamic: __oxid_include_dynamic }) }}
+{{ style({ include: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" }) }}
+
+<style>
+    button {
+        margin: 1em 1em 1em 5em;
+    }
+    html {
+        font-size: 0.8em;
+    }
+    /* Image courtesy of gradientmagic.com */
+    body {
+        background-image: {{ d3dw_backgroundimage }};
+    }
+    h4 .btn {
+        font-size: 1.3rem;
+    }
+    h5.card-header {
+        font-size: 1.1rem;
+    }
+    .formElements label {
+        display: inline-block;
+        margin: .5rem 0;
+    }
+</style>
+
+{% capture name = "d3script" %}{% apply spaceless %}
+    function startTask(id, format = '') {
+        let elements = document.getElementsByClassName('errorbox');
+        for (var i = 0; i < elements.length; i++){
+            elements[i].style.display = 'none';
+        }
+        setTimeout(function(){
+            document.getElementById('mask').className='';
+            document.getElementById('popup2').className='d3loader-2';
+        }, 3000);
+        document.getElementById('mask').className='on';
+        document.getElementById('popup2').className='d3loader-2 on';
+        document.getElementById('taskid').value = id;
+        document.getElementById('format').value = format;
+        document.getElementById('myedit').submit();
+    }
+{% endapply %}{% endcapture %}
+{{ script({ add: d3script, dynamic: __oxid_include_dynamic }) }}
+
+<form name="myedit" id="myedit" action="{{ oViewConf.getSelfLink() }}" method="post" style="padding: 0;margin: 0;height:0;">
+    {{ oViewConf.getHiddenSid()|raw }}
+    <input type="hidden" name="cl" value="{{ oViewConf.getActiveClassName() }}">
+    <input type="hidden" name="fnc" value="runTask">
+    <input type="hidden" name="taskid" id="taskid" value="">
+    <input type="hidden" name="format" id="format" value="CSV">
+
+    {% set groups = oView.getGroups() %}
+    {% if groups|length %}
+        <div id="accordion">
+            {% for group in oView.getGroups() %}
+                <div class="card mb-2">
+                    <div class="card-header p-1" id="heading{{ group }}">
+                        <h4 class="mb-0">
+                            <span class="btn p-1" data-toggle="collapse" data-target="#collapse{{ group }}" aria-expanded="false" aria-controls="collapse{{ group }}">
+                                {{ translate({ ident: group }) }}
+                            </span>
+                        </h4>
+                    </div>
+
+                    <div id="collapse{{ group }}" class="collapse" aria-labelledby="heading{{ group }}" data-parent="#accordion">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                {% for id, item in oView.getGroupTasks(group) %}
+                                    <div class="col-sm-6 col-md-4 col-lg-3 pb-4">
+                                        <div class="card">
+                                            <h5 class="card-header">
+                                                {{ item.getTitle() }}
+                                            </h5>
+                                            <div class="card-body">
+                                                {% if item.getDescription() %}
+                                                    {% set description = item.getDescription() %}
+                                                    {% set sectionlength = "100" %}
+
+                                                    {% if description|length <= sectionlength %}
+                                                        <p class="card-text">{{ description }}</p>
+                                                    {% else %}
+                                                        {% set shorttext = description|truncate(sectionlength, '') %}
+                                                        <p class="card-text" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer">
+                                                            {{ shorttext }}...
+                                                        </p>
+                                                        <p class="card-text collapse" id="collapseExample">
+                                                            ...{{ description|replace(shorttext, '') }}
+                                                        </p>
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                {% if item.hasFormElements() %}
+                                                    {% for formElement in item.getFormElements() %}
+                                                        {{ formElement }}
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                                {% block exportSubmit %}
+                                                    {% include submit %}
+                                                {% endblock %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-primary" role="alert">
+            {{ translate({ ident: d3dw_noitemmessageid }) }}
+        </div>
+    {% endif %}
+</form>
+
+<div id="mask" class=""></div>
+<div id="popup2" class="d3loader-2">
+    <div class="d3loader-spinner">
+        <div class="d3loader-circle-1"></div>
+        <div class="d3loader-circle-2"></div>
+        <div class="d3loader-circle-3"></div>
+    </div>
+</div>
+
+{% include "@d3modcfg_lib/admin/inc/inc.html.twig" %}

@@ -42,11 +42,11 @@ $aModule = [
     'extend'      => [],
     'events'      => [],
     'templates'   => [
-        '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/tpl/d3ExportWizard.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/tpl/d3ActionWizard.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/tpl/inc/Wizards.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/tpl/inc/exportSubmit.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/tpl/inc/actionSubmit.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/d3ExportWizard.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/d3ActionWizard.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/inc/Wizards.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/inc/exportSubmit.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/inc/actionSubmit.tpl',
     ],
     'settings'    => [
         [

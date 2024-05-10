@@ -1,0 +1,24 @@
+{% block submitElements %}
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary" onclick="startTask('{{ id }}', 'CSV')">
+            <i class="fas fa-fw fa-magic"></i>
+            {{ translate({ ident: item.getButtonText() }) }}
+        </button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">
+                <i class="fas fa-fw fa-magic"></i>
+                {{ translate({ ident: item.getButtonText() }) }}
+            </span>
+        </button>
+        <div class="dropdown-menu">
+            {% block dataWizardFormat %}
+                {% set rendererBridge = item.getRendererBridge() %}
+                {% for key, translationId in rendererBridge.getTranslatedRendererIdList() %}
+                    <button class="dropdown-item" onclick="startTask('{{ id }}', '{{ key }}')">
+                        {{ translate({ ident: translationId }) }}
+                    </button>
+                {% endfor %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
