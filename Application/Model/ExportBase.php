@@ -149,8 +149,6 @@ abstract class ExportBase implements QueryBase
      * @return array
      * @throws DBALException
      * @throws Exception
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function getExportData(array $query): array
     {
@@ -166,9 +164,7 @@ abstract class ExportBase implements QueryBase
             );
         }
 
-        /** @var Connection $connection */
-        $connection = ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
-        $rows = $connection->executeQuery($queryString, $parameters)->fetchAllAssociative();
+        $rows = $this->getConnection()->executeQuery($queryString, $parameters)->fetchAllAssociative();
 
         if (count($rows) <= 0) {
             throw oxNew(
@@ -181,6 +177,11 @@ abstract class ExportBase implements QueryBase
         $fieldNames = array_keys($rows[0]);
 
         return [ $rows, $fieldNames ];
+    }
+
+    protected function getConnection(): Connection
+    {
+        return ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
     }
 
     public function registerFormElement(Input $input): void

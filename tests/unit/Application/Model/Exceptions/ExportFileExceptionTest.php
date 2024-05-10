@@ -18,6 +18,7 @@ namespace D3\DataWizard\tests\unit\Application\Model\Exceptions;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use Exception;
+use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
@@ -51,7 +52,7 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertStringContainsString(
-            'EXPORTFILEERROR',
+            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_EXPORTFILEERROR'),
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'

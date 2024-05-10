@@ -23,6 +23,8 @@ use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\DataWizard\tests\tools\d3TestExport;
 use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Result;
 use FormManager\Inputs\Hidden;
 use FormManager\Inputs\Number;
 use FormManager\Inputs\Radio;
@@ -320,17 +322,17 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers \D3\DataWizard\Application\Model\ExportBase::d3GetDb
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getConnection
      * @test
      * @throws ReflectionException
      */
-    public function canGetDb()
+    public function canGetConnection()
     {
         $this->assertInstanceOf(
-            Database::class,
+            Connection::class,
             $this->callMethod(
                 $this->_oModel,
-                'd3GetDb'
+                'getConnection'
             )
         );
     }
@@ -542,19 +544,26 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
      */
     public function canGetExportData($query, $throwsException, $dbResult)
     {
-        /** @var Database|MockObject $dbMock */
-        $dbMock = $this->getMockBuilder(Database::class)
-            ->onlyMethods(['getAll'])
+        /** @var Result|MockObject $resultMock */
+        $resultMock = $this->getMockBuilder(Result::class)
+            ->onlyMethods(get_class_methods(Result::class))
             ->getMock();
-        $dbMock->expects($this->exactly((int) !$throwsException))->method('getAll')->willReturn($dbResult);
+        $resultMock->method('fetchAllAssociative')->willReturn($dbResult);
+
+        /** @var Database|MockObject $connectionMock */
+        $connectionMock = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['executeQuery'])
+            ->getMock();
+        $connectionMock->expects($this->exactly((int) !$throwsException))->method('executeQuery')->willReturn($resultMock);
 
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
-                'd3GetDb',
+                'getConnection',
             ])
             ->getMock();
-        $modelMock->expects($this->exactly((int) !$throwsException))->method('d3GetDb')->willReturn($dbMock);
+        $modelMock->expects($this->exactly((int) !$throwsException))->method('getConnection')->willReturn($connectionMock);
 
         $this->_oModel = $modelMock;
 

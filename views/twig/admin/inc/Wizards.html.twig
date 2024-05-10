@@ -90,14 +90,14 @@
                                                             {{ shorttext }}...
                                                         </p>
                                                         <p class="card-text collapse" id="collapseExample">
-                                                            ...{{ description|replace(shorttext, '') }}
+                                                            ...{{ description|replace({shorttext:''}) }}
                                                         </p>
                                                     {% endif %}
                                                 {% endif %}
 
                                                 {% if item.hasFormElements() %}
                                                     {% for formElement in item.getFormElements() %}
-                                                        {{ formElement }}
+                                                        {{ formElement|raw }}
                                                     {% endfor %}
                                                 {% endif %}
 
