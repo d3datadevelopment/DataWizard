@@ -524,7 +524,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
 
         $this->_oModel = $modelMock;
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/^base_(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})\.extension$/m',
             $this->callMethod(
                 $this->_oModel,

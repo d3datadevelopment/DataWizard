@@ -36,6 +36,6 @@ class additional extends additional_abstract
 }
 
 try {
-    d3GetModCfgDIC()->get(additional::class);
-} catch (Exception $e) {
+    d3GetOxidDIC()->get(additional::class);
+} catch (Exception) {
 }

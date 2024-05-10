@@ -38,7 +38,7 @@ abstract class ExportRendererTest extends d3ModCfgUnitTestCase
      */
     public function canGetFileExtension()
     {
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/^[a-z0-9._-]*$/i",
             $this->callMethod(
                 $this->_oModel,

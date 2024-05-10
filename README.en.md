@@ -72,7 +72,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 - Push to the Branch (git push origin feature/AmazingFeature)
 - Open a Pull Request
 
-## Licence
+## License
 (status: 2021-05-06)
 
 Distributed under the GPLv3 license.

@@ -69,7 +69,7 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
             [$taskMock, $invalidField, $code, $exception]
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/^testTitle\s-\s*->\s.*\sless\s/m',
             $this->callMethod(
                 $this->_oModel,
