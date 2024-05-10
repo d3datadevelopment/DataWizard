@@ -122,13 +122,10 @@ class CsvTest extends ExportRendererTest
             ->getMock();
         $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturnCallback(
             function ($argName) {
-                switch ($argName) {
-                    case 'sGiCsvFieldEncloser':
-                    case 'sCSVSign':
-                        return false;
-                    default:
-                        return Registry::getConfig()->getConfigParam($argName);
-                }
+                return match ( $argName ) {
+                    'sGiCsvFieldEncloser', 'sCSVSign' => null,
+                    default => Registry::getConfig()->getConfigParam( $argName ),
+                };
             }
         );
 

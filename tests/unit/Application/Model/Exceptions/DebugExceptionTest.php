@@ -51,7 +51,7 @@ class DebugExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertStringContainsString(
-            'DEBUG',
+            'Debug',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'
