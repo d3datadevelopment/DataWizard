@@ -17,6 +17,7 @@ namespace D3\DataWizard\tests\unit\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\ExportRenderer\Csv;
+use Generator;
 use League\Csv\Exception;
 use League\Csv\Writer;
 use OxidEsales\Eshop\Core\Config;
@@ -34,6 +35,34 @@ class CsvTest extends ExportRendererTest
         parent::setUp();
 
         $this->_oModel = oxNew(Csv::class);
+    }
+
+    /**
+     * @test
+     *
+     * @param bool $force
+     *
+     * @return void
+     * @throws ReflectionException
+     * @covers       \D3\DataWizard\Application\Model\ExportRenderer\Csv::__construct
+     * @dataProvider canForceEncloseDataProvider
+     */
+    public function canForceEnclose(bool $force): void
+    {
+        $noForce = oxNew(Csv::class, $force);
+        $this->assertSame(
+            $force,
+            $this->getValue(
+                $noForce,
+                'forceEnclose'
+            )
+        );
+    }
+
+    public function canForceEncloseDataProvider(): Generator
+    {
+        yield 'noForce' => [true];
+        yield 'force' => [false];
     }
 
     /**

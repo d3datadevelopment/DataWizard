@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
-use League\Csv\EncloseField;
+use League\Csv\ColumnConsistency;
 use League\Csv\Exception;
 use League\Csv\Writer;
 use OxidEsales\Eshop\Core\Config;
@@ -24,18 +24,22 @@ use OxidEsales\Eshop\Core\Registry;
 
 class Csv implements RendererInterface
 {
+    public function __construct(protected bool $forceEnclose = false)
+    {}
+
     /**
-     * @param $rows
-     * @param $fieldNames
+     * @param iterable $rows
+     * @param iterable $fieldNames
      *
      * @return string
      * @throws RenderException
      */
-    public function getContent($rows, $fieldNames): string
+    public function getContent(iterable $rows, iterable $fieldNames): string
     {
         try {
             $csv = $this->getCsv();
-            $csv->insertOne($fieldNames);
+            $this->forceEnclose ? $csv->forceEnclosure() : $csv->relaxEnclosure();
+            $csv->insertOne((array) $fieldNames);
             $csv->insertAll($rows);
             return (string) $csv;
         } catch (Exception $e) {
@@ -58,13 +62,13 @@ class Csv implements RendererInterface
     {
         $csv = Writer::createFromString();
 
-        EncloseField::addTo($csv, "\t\x1f");
-
         $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser') ?? '"';
         $csv->setEnclosure($sEncloser);
 
         $sDelimiter = $this->d3GetConfig()->getConfigParam('sCSVSign') ?? ';';
         $csv->setDelimiter($sDelimiter);
+
+        $csv->addValidator(new ColumnConsistency(), 'columns_consistency');
 
         return $csv;
     }
