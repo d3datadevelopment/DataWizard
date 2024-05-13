@@ -18,12 +18,12 @@ namespace D3\DataWizard\Application\Model\ExportRenderer;
 interface RendererInterface
 {
     /**
-     * @param $rows
-     * @param $fieldNames
+     * @param iterable $rows
+     * @param iterable $fieldNames
      *
      * @return string
      */
-    public function getContent($rows, $fieldNames): string;
+    public function getContent(iterable $rows, iterable $fieldNames): string;
 
     /**
      * @return string

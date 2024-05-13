@@ -20,12 +20,12 @@ use MathieuViossat\Util\ArrayToTextTable;
 class Pretty implements RendererInterface
 {
     /**
-     * @param $rows
-     * @param $fieldNames
+     * @param iterable $rows
+     * @param iterable $fieldNames
      *
      * @return string
      */
-    public function getContent($rows, $fieldNames): string
+    public function getContent(iterable $rows, iterable $fieldNames): string
     {
         $renderer = $this->getArrayToTextTableInstance($rows);
         return $renderer->getTable();
