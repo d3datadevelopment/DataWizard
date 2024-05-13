@@ -52,7 +52,7 @@ class DebugExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertStringContainsString(
-            Registry::getLang()->translateString('D3_DATAWIZARD_DEBUG'),
+            'Debug: testMessage',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'

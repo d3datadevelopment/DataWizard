@@ -52,7 +52,7 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertStringContainsString(
-            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_EXPORTFILEERROR'),
+            'kann nicht angelegt werden',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'

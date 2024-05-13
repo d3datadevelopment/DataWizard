@@ -180,7 +180,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(false);
-        $modelMock->expects($this->atLeastOnce())->method('executeAction')->willReturn(1);
+        $modelMock->expects($this->atLeastOnce())->method('executeAction');
         $modelMock->expects($this->atLeastOnce())->method('getQuery')->willReturn([]);
         $this->_oModel = $modelMock;
 
@@ -209,7 +209,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('hasFormElements')->willReturn(true);
-        $modelMock->expects($this->exactly((int) !$blThrowException))->method('executeAction')->willReturn(1);
+        $modelMock->expects($this->exactly((int) !$blThrowException))->method('executeAction');
         $modelMock->expects($this->exactly((int) !$blThrowException))->method('getQuery')->willReturn([]);
         $modelMock->expects($this->atLeastOnce())->method('getFormElements')->willReturn($elements);
         $this->_oModel = $modelMock;
@@ -282,9 +282,9 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
             );
         } catch (TaskException $e) {
             if ($throwsException) {
-                $this->assertStringContainsString('ACTIONSELECT', $e->getMessage());
+                $this->assertStringContainsString('keine SELECTs exportieren', $e->getMessage());
             } else {
-                $this->assertStringContainsString('ACTIONRESULT', $e->getMessage());
+                $this->assertStringContainsString('1 Eintrag verändert', $e->getMessage());
             }
         }
     }

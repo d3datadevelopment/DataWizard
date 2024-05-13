@@ -52,7 +52,7 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertStringContainsString(
-            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOSUITABLERENDERER'),
+            'kein Renderer f',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'

@@ -592,7 +592,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             );
         } catch (TaskException $e) {
             if ($throwsException) {
-                $this->assertStringContainsString('NOEXPORTSELECT', $e->getMessage());
+                $this->assertStringContainsString('Export kann nicht ausgeführt werden', $e->getMessage());
             } elseif (!count($dbResult)) {
                 $this->assertStringContainsString('kein Inhalt', $e->getMessage());
             }
