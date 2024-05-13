@@ -17,17 +17,22 @@ namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Controller\Admin\d3ExportWizard;
 use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\Constants;
+use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
+use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
-class d3ExportWizardTest extends d3AdminControllerTest
+class d3ExportWizardTest extends d3AdminController
 {
     /** @var d3ExportWizard */
     protected $_oController;
@@ -120,26 +125,21 @@ class d3ExportWizardTest extends d3AdminControllerTest
         //OnConsecutiveCalls('testTaskId', 'CSV');
         Registry::set(Request::class, $requestMock);
 
-        /** @var Config|MockObject $configMock */
-        $configMock = $this->getMockBuilder(Config::class)
-            ->onlyMethods(['getConfigParam'])
+        /** @var ModuleSettingService $settingsServiceMock */
+        $settingsServiceMock = $this->getMockBuilder(ModuleSettingService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getBoolean'])
             ->getMock();
-        $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturnCallback(
-            function ($argName) use ($blDebug) {
-                switch ($argName) {
-                    case 'd3datawizard_debug':
-                        return $blDebug;
-                    default:
-                        return Registry::getConfig()->getConfigParam($argName);
-                }
-            }
-        );
+        $settingsServiceMock->expects($this->once())->method('getBoolean')->with(
+            $this->identicalTo('d3datawizard_debug'),
+            $this->identicalTo(Constants::OXID_MODULE_ID)
+        )->willReturn($blDebug);
 
         /** @var d3ExportWizard|MockObject $controllerMock */
         $controllerMock = $this->getMockBuilder(d3ExportWizard::class)
-            ->onlyMethods(['d3GetConfig'])
+            ->onlyMethods(['getSettingsService'])
             ->getMock();
-        $controllerMock->method('d3GetConfig')->willReturn($configMock);
+        $controllerMock->method('getSettingsService')->willReturn($settingsServiceMock);
         $this->_oController = $controllerMock;
 
         /** @var d3TestAction|MockObject $exportMock */
@@ -190,6 +190,20 @@ class d3ExportWizardTest extends d3AdminControllerTest
         return [
             'no debug'  => [false],
             'debug'  => [true],
+        ];
+    }
+
+
+
+    /**
+     * @return string[][]
+     */
+    public function runTaskFailedDataProvider(): array
+    {
+        return [
+            [DataWizardException::class],
+            [DBALException::class],
+            [DatabaseErrorException::class],
         ];
     }
 }

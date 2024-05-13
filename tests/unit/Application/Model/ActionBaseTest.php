@@ -18,6 +18,7 @@ namespace D3\DataWizard\tests\unit\Application\Model;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
+use Doctrine\DBAL\Connection;
 use FormManager\Inputs\Hidden;
 use FormManager\Inputs\Number;
 use FormManager\Inputs\Radio;
@@ -258,17 +259,18 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
      */
     public function canExecuteAction($query, $throwsException)
     {
-        /** @var Database|MockObject $dbMock */
-        $dbMock = $this->getMockBuilder(Database::class)
-            ->onlyMethods(['execute'])
+        /** @var Database|MockObject $connectionMock */
+        $connectionMock = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['executeStatement'])
             ->getMock();
-        $dbMock->expects($this->exactly((int) !$throwsException))->method('execute')->willReturn(true);
+        $connectionMock->expects($this->exactly((int) !$throwsException))->method('executeStatement')->willReturn(1);
 
         /** @var d3TestAction|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestAction::class)
-            ->onlyMethods(['d3GetDb'])
+            ->onlyMethods(['getConnection'])
             ->getMock();
-        $modelMock->expects($this->exactly((int) !$throwsException))->method('d3GetDb')->willReturn($dbMock);
+        $modelMock->expects($this->exactly((int) !$throwsException))->method('getConnection')->willReturn($connectionMock);
 
         $this->_oModel = $modelMock;
 
@@ -299,17 +301,17 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers \D3\DataWizard\Application\Model\ActionBase::d3GetDb
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getConnection
      * @test
      * @throws ReflectionException
      */
-    public function canGetDb()
+    public function canGetConnection()
     {
         $this->assertInstanceOf(
-            Database::class,
+            Connection::class,
             $this->callMethod(
                 $this->_oModel,
-                'd3GetDb'
+                'getConnection'
             )
         );
     }

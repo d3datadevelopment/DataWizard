@@ -17,6 +17,7 @@ namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
@@ -88,8 +89,7 @@ abstract class ActionBase implements QueryBase
             throw $exception;
         }
 
-        $connection = ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
-        $affected = (int) $connection->executeStatement($queryString, $parameters);
+        $affected = (int) $this->getConnection()->executeStatement($queryString, $parameters);
 
         /** @var TaskException $exception */
         $exception = oxNew(
@@ -103,6 +103,11 @@ abstract class ActionBase implements QueryBase
             )
         );
         throw $exception;
+    }
+
+    protected function getConnection(): Connection
+    {
+        return ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
     }
 
     /**

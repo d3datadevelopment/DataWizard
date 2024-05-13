@@ -23,16 +23,18 @@ use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
 use OxidEsales\Eshop\Core\UtilsView;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
 
-abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
+abstract class d3AdminController extends d3ModCfgUnitTestCase
 {
     /** @var d3ActionWizard|d3ExportWizard */
     protected $_oController;
@@ -54,7 +56,7 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
      */
     public function testConstructor()
     {
-        $this->setValue($this->_oController, 'configuration', null);
+        $this->setValue($this->_oController, 'configuration', oxNew(Configuration::class));
 
         $this->callMethod(
             $this->_oController,
@@ -82,7 +84,7 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
         $controllerMock = $this->getMockBuilder($this->testClassName)
             ->onlyMethods(['execute'])
             ->getMock();
-        $controllerMock->expects($this->once())->method('execute')->willReturn(true);
+        $controllerMock->expects($this->once())->method('execute');
 
         $this->_oController = $controllerMock;
 
@@ -104,9 +106,8 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     {
         /** @var DataWizardException|DBALException|DatabaseErrorException|MockObject $exceptionMock */
         $exceptionMock = $this->getMockBuilder($exceptionClass)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs(['exc_msg', 20, new Exception()])
             ->getMock();
-        $this->setValue($exceptionMock, 'message', 'exc_msg');
 
         /** @var d3ActionWizard|d3ExportWizard|MockObject $controllerMock */
         $controllerMock = $this->getMockBuilder($this->testClassName)
@@ -135,18 +136,6 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
             $this->_oController,
             'runTask'
         );
-    }
-
-    /**
-     * @return \string[][]
-     */
-    public function runTaskFailedDataProvider(): array
-    {
-        return [
-            [DataWizardException::class],
-            [DBALException::class],
-            [DatabaseErrorException::class],
-        ];
     }
 
     /**
@@ -244,18 +233,19 @@ abstract class d3AdminControllerTest extends d3ModCfgUnitTestCase
     }
 
     /**
-     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::d3GetConfig
-     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::d3GetConfig
      * @test
+     * @return void
      * @throws ReflectionException
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getSettingsService()
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::getSettingsService()
      */
-    public function canGetConfig()
+    public function canGetSettingsService(): void
     {
         $this->assertInstanceOf(
-            Config::class,
+            ModuleSettingService::class,
             $this->callMethod(
                 $this->_oController,
-                'd3GetConfig'
+                'getSettingsService'
             )
         );
     }
