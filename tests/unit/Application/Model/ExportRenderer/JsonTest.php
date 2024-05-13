@@ -55,12 +55,12 @@ class JsonTest extends ExportRendererTest
     }
 
     /**
-     * @return \string[][]
+     * @return string[][]
      */
     public function canGetContentDataProvider(): array
     {
         return [
-            'valid' => [['value1', 'value2'], false],
+            'valid' => [['value1', "value2"], false],
             'invalid'   => [["text" => "\xB1\x31"], true],  // malformed UTF8 chars
         ];
     }

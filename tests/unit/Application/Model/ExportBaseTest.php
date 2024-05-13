@@ -572,7 +572,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             $result = $this->callMethod(
                 $this->_oModel,
                 'getExportData',
-                [[$query], ['param1', 'param2']]
+                [[$query, ['param1', 'param2']]]
             );
 
             $this->assertSame(

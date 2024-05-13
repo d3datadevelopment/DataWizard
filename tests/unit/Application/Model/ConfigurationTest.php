@@ -267,7 +267,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
      */
     public function canGetActionsByGroup()
     {
-        $actionList = ['abc' => '123', 'def' => '456'];
+        $actionList = ['abc' => ['123'], 'def' => ['456']];
 
         $this->setValue(
             $this->_oModel,
@@ -276,7 +276,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertSame(
-            '456',
+            ['456'],
             $this->callMethod(
                 $this->_oModel,
                 'getActionsByGroup',
@@ -292,7 +292,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
      */
     public function canGetExportsByGroup()
     {
-        $exportList = ['abc' => '123', 'def' => '456'];
+        $exportList = ['abc' => ['123'], 'def' => ['456']];
 
         $this->setValue(
             $this->_oModel,
@@ -301,7 +301,7 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertSame(
-            '456',
+            ['456'],
             $this->callMethod(
                 $this->_oModel,
                 'getExportsByGroup',
