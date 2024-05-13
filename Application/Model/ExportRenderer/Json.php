@@ -21,18 +21,17 @@ use JsonException;
 class Json implements RendererInterface
 {
     /**
-     * @param $rows
-     * @param $fieldNames
+     * @param iterable $rows
+     * @param iterable $fieldNames
      *
      * @return string
      * @throws RenderException
      */
-    public function getContent($rows, $fieldNames): string
+    public function getContent( iterable $rows, iterable $fieldNames): string
     {
         try {
-            $flags = JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR;
-            $json  = json_encode($rows, $flags);
-            return $json;
+            $flags = JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+            return json_encode($rows, $flags);
         } catch (JsonException $e) {
             /** @var RenderException $newException */
             $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e);
