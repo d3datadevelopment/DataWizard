@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.1.3](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.2...rel_2.x) - 2023-09-12
+## [unreleased](https://git.d3data.de/D3Public/DataWizard/compare/3.0.0.0...rel_3.x) - 2023-09-12
+
+## [3.0.0.0](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.3...3.0.0.0) - 2024-05-13
+### Added
+- installable in OXID 7.0 + 7.1
+- Twig support
+
+### Removed
+- support for OXID < 7
+
+## [2.1.1.3](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.2...2.1.1.3) - 2023-09-12
 ### Added
 - apply roles and rights
 
