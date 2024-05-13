@@ -73,6 +73,21 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @test
+     * @return void
+     * @throws ReflectionException
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getViewId
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::getViewId
+     */
+    public function canGetViewId(): void
+    {
+        $viewId = $this->callMethod($this->_oController, 'getViewId');
+
+        $this->assertIsString($viewId);
+        $this->assertStringStartsWith('d3mxDataWizard', $viewId);
+    }
+
+    /**
      * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask()
      * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::runTask()
      * @test

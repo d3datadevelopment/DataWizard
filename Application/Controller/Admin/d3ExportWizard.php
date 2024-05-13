@@ -49,7 +49,7 @@ class d3ExportWizard extends AdminDetailsController
         $this->configuration = oxNew(Configuration::class);
     }
 
-    public function getViewId()
+    public function getViewId(): string
     {
         return 'd3mxDataWizard_Export';
     }

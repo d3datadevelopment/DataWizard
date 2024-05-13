@@ -24,7 +24,6 @@ use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
 use Doctrine\DBAL\Exception as DBALException;
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
@@ -192,8 +191,6 @@ class d3ExportWizardTest extends d3AdminController
             'debug'  => [true],
         ];
     }
-
-
 
     /**
      * @return string[][]

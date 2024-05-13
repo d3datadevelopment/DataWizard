@@ -44,10 +44,11 @@ class d3ActionWizard extends AdminDetailsController
         $this->configuration = oxNew(Configuration::class);
     }
 
-    public function getViewId()
+    public function getViewId(): string
     {
         return 'd3mxDataWizard_Action';
     }
+
     public function getGroups(): array
     {
         return $this->configuration->getActionGroups();
