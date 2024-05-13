@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model;
 
+use Assert\Assert;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
@@ -153,6 +154,9 @@ abstract class ExportBase implements QueryBase
     public function getExportData(array $query): array
     {
         [ $queryString, $parameters ] = $query;
+
+        Assert::that($queryString)->string();
+        Assert::that($parameters)->isArray();
 
         $queryString = trim($queryString);
 

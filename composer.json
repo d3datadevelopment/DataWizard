@@ -30,7 +30,8 @@
     "league/csv": "^9.0",
     "mathieuviossat/arraytotexttable": "^1.0",
     "form-manager/form-manager": "^6.1",
-    "d3/modcfg": "^7.0"
+    "d3/modcfg": "^7.0",
+    "beberlei/assert": "^3.3.2"
   },
   "require-dev": {
     "d3/testingtools": "^1.2.0.0",
