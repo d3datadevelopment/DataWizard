@@ -32,7 +32,7 @@ Dieses Paket erfordert einen mit Composer installierten OXID eShop in einer in d
 
 
 ```bash
-php composer require d3/datawizard:^2.0
+php composer require d3/datawizard:^3.0
 ``` 
 
 Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".
