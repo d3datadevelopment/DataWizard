@@ -25,7 +25,7 @@
     "GPL-3.0-or-later"
   ],
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "oxid-esales/oxideshop-ce": "7.0 - 7.2",
     "league/csv": "^9.10",
     "mathieuviossat/arraytotexttable": "^1.0",
