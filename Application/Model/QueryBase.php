@@ -57,4 +57,9 @@ interface QueryBase
      * @return array
      */
     public function getFormElements(): array;
+
+    /**
+     * @return string
+     */
+    public function getBoxTemplate(): string;
 }

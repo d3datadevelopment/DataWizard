@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased](https://git.d3data.de/D3Public/DataWizard/compare/3.0.0.0...rel_3.x) - 2023-09-12
+### Added
+- box template can changed by every task
 
 ## [3.0.0.0](https://git.d3data.de/D3Public/DataWizard/compare/2.1.1.3...3.0.0.0) - 2024-05-13
 ### Added

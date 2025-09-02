@@ -73,7 +73,7 @@
                         <div class="card-body pb-0">
                             <div class="row">
                                 {% for id, item in oView.getGroupTasks(group) %}
-                                    {% include "@d3datawizard/admin/inc/wizardDefaultBox.html.twig" with {submit: submit} %}
+                                    {% include item.getBoxTemplate() with {submit: submit} %}
                                 {% endfor %}
                             </div>
 

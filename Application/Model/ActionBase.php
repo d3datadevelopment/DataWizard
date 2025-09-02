@@ -157,4 +157,12 @@ abstract class ActionBase implements QueryBase
     {
         return $this->formElements;
     }
+
+    public function getBoxTemplate(): string
+    {
+        $templateExtension = ContainerFactory::getInstance()->getContainer()
+            ->getParameter('oxid_esales.templating.engine_template_extension');
+
+        return "@d3datawizard/admin/inc/wizardDefaultBox.".$templateExtension;
+    }
 }
