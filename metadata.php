@@ -17,7 +17,7 @@ use D3\DataWizard\Application\Model\Constants;
 
 $sMetadataVersion = '2.1';
 
-$sModuleId = Constants::OXID_MODULE_ID;
+$sModuleId = 'd3datawizard';
 $logo = '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em">';
 
 /**
@@ -42,12 +42,12 @@ $aModule = [
     'extend'      => [],
     'events'      => [],
     'templates'   => [
-        '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/d3ExportWizard.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/d3ActionWizard.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/inc/Wizards.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/wizardDefaultBox.tpl' => 'views/smarty/admin/inc/wizardDefaultBox.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/inc/exportSubmit.tpl',
-        '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/inc/actionSubmit.tpl',
+        '@' . $sModuleId . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/d3ExportWizard.tpl',
+        '@' . $sModuleId . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/d3ActionWizard.tpl',
+        '@' . $sModuleId . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/inc/Wizards.tpl',
+        '@' . $sModuleId . '/admin/inc/wizardDefaultBox.tpl' => 'views/smarty/admin/inc/wizardDefaultBox.tpl',
+        '@' . $sModuleId . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/inc/exportSubmit.tpl',
+        '@' . $sModuleId . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/inc/actionSubmit.tpl',
     ],
     'settings'    => [
         [
