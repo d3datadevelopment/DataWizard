@@ -32,6 +32,11 @@ abstract class ActionBase implements QueryBase
 {
     protected array $formElements = [];
 
+    public function init()
+    {
+
+    }
+
     /**
      * Ensure that the translations are equally available in the frontend and the backend
      * @return string

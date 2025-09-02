@@ -92,10 +92,10 @@ class d3ActionWizard extends AdminDetailsController
     {
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $action = $this->configuration->getActionById($id);
-
-        [ $queryString, $parameters ] = $action->getQuery();
+        $action->init();
 
         if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
+            [ $queryString, $parameters ] = $action->getQuery();
             /** @var DebugException $debug */
             $debug = oxNew(
                 DebugException::class,
