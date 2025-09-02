@@ -19,20 +19,17 @@ use Assert\Assert;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
+use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\ModCfg\Application\Model\d3filesystem;
-use D3\ModCfg\Application\Model\Exception\d3_cfg_mod_exception;
-use D3\ModCfg\Application\Model\Exception\d3ShopCompatibilityAdapterException;
+use D3\ModCfg\Application\Model\download;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Exception as DBALException;
 use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Input;
 use FormManager\Inputs\Radio;
-use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
-use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
-use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
@@ -42,6 +39,11 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class ExportBase implements QueryBase
 {
     protected array $formElements = [];
+
+    public function init()
+    {
+
+    }
 
     /**
      * Ensure that the translations are equally available in the frontend and the backend
@@ -54,19 +56,13 @@ abstract class ExportBase implements QueryBase
 
     /**
      * @param string $format
-     * @param null   $path
-     *
+     * @param $path
      * @return string
      * @throws ContainerExceptionInterface
      * @throws DBALException
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
      * @throws Exception
      * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
-     * @throws StandardException
-     * @throws d3ShopCompatibilityAdapterException
-     * @throws d3_cfg_mod_exception
      */
     public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
     {
@@ -148,8 +144,10 @@ abstract class ExportBase implements QueryBase
      * @param array $query
      *
      * @return array
+     * @throws ContainerExceptionInterface
      * @throws DBALException
      * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     public function getExportData(array $query): array
     {
@@ -164,7 +162,7 @@ abstract class ExportBase implements QueryBase
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
             );
         }
 
@@ -174,7 +172,7 @@ abstract class ExportBase implements QueryBase
             throw oxNew(
                 Exceptions\TaskException::class,
                 $this,
-                Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
             );
         }
 
@@ -183,6 +181,11 @@ abstract class ExportBase implements QueryBase
         return [ $rows, $fieldNames ];
     }
 
+    /**
+     * @return Connection
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     protected function getConnection(): Connection
     {
         return ContainerFactory::getInstance()->getContainer()->get(ConnectionProviderInterface::class)->get();
@@ -218,19 +221,13 @@ abstract class ExportBase implements QueryBase
 
     /**
      * @param string $format
-     * @param        $path
-     *
+     * @param $path
      * @return string
      * @throws ContainerExceptionInterface
      * @throws DBALException
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
      * @throws Exception
      * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
-     * @throws StandardException
-     * @throws d3ShopCompatibilityAdapterException
-     * @throws d3_cfg_mod_exception
      */
     protected function executeExport(string $format, $path): string
     {
@@ -238,7 +235,8 @@ abstract class ExportBase implements QueryBase
 
         $oFS = $this->getFileSystem();
         if (is_null($path)) {
-            $oFS->startDirectDownload($oFS->filterFilename($this->getExportFileName($format)), $content);
+            $download = d3GetOxidDIC()->get(download::class);
+            $download->startDownload($oFS->filterFilename($this->getExportFileName($format)), $content);
         } else {
             $filePath = $oFS->trailingslashit($path) . $oFS->filterFilename($this->getExportFileName($format));
             if (false === $oFS->createFile($filePath, $content)) {
@@ -257,7 +255,6 @@ abstract class ExportBase implements QueryBase
 
     /**
      * @param string $format
-     *
      * @return string
      * @throws ContainerExceptionInterface
      * @throws DBALException

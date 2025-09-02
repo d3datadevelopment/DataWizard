@@ -26,6 +26,8 @@ use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Exception\ModuleConfigurationNotFoundException;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Exception\ModuleSettingNotFountException;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -61,6 +63,8 @@ class d3ActionWizard extends AdminDetailsController
 
     /**
      * @throws ContainerExceptionInterface
+     * @throws ModuleConfigurationNotFoundException
+     * @throws ModuleSettingNotFountException
      * @throws NotFoundExceptionInterface
      */
     public function runTask(): void
@@ -74,12 +78,15 @@ class d3ActionWizard extends AdminDetailsController
     }
 
     /**
+     * @return void
      * @throws ContainerExceptionInterface
      * @throws DBALException
      * @throws DebugException
      * @throws InputUnvalidException
      * @throws NotFoundExceptionInterface
      * @throws TaskException
+     * @throws ModuleConfigurationNotFoundException
+     * @throws ModuleSettingNotFountException
      */
     protected function execute(): void
     {

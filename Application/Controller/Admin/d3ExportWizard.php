@@ -31,6 +31,8 @@ use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Exception\StandardException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Exception\ModuleConfigurationNotFoundException;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Exception\ModuleSettingNotFountException;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -65,13 +67,12 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
+     * @return void
      * @throws ContainerExceptionInterface
-     * @throws DatabaseConnectionException
      * @throws Exception
+     * @throws ModuleConfigurationNotFoundException
+     * @throws ModuleSettingNotFountException
      * @throws NotFoundExceptionInterface
-     * @throws StandardException
-     * @throws d3ShopCompatibilityAdapterException
-     * @throws d3_cfg_mod_exception
      */
     public function runTask(): void
     {
@@ -84,25 +85,23 @@ class d3ExportWizard extends AdminDetailsController
     }
 
     /**
-     * @throws DBALException
-     * @throws DatabaseConnectionException
-     * @throws DatabaseErrorException
-     * @throws NoSuitableRendererException
-     * @throws StandardException
-     * @throws Exception
+     * @return void
      * @throws ContainerExceptionInterface
+     * @throws DBALException
+     * @throws Exception
+     * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
-     * @throws d3ShopCompatibilityAdapterException
-     * @throws d3_cfg_mod_exception
+     * @throws ModuleConfigurationNotFoundException
+     * @throws ModuleSettingNotFountException
      */
     protected function execute(): void
     {
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $export = $this->configuration->getExportById($id);
-
-        [ $queryString, $parameters ] = $export->getQuery();
+        $export->init();
 
         if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
+            [ $queryString, $parameters ] = $export->getQuery();
             throw oxNew(
                 DebugException::class,
                 d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
