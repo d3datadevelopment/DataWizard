@@ -1,0 +1,35 @@
+<div class="col-sm-6 col-md-4 col-lg-3 pb-4">
+    <div class="card">
+        <h5 class="card-header">
+            {{ item.getTitle() }}
+        </h5>
+        <div class="card-body">
+            {% if item.getDescription() %}
+                {% set description = item.getDescription() %}
+                {% set sectionlength = "100" %}
+
+                {% if description|length <= sectionlength %}
+                    <p class="card-text">{{ description }}</p>
+                {% else %}
+                    {% set shorttext = description|truncate(sectionlength, '') %}
+                    <p class="card-text" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer">
+                        {{ shorttext }}...
+                    </p>
+                    <p class="card-text collapse" id="collapseExample">
+                        ...{{ description|replace({shorttext:''}) }}
+                    </p>
+                {% endif %}
+            {% endif %}
+
+            {% if item.hasFormElements() %}
+                {% for formElement in item.getFormElements() %}
+                    {{ formElement|raw }}
+                {% endfor %}
+            {% endif %}
+
+            {% block exportSubmit %}
+                {% include submit %}
+            {% endblock %}
+        </div>
+    </div>
+</div>

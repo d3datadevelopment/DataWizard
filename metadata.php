@@ -45,6 +45,7 @@ $aModule = [
         '@' . Constants::OXID_MODULE_ID . '/admin/d3ExportWizard.tpl' => 'views/smarty/admin/d3ExportWizard.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/d3ActionWizard.tpl' => 'views/smarty/admin/d3ActionWizard.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3Wizards.tpl' => 'views/smarty/admin/inc/Wizards.tpl',
+        '@' . Constants::OXID_MODULE_ID . '/admin/inc/wizardDefaultBox.tpl' => 'views/smarty/admin/inc/wizardDefaultBox.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/inc/exportSubmit.tpl',
         '@' . Constants::OXID_MODULE_ID . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/inc/actionSubmit.tpl',
     ],
