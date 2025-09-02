@@ -68,7 +68,7 @@ class RendererBridge
         }
 
         /** @var NoSuitableRendererException $e */
-        $e = oxNew(NoSuitableRendererException::class, $format);
+        $e = oxNew(NoSuitableRendererException::class, $format, []);
         throw $e;
     }
 }

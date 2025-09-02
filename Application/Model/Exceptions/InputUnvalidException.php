@@ -31,7 +31,7 @@ class InputUnvalidException extends DataWizardException
      * @param Exception|null $previous
      * @throws Exception
      */
-    public function __construct(QueryBase $task, Input $inputElement, $iCode = 0, Exception $previous = null)
+    public function __construct(QueryBase $task, Input $inputElement)
     {
         $messages = [];
         foreach ($inputElement->getError()->getIterator() as $item) {
@@ -45,7 +45,7 @@ class InputUnvalidException extends DataWizardException
                 implode(', ', $messages),
             ]
         );
-        parent::__construct($sMessage, $iCode, $previous);
+        parent::__construct($sMessage, []);
 
         $this->task = $task;
     }

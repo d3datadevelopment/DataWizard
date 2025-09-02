@@ -158,23 +158,33 @@ abstract class ExportBase implements QueryBase
 
         $queryString = trim($queryString);
 
-        if (strtolower(substr($queryString, 0, 6)) !== 'select') {
-            throw oxNew(
-                Exceptions\TaskException::class,
-                $this,
+        Assert::lazy()
+            ->setExceptionClass(TaskException::class)
+            ->that(strtolower(trim($queryString)))
+            ->startsWith(
+                'select',
+                sprintf(
+                    '%s - %s',
+                    $this->getTitle(),
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
-            );
-        }
+                )
+            )
+            ->verifyNow();
 
         $rows = $this->getConnection()->executeQuery($queryString, $parameters)->fetchAllAssociative();
 
-        if (count($rows) <= 0) {
-            throw oxNew(
-                Exceptions\TaskException::class,
-                $this,
+        Assert::lazy()
+            ->setExceptionClass(TaskException::class)
+            ->that($rows)
+            ->minCount(
+                1,
+                sprintf(
+                    '%s - %s',
+                    $this->getTitle(),
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
-            );
-        }
+                )
+            )
+            ->verifyNow();
 
         $fieldNames = array_keys($rows[0]);
 

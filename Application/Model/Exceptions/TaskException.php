@@ -21,18 +21,4 @@ use Exception;
 class TaskException extends DataWizardException
 {
     public QueryBase $task;
-
-    public function __construct(QueryBase $task, $sMessage = "not set", $iCode = 0, Exception $previous = null)
-    {
-        $sMessage = implode(
-            ' - ',
-            [
-                $task->getTitle(),
-                $sMessage,
-            ]
-        );
-        parent::__construct($sMessage, $iCode, $previous);
-
-        $this->task = $task;
-    }
 }

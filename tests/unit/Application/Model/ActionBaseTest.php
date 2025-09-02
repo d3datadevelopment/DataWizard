@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
 
+use Assert\LazyAssertionException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
@@ -198,7 +199,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
      */
     public function canRunWithFormElements($elements, $blThrowException)
     {
-        $expectedException = oxNew(StandardException::class);
+        $expectedException = oxNew(LazyAssertionException::class);
 
         $modelMock = $this->getMockBuilder(d3TestAction::class)
             ->onlyMethods([

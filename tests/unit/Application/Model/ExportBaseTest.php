@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
 
+use Assert\LazyAssertionException;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\Csv;
@@ -211,7 +212,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $format = 'myFormat';
         $path = 'myPath';
 
-        $expectedException = oxNew(StandardException::class);
+        $expectedException = oxNew(LazyAssertionException::class);
 
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([

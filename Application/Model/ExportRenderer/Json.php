@@ -34,7 +34,7 @@ class Json implements RendererInterface
             return json_encode($rows, $flags);
         } catch (JsonException $e) {
             /** @var RenderException $newException */
-            $newException = oxNew(RenderException::class, $e->getMessage(), $e->getCode(), $e);
+            $newException = oxNew(RenderException::class, $e->getMessage(), []);
             throw $newException;
         }
     }

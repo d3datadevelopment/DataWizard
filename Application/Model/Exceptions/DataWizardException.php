@@ -15,8 +15,8 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Model\Exceptions;
 
-use OxidEsales\Eshop\Core\Exception\StandardException;
+use Assert\LazyAssertionException;
 
-class DataWizardException extends StandardException
+class DataWizardException extends LazyAssertionException
 {
 }

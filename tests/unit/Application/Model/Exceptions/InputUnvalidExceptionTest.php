@@ -36,10 +36,6 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
      */
     public function canConstruct()
     {
-        $code = '500';
-
-        $exception = oxNew(Exception::class);
-
         $invalidField = new Number(null, [
             'required' => true,
             'min' => 1,
@@ -66,7 +62,7 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
         $this->callMethod(
             $this->_oModel,
             '__construct',
-            [$taskMock, $invalidField, $code, $exception]
+            [$taskMock, $invalidField]
         );
 
         $this->assertMatchesRegularExpression(
@@ -74,22 +70,6 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'
-            )
-        );
-
-        $this->assertEquals(
-            $code,
-            $this->callMethod(
-                $this->_oModel,
-                'getCode'
-            )
-        );
-
-        $this->assertSame(
-            $exception,
-            $this->callMethod(
-                $this->_oModel,
-                'getPrevious'
             )
         );
     }
