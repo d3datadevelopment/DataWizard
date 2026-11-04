@@ -47,8 +47,10 @@
       "D3\\DataWizard\\": "./"
     }
   },
-  "scripts": {
-    "phpunit": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --no-coverage",
-    "phpunit-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --coverage-html=vendor/d3/datawizard/tests/result/coverage"
+  "extra": {
+    "commands":{
+      "phpunit": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --no-coverage",
+      "phpunit-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --coverage-html=vendor/d3/datawizard/tests/result/coverage"
+    }
   }
 }

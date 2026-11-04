@@ -35,7 +35,7 @@ class InputUnvalidException extends DataWizardException
     {
         $messages = [];
         foreach ($inputElement->getError()->getIterator() as $item) {
-            $messages[] = $inputElement->label->innerHTML.' -> '.$item->getMessage();
+            $messages[] = ($inputElement->label?->innerHTML ?? '') . ' -> ' . $item->getMessage();
         }
 
         $sMessage = implode(

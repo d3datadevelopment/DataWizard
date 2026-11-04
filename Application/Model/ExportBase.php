@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use Assert\Assert;
+use Assert\LazyAssertionException;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
@@ -158,33 +159,31 @@ abstract class ExportBase implements QueryBase
 
         $queryString = trim($queryString);
 
-        Assert::lazy()
-            ->setExceptionClass(TaskException::class)
-            ->that(strtolower(trim($queryString)))
-            ->startsWith(
-                'select',
-                sprintf(
-                    '%s - %s',
-                    $this->getTitle(),
+        try {
+            Assert::lazy()
+                ->that(strtolower(trim($queryString)))
+                ->startsWith(
+                    'select',
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
                 )
-            )
-            ->verifyNow();
+                ->verifyNow();
+        } catch (LazyAssertionException $exception) {
+            throw new TaskException($this, $exception->getMessage(), $exception);
+        }
 
         $rows = $this->getConnection()->executeQuery($queryString, $parameters)->fetchAllAssociative();
 
-        Assert::lazy()
-            ->setExceptionClass(TaskException::class)
-            ->that($rows)
-            ->minCount(
-                1,
-                sprintf(
-                    '%s - %s',
-                    $this->getTitle(),
+        try {
+            Assert::lazy()
+                ->that($rows)
+                ->minCount(
+                    1,
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
                 )
-            )
-            ->verifyNow();
+                ->verifyNow();
+        } catch (LazyAssertionException $exception) {
+            throw new TaskException($this, $exception->getMessage(), $exception);
+        }
 
         $fieldNames = array_keys($rows[0]);
 
@@ -245,7 +244,7 @@ abstract class ExportBase implements QueryBase
 
         $oFS = $this->getFileSystem();
         if (is_null($path)) {
-            $download = d3GetOxidDIC()->get(download::class);
+            $download = $this->getDownload();
             $download->startDownload($oFS->filterFilename($this->getExportFileName($format)), $content);
         } else {
             $filePath = $oFS->trailingslashit($path) . $oFS->filterFilename($this->getExportFileName($format));
@@ -258,6 +257,10 @@ abstract class ExportBase implements QueryBase
         return '';
     }
 
+    protected function getDownload(): download
+    {
+        return oxNew(download::class);
+    }
     protected function getFileSystem(): d3filesystem
     {
         return oxNew(d3filesystem::class);

@@ -20,13 +20,13 @@ use OxidEsales\Eshop\Core\Registry;
 
 class DebugException extends DataWizardException
 {
-    public function __construct($sMessage = "not set", $iCode = 0, Exception $previous = null)
+    public function __construct($sMessage = "not set", Exception $previous = null)
     {
         $sMessage = sprintf(
             Registry::getLang()->translateString('D3_DATAWIZARD_DEBUG'),
             $sMessage
         );
 
-        parent::__construct($sMessage, $iCode, $previous);
+        parent::__construct($sMessage, [$previous]);
     }
 }

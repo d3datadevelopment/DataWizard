@@ -23,6 +23,7 @@ use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
@@ -145,7 +146,7 @@ class d3ActionWizardTest extends d3AdminController
                 'run',
             ])
             ->getMock();
-        $actionMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);
+        $actionMock->expects($this->exactly((int) $blDebug))->method('getQuery')->willReturn(['SELECT 1', ['1']]);
         $actionMock->expects($this->exactly((int) !$blDebug))->method('run');
 
         /** @var Configuration|MockObject $configurationMock */
@@ -187,13 +188,13 @@ class d3ActionWizardTest extends d3AdminController
     }
 
     /**
-     * @return string[][]
+     * @return array
      */
     public function runTaskFailedDataProvider(): array
     {
         return [
-            [DataWizardException::class],
-            [DBALException::class],
+            [DataWizardException::class, ['exc_msg', []]],
+            [DBALException::class, ['exc_msg', 20, new Exception()]],
         ];
     }
 }

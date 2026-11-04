@@ -34,22 +34,11 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
      */
     public function canConstruct()
     {
-        $code = '500';
+        $code = '0';
 
         $exception = oxNew(Exception::class);
-
-        /** @var NoSuitableRendererException|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(NoSuitableRendererException::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->_oModel = $modelMock;
-
-        $this->callMethod(
-            $this->_oModel,
-            '__construct',
-            ['testMessage', $code, $exception]
-        );
+        
+        $this->_oModel = oxNew(NoSuitableRendererException::class, 'testMessage', $exception);
 
         $this->assertStringContainsString(
             'kein Renderer f',
@@ -68,10 +57,10 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertSame(
-            $exception,
+            [$exception],
             $this->callMethod(
                 $this->_oModel,
-                'getPrevious'
+                'getErrorExceptions'
             )
         );
     }

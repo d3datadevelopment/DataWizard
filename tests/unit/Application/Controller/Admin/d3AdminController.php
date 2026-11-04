@@ -117,11 +117,11 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      * @throws ReflectionException
      * @dataProvider runTaskFailedDataProvider
      */
-    public function runTaskFailed($exceptionClass)
+    public function runTaskFailed($exceptionClass, array $constructorArgs)
     {
         /** @var DataWizardException|DBALException|DatabaseErrorException|MockObject $exceptionMock */
         $exceptionMock = $this->getMockBuilder($exceptionClass)
-            ->setConstructorArgs(['exc_msg', 20, new Exception()])
+            ->setConstructorArgs($constructorArgs)
             ->getMock();
 
         /** @var d3ActionWizard|d3ExportWizard|MockObject $controllerMock */

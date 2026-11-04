@@ -24,6 +24,7 @@ use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
 use Doctrine\DBAL\Exception as DBALException;
+use Exception;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
@@ -148,7 +149,7 @@ class d3ExportWizardTest extends d3AdminController
                 'run',
             ])
             ->getMock();
-        $exportMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);
+        $exportMock->expects($this->exactly((int) $blDebug))->method('getQuery')->willReturn(['SELECT 1', ['1']]);
         $exportMock->expects($this->exactly((int) !$blDebug))->method('run')->willReturn('');
 
         /** @var Configuration|MockObject $configurationMock */
@@ -193,14 +194,14 @@ class d3ExportWizardTest extends d3AdminController
     }
 
     /**
-     * @return string[][]
+     * @return array
      */
     public function runTaskFailedDataProvider(): array
     {
         return [
-            [DataWizardException::class],
-            [DBALException::class],
-            [DatabaseErrorException::class],
+            [DataWizardException::class, ['exc_msg', []]],
+            [DBALException::class, ['exc_msg', 20, new Exception()]],
+            [DatabaseErrorException::class, ['exc_msg', 20, new Exception()]],
         ];
     }
 }

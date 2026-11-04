@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model;
 
 use Assert\Assert;
+use Assert\LazyAssertionException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use Doctrine\DBAL\Connection;
@@ -85,18 +86,17 @@ abstract class ActionBase implements QueryBase
 
         $queryString = trim($queryString);
 
-        Assert::lazy()
-            ->setExceptionClass(TaskException::class)
-            ->that(trim($queryString))
-            ->regex(
-                '/^(?!select)/i',
-                sprintf(
-                    '%s - %s',
-                    $this->getTitle(),
-                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
+        try {
+            Assert::lazy()
+                ->that(trim($queryString))
+                ->regex(
+                    '/^(?!select)/i',
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_ACTIONSELECT')
                 )
-            )
-            ->verifyNow();
+                ->verifyNow();
+        } catch (LazyAssertionException $exception) {
+            throw new TaskException($this, $exception->getMessage(), $exception);
+        }
 
         $affected = (int) $this->getConnection()->executeStatement($queryString, $parameters);
 

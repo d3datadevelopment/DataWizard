@@ -18,7 +18,7 @@ use D3\DataWizard\Application\Model\Constants;
 $sMetadataVersion = '2.1';
 
 $sModuleId = 'd3datawizard';
-$logo = '<img src="https://logos.oxidmodule.com/d3logo.svg" alt="(D3)" style="height:1em;width:1em">';
+$logo = '(D3) ';
 
 /**
  * Module information

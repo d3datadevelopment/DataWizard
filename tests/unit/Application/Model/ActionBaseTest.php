@@ -199,7 +199,7 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
      */
     public function canRunWithFormElements($elements, $blThrowException)
     {
-        $expectedException = oxNew(LazyAssertionException::class);
+        $expectedException = oxNew(LazyAssertionException::class, 'message', []);
 
         $modelMock = $this->getMockBuilder(d3TestAction::class)
             ->onlyMethods([

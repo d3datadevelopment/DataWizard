@@ -34,22 +34,11 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
      */
     public function canConstruct()
     {
-        $code = '500';
+        $code = '0';
 
         $exception = oxNew(Exception::class);
 
-        /** @var ExportFileException|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(ExportFileException::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->_oModel = $modelMock;
-
-        $this->callMethod(
-            $this->_oModel,
-            '__construct',
-            ['testMessage', $code, $exception]
-        );
+        $this->_oModel = oxNew(ExportFileException::class, 'testMessage', $exception);
 
         $this->assertStringContainsString(
             'kann nicht angelegt werden',
@@ -68,10 +57,10 @@ class ExportFileExceptionTest extends d3ModCfgUnitTestCase
         );
 
         $this->assertSame(
-            $exception,
+            [$exception],
             $this->callMethod(
                 $this->_oModel,
-                'getPrevious'
+                'getErrorExceptions'
             )
         );
     }

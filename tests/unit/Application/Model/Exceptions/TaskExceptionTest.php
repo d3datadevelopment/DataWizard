@@ -35,8 +35,6 @@ class TaskExceptionTest extends d3ModCfgUnitTestCase
      */
     public function canConstruct()
     {
-        $code = '500';
-
         $exception = oxNew(Exception::class);
 
         /** @var ExportBase|MockObject $taskMock */
@@ -45,18 +43,7 @@ class TaskExceptionTest extends d3ModCfgUnitTestCase
             ->getMock();
         $taskMock->expects($this->atLeastOnce())->method('getTitle')->willReturn('testTitle');
 
-        /** @var TaskException|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(TaskException::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->_oModel = $modelMock;
-
-        $this->callMethod(
-            $this->_oModel,
-            '__construct',
-            [$taskMock, 'testMessage', $code, $exception]
-        );
+        $this->_oModel = oxNew(TaskException::class, $taskMock, 'testMessage', $exception);
 
         $this->assertSame(
             'testTitle - testMessage',
@@ -66,19 +53,11 @@ class TaskExceptionTest extends d3ModCfgUnitTestCase
             )
         );
 
-        $this->assertEquals(
-            $code,
-            $this->callMethod(
-                $this->_oModel,
-                'getCode'
-            )
-        );
-
         $this->assertSame(
-            $exception,
+            [$exception],
             $this->callMethod(
                 $this->_oModel,
-                'getPrevious'
+                'getErrorExceptions'
             )
         );
     }

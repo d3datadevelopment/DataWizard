@@ -147,7 +147,7 @@ class Configuration
     {
         $allActions = $this->getAllActions();
 
-        if ( ! $allActions[ $id ] ) {
+        if ( !in_array($id, array_keys($allActions)) || !$allActions[ $id ] ) {
             throw oxNew(DataWizardException::class, 'no action with id '.$id, []);
         }
 
@@ -163,7 +163,7 @@ class Configuration
     {
         $allExports = $this->getAllExports();
 
-        if ( ! $allExports[ $id ] ) {
+        if ( !in_array($id, array_keys($allExports)) || !$allExports[ $id ] ) {
             throw oxNew(DataWizardException::class, 'no export with id '.$id, []);
         }
 

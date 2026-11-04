@@ -97,11 +97,16 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
             ->getMock();
         $renderMock->expects($this->atLeastOnce())->method('getTitleTranslationId')->willReturn($expected);
 
-        $this->callMethod(
-            $this->_oModel,
-            'translateRendererId',
-            [$renderMock]
-        );
+        $modelMock = $this->getMockBuilder(RendererBridge::class)
+            ->onlyMethods(['getRendererList'])
+            ->getMock();
+        $modelMock->expects($this->once())
+            ->method('getRendererList')
+            ->willReturn(['Pretty' => $renderMock]);
+
+        $translatedRendererIds = $modelMock->getTranslatedRendererIdList();
+
+        $this->assertSame(['Pretty' => $expected], $translatedRendererIds);
     }
 
     /**

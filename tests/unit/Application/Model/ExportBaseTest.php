@@ -23,6 +23,7 @@ use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\DataWizard\tests\tools\d3TestExport;
 use D3\ModCfg\Application\Model\d3filesystem;
+use D3\ModCfg\Application\Model\download;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Result;
@@ -212,7 +213,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $format = 'myFormat';
         $path = 'myPath';
 
-        $expectedException = oxNew(LazyAssertionException::class);
+        $expectedException = oxNew(LazyAssertionException::class, 'message', []);
 
         $modelMock = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods([
@@ -275,13 +276,11 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         /** @var d3filesystem|MockObject $fsMock */
         $fsMock = $this->getMockBuilder(d3filesystem::class)
             ->onlyMethods([
-                'startDirectDownload',
                 'filterFilename',
                 'trailingslashit',
                 'createFile',
             ])
             ->getMock();
-        $fsMock->expects($this->exactly((int) !isset($path)))->method('startDirectDownload')->willReturn(true);
         $fsMock->method('filterFilename')->willReturnArgument(0);
         $fsMock->expects($this->exactly((int) isset($path)))->method('trailingslashit')->willReturnArgument(0);
         $fsMock->expects($this->exactly((int) isset($path)))->method('createFile')->willReturn((bool) !$throwsException);
@@ -292,11 +291,21 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
                 'getContent',
                 'getFileSystem',
                 'getExportFileName',
+                'getDownload',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getContent')->willReturn('some content');
         $modelMock->expects($this->atLeastOnce())->method('getFileSystem')->willReturn($fsMock);
         $modelMock->expects($this->atLeastOnce())->method('getExportFileName')->willReturn('exportFileName');
+        if (is_null($path)) {
+            $downloadMock = $this->getMockBuilder(download::class)
+                ->onlyMethods(['startDownload'])
+                ->getMock();
+            $downloadMock->expects($this->once())
+                ->method('startDownload')
+                ->with('exportFileName', 'some content');
+            $modelMock->expects($this->once())->method('getDownload')->willReturn($downloadMock);
+        }
 
         $this->_oModel = $modelMock;
 
