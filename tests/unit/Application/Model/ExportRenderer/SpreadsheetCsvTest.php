@@ -21,6 +21,9 @@ use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use League\Csv\Reader;
 use OxidEsales\Eshop\Core\Config;
 
+/**
+ * @coversNothing
+ */
 class SpreadsheetCsvTest extends d3ModCfgUnitTestCase
 {
     /**
@@ -44,7 +47,7 @@ class SpreadsheetCsvTest extends d3ModCfgUnitTestCase
             yield ['＝1', ' ＠command'];
             yield ['normal;"quoted"', "safe\nnext line"];
             yield [42, null];
-            yield [new class implements \Stringable {
+            yield [new class () implements \Stringable {
                 public function __toString(): string
                 {
                     return '=1+1';

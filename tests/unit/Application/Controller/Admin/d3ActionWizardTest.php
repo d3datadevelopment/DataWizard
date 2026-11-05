@@ -34,6 +34,9 @@ use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class d3ActionWizardTest extends d3AdminController
 {
     /** @var d3ActionWizard */
@@ -172,10 +175,10 @@ class d3ActionWizardTest extends d3AdminController
 
     public function executePassRequestCallback($varName)
     {
-        return match ( $varName ) {
+        return match ($varName) {
             'taskid' => 'testTaskId',
             'format' => RendererBridge::FORMAT_CSV,
-            default => oxNew( Request::class )->getRequestEscapedParameter( $varName ),
+            default => oxNew(Request::class)->getRequestEscapedParameter($varName),
         };
     }
 

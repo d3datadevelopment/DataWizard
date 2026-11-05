@@ -19,6 +19,9 @@ use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\ExportRenderer\Json;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class JsonTest extends ExportRendererTest
 {
     /** @var Json */

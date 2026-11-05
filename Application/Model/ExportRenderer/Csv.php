@@ -25,7 +25,8 @@ use OxidEsales\Eshop\Core\Registry;
 class Csv implements StreamingRendererInterface
 {
     public function __construct(protected bool $forceEnclose = false)
-    {}
+    {
+    }
 
     /**
      * @param iterable $rows

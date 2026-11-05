@@ -22,7 +22,7 @@ class TaskException extends DataWizardException
 {
     public QueryBase $task;
 
-    public function __construct(QueryBase $task, $message = "not set", Exception $previous = null )
+    public function __construct(QueryBase $task, $message = "not set", Exception $previous = null)
     {
         $message = implode(
             ' - ',
@@ -32,7 +32,7 @@ class TaskException extends DataWizardException
             ]
         );
 
-        parent::__construct( $message, [$previous] );
+        parent::__construct($message, [$previous]);
 
         $this->task = $task;
     }

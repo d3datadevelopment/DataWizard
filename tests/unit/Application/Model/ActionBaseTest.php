@@ -31,6 +31,9 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class ActionBaseTest extends d3ModCfgUnitTestCase
 {
     /** @var d3TestAction */

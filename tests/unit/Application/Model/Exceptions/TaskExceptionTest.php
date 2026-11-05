@@ -23,6 +23,9 @@ use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class TaskExceptionTest extends d3ModCfgUnitTestCase
 {
     /** @var TaskException */

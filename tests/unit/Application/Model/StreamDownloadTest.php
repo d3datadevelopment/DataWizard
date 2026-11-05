@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * https://www.d3data.de
+ *
+ * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
+ * @author    D3 Data Development - Daniel Seifert <info@shopmodule.com>
+ * @link      https://www.oxidmodule.com
+ */
+
 declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
@@ -7,6 +18,9 @@ namespace D3\DataWizard\tests\unit\Application\Model;
 use D3\DataWizard\Application\Model\StreamDownload;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 
+/**
+ * @coversNothing
+ */
 class StreamDownloadTest extends d3ModCfgUnitTestCase
 {
     /**
@@ -91,20 +105,20 @@ class StreamDownloadTest extends d3ModCfgUnitTestCase
         }
 
         $script = <<<'PHP'
-namespace D3\ModCfg\Application\Model {
-    class download {
-        public function getTypeByExtension(string $filename): string { return 'text/csv'; }
-    }
-}
-namespace {
-    require $argv[1];
-    $stream = fopen('php://temp', 'w+b');
-    fwrite($stream, 'export content');
-    rewind($stream);
-    (new \D3\DataWizard\Application\Model\StreamDownload())->startStreamDownload('export.csv', $stream);
-    echo 'unexpected continuation';
-}
-PHP;
+            namespace D3\ModCfg\Application\Model {
+                class download {
+                    public function getTypeByExtension(string $filename): string { return 'text/csv'; }
+                }
+            }
+            namespace {
+                require $argv[1];
+                $stream = fopen('php://temp', 'w+b');
+                fwrite($stream, 'export content');
+                rewind($stream);
+                (new \D3\DataWizard\Application\Model\StreamDownload())->startStreamDownload('export.csv', $stream);
+                echo 'unexpected continuation';
+            }
+            PHP;
         $source = dirname(__DIR__, 4) . '/Application/Model/StreamDownload.php';
         $pipes = [];
         $process = proc_open([PHP_BINARY, '-r', $script, $source], [

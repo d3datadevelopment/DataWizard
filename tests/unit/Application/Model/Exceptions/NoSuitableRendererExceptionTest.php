@@ -22,6 +22,9 @@ use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
 {
     /** @var NoSuitableRendererException */
@@ -37,7 +40,7 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
         $code = '0';
 
         $exception = oxNew(Exception::class);
-        
+
         $this->_oModel = oxNew(NoSuitableRendererException::class, 'testMessage', $exception);
 
         $this->assertStringContainsString(

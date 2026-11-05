@@ -25,6 +25,9 @@ use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class CsvTest extends ExportRendererTest
 {
     /** @var Csv */
@@ -196,9 +199,9 @@ class CsvTest extends ExportRendererTest
             ->getMock();
         $configMock->expects($this->atLeastOnce())->method('getConfigParam')->willReturnCallback(
             function ($argName) {
-                return match ( $argName ) {
+                return match ($argName) {
                     'sGiCsvFieldEncloser', 'sCSVSign' => null,
-                    default => Registry::getConfig()->getConfigParam( $argName ),
+                    default => Registry::getConfig()->getConfigParam($argName),
                 };
             }
         );
@@ -241,7 +244,7 @@ class CsvTest extends ExportRendererTest
             ->onlyMethods(['getConfigParam'])
             ->getMock();
         $configMock->method('getConfigParam')->willReturnCallback(
-            static fn(string $name): ?string => match ($name) {
+            static fn (string $name): ?string => match ($name) {
                 'sGiCsvFieldEncloser' => "'",
                 'sCSVSign' => '|',
                 default => null,
@@ -262,7 +265,7 @@ class CsvTest extends ExportRendererTest
     /** @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::configureCsv */
     public function testSubclassCanConfigureCsvWriter(): void
     {
-        $renderer = new class extends Csv {
+        $renderer = new class () extends Csv {
             public function configureFromSubclass(Writer $writer): void
             {
                 parent::configureCsv($writer);

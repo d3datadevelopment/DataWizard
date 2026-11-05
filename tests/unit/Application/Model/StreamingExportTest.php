@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * https://www.d3data.de
+ *
+ * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
+ * @author    D3 Data Development - Daniel Seifert <info@shopmodule.com>
+ * @link      https://www.oxidmodule.com
+ */
+
 declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
@@ -19,6 +30,9 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * @coversNothing
+ */
 class StreamingExportTest extends d3ModCfgUnitTestCase
 {
     /**
@@ -250,7 +264,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $this->assertNull($this->callMethod($custom, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
 
         $customRenderer = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getRenderer'])->getMock();
-        $customRenderer->method('getRenderer')->willReturn(new class extends Csv {});
+        $customRenderer->method('getRenderer')->willReturn(new class () extends Csv {});
         $this->assertNull($this->callMethod($customRenderer, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
     }
 
@@ -375,7 +389,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
     /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
     public function testSubclassCanUseTheStreamFileExtensionPoint(): void
     {
-        $export = new class extends d3TestExport {
+        $export = new class () extends d3TestExport {
             public function saveFromSubclass(string $path, $stream): string
             {
                 return parent::saveExportStream($path, $stream);

@@ -22,6 +22,9 @@ use OxidEsales\Eshop\Core\Registry;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class ExportFileExceptionTest extends d3ModCfgUnitTestCase
 {
     /** @var ExportFileException */

@@ -24,6 +24,9 @@ use FormManager\Inputs\Number;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
 {
     /** @var InputUnvalidException */

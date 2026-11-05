@@ -20,6 +20,9 @@ use MathieuViossat\Util\ArrayToTextTable;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class PrettyTest extends ExportRendererTest
 {
     /** @var Pretty */

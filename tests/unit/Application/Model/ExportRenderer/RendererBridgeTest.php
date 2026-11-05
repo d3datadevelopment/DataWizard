@@ -26,6 +26,9 @@ use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class RendererBridgeTest extends d3ModCfgUnitTestCase
 {
     /** @var RendererBridge */
@@ -146,8 +149,8 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     public function canGetRendererDataProvider(): array
     {
         return [
-            'existing renderer'=> [RendererBridge::FORMAT_JSON, false],
-            'unknown renderer'=> ['unknownRenderer', true],
+            'existing renderer' => [RendererBridge::FORMAT_JSON, false],
+            'unknown renderer' => ['unknownRenderer', true],
         ];
     }
 }

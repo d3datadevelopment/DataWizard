@@ -32,6 +32,9 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServ
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class d3ExportWizardTest extends d3AdminController
 {
     /** @var d3ExportWizard */
