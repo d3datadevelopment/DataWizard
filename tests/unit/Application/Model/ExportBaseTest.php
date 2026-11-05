@@ -27,7 +27,9 @@ use D3\ModCfg\Application\Model\download;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Result;
+use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Hidden;
+use FormManager\Inputs\Input;
 use FormManager\Inputs\Number;
 use FormManager\Inputs\Radio;
 use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
@@ -171,19 +173,19 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
      * @throws ReflectionException
      * @dataProvider canRegisterFormElementDataProvider
      */
-    public function canRegisterFormElement($inputClass)
+    public function canRegisterFormElement($inputClass, $expectedTemplate, $expectedClass)
     {
         $oldCount = count($this->getValue($this->_oModel, 'formElements'));
 
-        /** @var Radio|MockObject $inputMock */
+        /** @var Input|MockObject $inputMock */
         $inputMock = $this->getMockBuilder($inputClass)
             ->onlyMethods([
                 'setTemplate',
                 'setAttribute',
             ])
             ->getMock();
-        $inputMock->expects($this->atLeastOnce())->method('setTemplate');
-        $inputMock->expects($this->atLeastOnce())->method('setAttribute');
+        $inputMock->expects($this->once())->method('setTemplate')->with($expectedTemplate);
+        $inputMock->expects($this->once())->method('setAttribute')->with('class', $expectedClass);
 
         $this->callMethod(
             $this->_oModel,
@@ -193,7 +195,8 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
 
         $newCount = count($this->getValue($this->_oModel, 'formElements'));
 
-        $this->assertGreaterThan($oldCount, $newCount);
+        $this->assertSame($oldCount + 1, $newCount);
+        $this->assertSame($inputMock, $this->_oModel->getFormElements()[$oldCount]);
     }
 
     /**
@@ -202,9 +205,9 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     public function canRegisterFormElementDataProvider(): array
     {
         return [
-            'Radio' => [Radio::class],
-            'Checkbox' => [Radio::class],
-            'Hidden' => [Hidden::class],
+            'Radio' => [Radio::class, '<p class="form-check">{{ input }} {{ label }}</p>', 'form-check-input'],
+            'Checkbox' => [Checkbox::class, '<p class="form-check">{{ input }} {{ label }}</p>', 'form-check-input'],
+            'Hidden' => [Hidden::class, '<p class="formElements">{{ label }} {{ input }}</p>', 'form-control'],
         ];
     }
 
@@ -312,12 +315,10 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             ->onlyMethods([
                 'filterFilename',
                 'trailingslashit',
-                'createFile',
             ])
             ->getMock();
         $fsMock->method('filterFilename')->willReturnArgument(0);
         $fsMock->expects($this->exactly((int) isset($path)))->method('trailingslashit')->willReturnArgument(0);
-        $fsMock->expects($this->exactly((int) isset($path)))->method('createFile')->willReturn((bool) !$throwsException);
 
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)
@@ -326,11 +327,23 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
                 'getFileSystem',
                 'getExportFileName',
                 'getDownload',
+                'saveExportFile',
             ])
             ->getMock();
         $modelMock->expects($this->atLeastOnce())->method('getContent')->willReturn('some content');
         $modelMock->expects($this->atLeastOnce())->method('getFileSystem')->willReturn($fsMock);
         $modelMock->expects($this->atLeastOnce())->method('getExportFileName')->willReturn('exportFileName');
+        if (isset($path)) {
+            $save = $modelMock->expects($this->once())->method('saveExportFile')
+                ->with('myPathexportFileName', 'some content');
+            if ($throwsException) {
+                $save->willThrowException(oxNew(ExportFileException::class, 'myPathexportFileName'));
+            } else {
+                $save->willReturn('myPathexportFileName');
+            }
+        } else {
+            $modelMock->expects($this->never())->method('saveExportFile');
+        }
         if (is_null($path)) {
             $downloadMock = $this->getMockBuilder(download::class)
                 ->onlyMethods(['startDownload'])
@@ -347,11 +360,12 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             $this->expectException(ExportFileException::class);
         }
 
-        $this->callMethod(
+        $result = $this->callMethod(
             $this->_oModel,
             'executeExport',
             ['CSV', $path]
         );
+        $this->assertSame(isset($path) ? 'myPathexportFileName' : '', $result);
     }
 
     /**
@@ -364,6 +378,163 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             'can create path for saving file'   => ['myPath', false],
             'no path for download'   => [null, false],
         ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportPreservesExistingFileOnCollision(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'd3export_');
+        $this->assertNotFalse($path);
+        file_put_contents($path, 'existing');
+        $createdPath = null;
+
+        try {
+            $createdPath = $this->callMethod($this->_oModel, 'saveExportFile', [$path, 'new export']);
+            $this->assertNotSame($path, $createdPath);
+            $this->assertSame('existing', file_get_contents($path));
+            $this->assertSame('new export', file_get_contents($createdPath));
+        } finally {
+            if ($createdPath !== null && is_file($createdPath)) {
+                unlink($createdPath);
+            }
+            unlink($path);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportReportsUnwritableTarget(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'd3export_');
+        $this->assertNotFalse($path);
+
+        try {
+            $this->expectException(ExportFileException::class);
+            $this->callMethod($this->_oModel, 'saveExportFile', [$path . '/export.csv', 'content']);
+        } finally {
+            unlink($path);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportRejectsRemoteStream(): void
+    {
+        $this->expectException(ExportFileException::class);
+        $this->callMethod($this->_oModel, 'saveExportFile', ['https://example.invalid/export.csv', 'content']);
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportRemovesIncompleteFileOnWriteFailure(): void
+    {
+        $scheme = 'd3exportwritefailure';
+        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
+        FailingExportStream::$mode = 'write';
+        FailingExportStream::$removedPaths = [];
+
+        try {
+            try {
+                $this->callMethod($this->_oModel, 'saveExportFile', [$scheme . '://export.csv', 'content']);
+                $this->fail('A write failure must raise an export exception.');
+            } catch (ExportFileException $exception) {
+                $this->assertSame([$scheme . '://export.csv'], FailingExportStream::$removedPaths);
+            }
+        } finally {
+            stream_wrapper_unregister($scheme);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportHandlesPartialWrites(): void
+    {
+        $scheme = 'd3exportpartial';
+        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
+        FailingExportStream::$mode = 'partial';
+        FailingExportStream::$writtenContent = '';
+
+        $fsMock = $this->getMockBuilder(d3filesystem::class)->onlyMethods(['chmod'])->getMock();
+        $fsMock->expects($this->once())->method('chmod')->with($scheme . '://export.csv')->willReturn(true);
+        $modelMock = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getFileSystem'])->getMock();
+        $modelMock->method('getFileSystem')->willReturn($fsMock);
+
+        try {
+            $result = $this->callMethod($modelMock, 'saveExportFile', [$scheme . '://export.csv', 'content']);
+            $this->assertSame($scheme . '://export.csv', $result);
+            $this->assertSame('content', FailingExportStream::$writtenContent);
+        } finally {
+            stream_wrapper_unregister($scheme);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportRemovesFileWhenClosingFails(): void
+    {
+        $scheme = 'd3exportclosefailure';
+        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
+        FailingExportStream::$mode = 'partial';
+        FailingExportStream::$removedPaths = [];
+
+        $modelMock = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['closeExportFile'])->getMock();
+        $modelMock->expects($this->once())->method('closeExportFile')->willReturnCallback(
+            static function ($handle): bool {
+                fclose($handle);
+                return false;
+            }
+        );
+
+        try {
+            try {
+                $this->callMethod($modelMock, 'saveExportFile', [$scheme . '://export.csv', 'content']);
+                $this->fail('A close failure must raise an export exception.');
+            } catch (ExportFileException $exception) {
+                $this->assertSame([$scheme . '://export.csv'], FailingExportStream::$removedPaths);
+            }
+        } finally {
+            stream_wrapper_unregister($scheme);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::closeExportFile
+     */
+    public function testCloseExportFileClosesStream(): void
+    {
+        $handle = fopen('php://temp', 'w+b');
+        $this->assertNotFalse($handle);
+        $this->assertTrue($this->callMethod($this->_oModel, 'closeExportFile', [$handle]));
+        $this->assertFalse(is_resource($handle));
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     */
+    public function testFileExportStopsAfterRepeatedCollisions(): void
+    {
+        $scheme = 'd3exportcollision';
+        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
+        FailingExportStream::$mode = 'collision';
+        FailingExportStream::$openAttempts = 0;
+
+        try {
+            try {
+                $this->callMethod($this->_oModel, 'saveExportFile', [$scheme . '://export.csv', 'content']);
+                $this->fail('Repeated collisions must raise an export exception.');
+            } catch (ExportFileException $exception) {
+                $this->assertSame(10, FailingExportStream::$openAttempts);
+            }
+        } finally {
+            stream_wrapper_unregister($scheme);
+        }
     }
 
     /**
@@ -684,5 +855,50 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
                 ['CSV']
             )
         );
+    }
+}
+
+/** Local stream wrapper used to simulate filesystem failures without touching real files. */
+class FailingExportStream
+{
+    public $context;
+    public static string $mode = '';
+    public static int $openAttempts = 0;
+    public static array $removedPaths = [];
+    public static string $writtenContent = '';
+
+    public function stream_open(string $path, string $mode, int $options, ?string &$openedPath): bool
+    {
+        self::$openAttempts++;
+        return self::$mode === 'write' || self::$mode === 'partial';
+    }
+
+    public function stream_write(string $data): int
+    {
+        if (self::$mode === 'partial') {
+            $part = substr($data, 0, 2);
+            self::$writtenContent .= $part;
+            return strlen($part);
+        }
+        return 0;
+    }
+
+    public function stream_close(): void
+    {
+    }
+
+    public function url_stat(string $path, int $flags): array|false
+    {
+        if (self::$mode !== 'collision') {
+            return false;
+        }
+
+        return [2 => 0100644, 'mode' => 0100644];
+    }
+
+    public function unlink(string $path): bool
+    {
+        self::$removedPaths[] = $path;
+        return true;
     }
 }
