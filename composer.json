@@ -34,8 +34,8 @@
     "beberlei/assert": "^3.3.2"
   },
   "require-dev": {
-    "d3/testingtools": "^1.2.0.0",
-    "phpunit/phpunit": "^9.1.1"
+    "d3/testingtools": "^1.3.0.1",
+    "phpunit/phpunit": "^9.6.0"
   },
   "suggest": {
     "d3/datawizardtasks": "useful example tasks for Data Wizard",
@@ -49,8 +49,8 @@
   },
   "extra": {
     "commands":{
-      "phpunit": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --no-coverage",
-      "phpunit-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/ --coverage-html=vendor/d3/datawizard/tests/result/coverage"
+      "phpunit": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/.ci-tools/phpunit.xml --no-coverage",
+      "phpunit-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --config=vendor/d3/datawizard/.ci-tools/phpunit.xml --coverage-html=vendor/d3/datawizard/tests/result/coverage"
     }
   }
 }
