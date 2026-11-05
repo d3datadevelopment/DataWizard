@@ -57,6 +57,8 @@ Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten die Erge
 
 ## Erweiterbarkeit
 
+Nach einer erfolgreich ausgeführten Standard-Action liefert `getActionResult()` ein `ActionResult` mit der Anzahl betroffener Zeilen über `getAffectedRows()`. Vor der Ausführung und nach einem Fehler ist das Ergebnis `null`; Fehler werden weiterhin als Exceptions gemeldet. Die Signaturen von `run()` und `executeAction()` bleiben unverändert. Eigene Actions, die diese Methoden überschreiben, können das geschützte Feld `$actionResult` selbst setzen.
+
 Das Modul stellt das technische Grundgerüst der Exporte dar und erhebt keinen Anspruch auf Vollständigkeit. Um den Umfang an die individuellen Anforderungen anzupassen, sind folgende Erweiterungen vorbereitet:
 
 - Exporte oder Tasks hinzufügen

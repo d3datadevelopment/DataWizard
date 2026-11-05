@@ -38,6 +38,7 @@ class d3ActionWizard extends AdminDetailsController
     protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ActionWizard';
 
     protected Configuration $configuration;
+    protected ?string $actionSuccessMessage = null;
 
     public function __construct()
     {
@@ -69,6 +70,7 @@ class d3ActionWizard extends AdminDetailsController
      */
     public function runTask(): void
     {
+        $this->actionSuccessMessage = null;
         try {
             $this->execute();
         } catch (DataWizardException|DBALException $e) {
@@ -90,8 +92,10 @@ class d3ActionWizard extends AdminDetailsController
      */
     protected function execute(): void
     {
+        $this->actionSuccessMessage = null;
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $action = $this->configuration->getActionById($id);
+        $action->clearActionResult();
         $action->init();
 
         if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
@@ -105,6 +109,20 @@ class d3ActionWizard extends AdminDetailsController
         }
 
         $action->run();
+        $result = $action->getActionResult();
+        if ($result !== null) {
+            $affected = $result->getAffectedRows();
+            $translationId = $affected === 1 ? 'D3_DATAWIZARD_ERR_ACTIONRESULT' : 'D3_DATAWIZARD_ERR_ACTIONRESULTS';
+            $this->actionSuccessMessage = $action->getTitle() . ' - ' . sprintf(
+                Registry::getLang()->translateString($translationId),
+                $affected
+            );
+        }
+    }
+
+    public function getActionSuccessMessage(): ?string
+    {
+        return $this->actionSuccessMessage;
     }
 
     /**

@@ -46,6 +46,10 @@
 
 {{ script({ add: d3script, dynamic: __oxid_include_dynamic }) }}
 
+{% if actionSuccessMessage is defined and actionSuccessMessage is not empty %}
+    <div class="alert alert-success" role="status">{{ actionSuccessMessage|escape }}</div>
+{% endif %}
+
 <form name="myedit" id="myedit" action="{{ oViewConf.getSelfLink() }}" method="post" style="padding: 0;margin: 0;height:0;">
     {{ oViewConf.getHiddenSid()|raw }}
     <input type="hidden" name="cl" value="{{ oViewConf.getActiveClassName() }}">

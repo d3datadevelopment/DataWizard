@@ -33,6 +33,7 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class ActionBase implements QueryBase
 {
     protected array $formElements = [];
+    protected ?ActionResult $actionResult = null;
 
     public function init()
     {
@@ -57,6 +58,7 @@ abstract class ActionBase implements QueryBase
      */
     public function run(): void
     {
+        $this->clearActionResult();
         if ($this->hasFormElements()) {
             /** @var Input $element */
             foreach ($this->getFormElements() as $element) {
@@ -82,13 +84,14 @@ abstract class ActionBase implements QueryBase
      */
     public function executeAction(array $query): void
     {
+        $this->clearActionResult();
         [ $queryString, $parameters ] = $query;
 
         $queryString = trim($queryString);
 
         try {
             Assert::lazy()
-                ->that(trim($queryString))
+                ->that($queryString)
                 ->regex(
                     '/^(?!select)/i',
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_ACTIONSELECT')
@@ -99,19 +102,17 @@ abstract class ActionBase implements QueryBase
         }
 
         $affected = (int) $this->getConnection()->executeStatement($queryString, $parameters);
+        $this->actionResult = new ActionResult($affected);
+    }
 
-        /** @var TaskException $exception */
-        $exception = oxNew(
-            TaskException::class,
-            $this,
-            sprintf(
-                Registry::getLang()->translateString(
-                    $affected === 1 ? 'D3_DATAWIZARD_ERR_ACTIONRESULT' : 'D3_DATAWIZARD_ERR_ACTIONRESULTS'
-                ),
-                $affected
-            )
-        );
-        throw $exception;
+    public function getActionResult(): ?ActionResult
+    {
+        return $this->actionResult;
+    }
+
+    public function clearActionResult(): void
+    {
+        $this->actionResult = null;
     }
 
     protected function getConnection(): Connection

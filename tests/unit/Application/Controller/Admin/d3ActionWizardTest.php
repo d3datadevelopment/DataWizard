@@ -18,6 +18,7 @@ namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 use D3\DataWizard\Application\Controller\Admin\d3ActionWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
+use D3\DataWizard\Application\Model\ActionResult;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
@@ -26,7 +27,10 @@ use Doctrine\DBAL\Exception as DBALException;
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
+use OxidEsales\Eshop\Core\Language;
+use OxidEsales\Eshop\Core\UtilsView;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
+use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
@@ -145,6 +149,7 @@ class d3ActionWizardTest extends d3AdminController
         $actionMock->expects($this->exactly((int) $blDebug))->method('getQuery')->willReturn(['SELECT 1', ['1']]);
         $actionMock->expects($this->exactly((int) !$blDebug))->method('run');
         $actionMock->expects($this->once())->method('init');
+        $this->setValue($actionMock, 'actionResult', new ActionResult(5));
 
         /** @var Configuration|MockObject $configurationMock */
         $configurationMock = $this->getMockBuilder(Configuration::class)
@@ -162,6 +167,7 @@ class d3ActionWizardTest extends d3AdminController
             $this->_oController,
             'execute'
         );
+        $this->assertNull($this->_oController->getActionSuccessMessage());
     }
 
     public function executePassRequestCallback($varName)
@@ -182,6 +188,95 @@ class d3ActionWizardTest extends d3AdminController
             'no debug'  => [false],
             'debug'  => [true],
         ];
+    }
+
+    /**
+     * @dataProvider successfulActionResults
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::execute
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getActionSuccessMessage
+     */
+    public function testSuccessfulActionIsDisplayedWithoutLoggingAnError(
+        int $affected,
+        string $translationId,
+        string $expectedMessage
+    ): void {
+        $this->assertTrue((new \ReflectionMethod(d3ActionWizard::class, 'getActionSuccessMessage'))->isPublic());
+        $oldRequest = Registry::getRequest();
+        $oldLanguage = Registry::getLang();
+        $oldLogger = Registry::getLogger();
+        $oldUtilsView = Registry::getUtilsView();
+        $request = $this->getMockBuilder(Request::class)->onlyMethods(['getRequestEscapedParameter'])->getMock();
+        $request->method('getRequestEscapedParameter')->with('taskid')->willReturn('task-id');
+        $language = $this->getMockBuilder(Language::class)->onlyMethods(['translateString'])->getMock();
+        $language->expects($this->once())->method('translateString')->with($translationId)->willReturn('%s affected');
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->never())->method('error');
+        $utilsView = $this->getMockBuilder(UtilsView::class)->onlyMethods(['addErrorToDisplay'])->getMock();
+        $utilsView->expects($this->never())->method('addErrorToDisplay');
+        $settings = $this->getMockBuilder(ModuleSettingService::class)->disableOriginalConstructor()
+            ->onlyMethods(['getBoolean'])->getMock();
+        $settings->method('getBoolean')->willReturn(false);
+        $action = $this->getMockBuilder(d3TestAction::class)->onlyMethods(['run', 'init', 'getActionResult'])->getMock();
+        $action->expects($this->once())->method('init');
+        $action->expects($this->once())->method('run');
+        $action->method('getActionResult')->willReturn(new ActionResult($affected));
+        $configuration = $this->getMockBuilder(Configuration::class)->disableOriginalConstructor()
+            ->onlyMethods(['getActionById'])->getMock();
+        $configuration->method('getActionById')->with('task-id')->willReturn($action);
+        $controller = $this->getMockBuilder(d3ActionWizard::class)->onlyMethods(['getSettingsService'])->getMock();
+        $controller->method('getSettingsService')->willReturn($settings);
+        $this->setValue($controller, 'configuration', $configuration);
+
+        Registry::set(Request::class, $request);
+        Registry::set(Language::class, $language);
+        Registry::set('logger', $logger);
+        Registry::set(UtilsView::class, $utilsView);
+        try {
+            $controller->runTask();
+            $this->assertSame($expectedMessage, $controller->getActionSuccessMessage());
+        } finally {
+            Registry::set(Request::class, $oldRequest);
+            Registry::set(Language::class, $oldLanguage);
+            Registry::set('logger', $oldLogger);
+            Registry::set(UtilsView::class, $oldUtilsView);
+        }
+    }
+
+    public function successfulActionResults(): array
+    {
+        return [
+            'zero rows' => [0, 'D3_DATAWIZARD_ERR_ACTIONRESULTS', 'TestTitle - 0 affected'],
+            'one row' => [1, 'D3_DATAWIZARD_ERR_ACTIONRESULT', 'TestTitle - 1 affected'],
+            'multiple rows' => [3, 'D3_DATAWIZARD_ERR_ACTIONRESULTS', 'TestTitle - 3 affected'],
+        ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getActionSuccessMessage
+     */
+    public function testRunTaskClearsPreviousSuccessBeforeAnError(): void
+    {
+        $controller = $this->getMockBuilder(d3ActionWizard::class)->onlyMethods(['execute'])->getMock();
+        $controller->method('execute')->willThrowException(new DataWizardException('failed', []));
+        $this->setValue($controller, 'actionSuccessMessage', 'old success');
+
+        $oldLogger = Registry::getLogger();
+        $oldUtilsView = Registry::getUtilsView();
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with('failed');
+        $utilsView = $this->getMockBuilder(UtilsView::class)->onlyMethods(['addErrorToDisplay'])->getMock();
+        $utilsView->expects($this->once())->method('addErrorToDisplay');
+        Registry::set('logger', $logger);
+        Registry::set(UtilsView::class, $utilsView);
+        try {
+            $controller->runTask();
+            $this->assertNull($controller->getActionSuccessMessage());
+        } finally {
+            Registry::set('logger', $oldLogger);
+            Registry::set(UtilsView::class, $oldUtilsView);
+        }
     }
 
     /**

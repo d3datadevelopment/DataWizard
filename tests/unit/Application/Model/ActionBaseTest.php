@@ -20,11 +20,14 @@ use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use Doctrine\DBAL\Connection;
+use FormManager\Inputs\Checkbox;
 use FormManager\Inputs\Hidden;
+use FormManager\Inputs\Input;
 use FormManager\Inputs\Number;
 use FormManager\Inputs\Radio;
 use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
 use OxidEsales\Eshop\Core\Exception\StandardException;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
 
@@ -62,8 +65,10 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
      */
     public function canGetBoxTemplate(): void
     {
-        $this->assertStringStartsWith(
-            '@d3datawizard/admin/inc/wizardDefaultBox.',
+        $extension = ContainerFactory::getInstance()->getContainer()
+            ->getParameter('oxid_esales.templating.engine_template_extension');
+        $this->assertSame(
+            '@d3datawizard/admin/inc/wizardDefaultBox.' . $extension,
             $this->_oModel->getBoxTemplate()
         );
     }
@@ -150,19 +155,19 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
      * @throws ReflectionException
      * @dataProvider canRegisterFormElementDataProvider
      */
-    public function canRegisterFormElement($inputClass)
+    public function canRegisterFormElement($inputClass, $expectedTemplate, $expectedClass)
     {
         $oldCount = count($this->getValue($this->_oModel, 'formElements'));
 
-        /** @var Radio|MockObject $inputMock */
+        /** @var Input|MockObject $inputMock */
         $inputMock = $this->getMockBuilder($inputClass)
             ->onlyMethods([
                 'setTemplate',
                 'setAttribute',
             ])
             ->getMock();
-        $inputMock->expects($this->atLeastOnce())->method('setTemplate');
-        $inputMock->expects($this->atLeastOnce())->method('setAttribute');
+        $inputMock->expects($this->once())->method('setTemplate')->with($expectedTemplate);
+        $inputMock->expects($this->once())->method('setAttribute')->with('class', $expectedClass);
 
         $this->callMethod(
             $this->_oModel,
@@ -172,7 +177,8 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
 
         $newCount = count($this->getValue($this->_oModel, 'formElements'));
 
-        $this->assertGreaterThan($oldCount, $newCount);
+        $this->assertSame($oldCount + 1, $newCount);
+        $this->assertSame($inputMock, $this->_oModel->getFormElements()[$oldCount]);
     }
 
     /**
@@ -181,9 +187,9 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
     public function canRegisterFormElementDataProvider(): array
     {
         return [
-            'Radio' => [Radio::class],
-            'Checkbox' => [Radio::class],
-            'Hidden' => [Hidden::class],
+            'Radio' => [Radio::class, '<p class="form-check">{{ input }} {{ label }}</p>', 'form-check-input'],
+            'Checkbox' => [Checkbox::class, '<p class="form-check">{{ input }} {{ label }}</p>', 'form-check-input'],
+            'Hidden' => [Hidden::class, '<p class="formElements">{{ label }} {{ input }}</p>', 'form-control'],
         ];
     }
 
@@ -275,18 +281,23 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
 
     /**
      * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @covers \D3\DataWizard\Application\Model\ActionBase::clearActionResult
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getActionResult
+     * @covers \D3\DataWizard\Application\Model\ActionResult::__construct
+     * @covers \D3\DataWizard\Application\Model\ActionResult::getAffectedRows
      * @test
      * @throws ReflectionException
      * @dataProvider canExecuteActionDataProvider
      */
-    public function canExecuteAction($query, $throwsException)
+    public function canExecuteAction($query, $throwsException, $affectedRows)
     {
         /** @var Database|MockObject $connectionMock */
         $connectionMock = $this->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['executeStatement'])
             ->getMock();
-        $connectionMock->expects($this->exactly((int) !$throwsException))->method('executeStatement')->willReturn(1);
+        $connectionMock->expects($this->exactly((int) !$throwsException))->method('executeStatement')
+            ->with($query, ['parameters'])->willReturn($affectedRows);
 
         /** @var d3TestAction|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestAction::class)
@@ -296,19 +307,14 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
 
         $this->_oModel = $modelMock;
 
-        try {
-            $this->callMethod(
-                $this->_oModel,
-                'executeAction',
-                [[$query, ['parameters']]]
-            );
-        } catch (TaskException $e) {
-            if ($throwsException) {
-                $this->assertStringContainsString('keine SELECTs exportieren', $e->getMessage());
-            } else {
-                $this->assertStringContainsString('1 Eintrag verändert', $e->getMessage());
-            }
+        if ($throwsException) {
+            $this->expectException(TaskException::class);
         }
+
+        $this->assertNull($this->_oModel->getActionResult());
+        $this->_oModel->executeAction([$query, ['parameters']]);
+        $this->assertNotNull($this->_oModel->getActionResult());
+        $this->assertSame((int) $affectedRows, $this->_oModel->getActionResult()->getAffectedRows());
     }
 
     /**
@@ -317,9 +323,115 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
     public function canExecuteActionDataProvider(): array
     {
         return [
-            'Select throws exception'   => ['SELECT 1', true],
-            'Update dont throws exception'   => ['UPDATE 1', false],
+            'Select throws exception' => ['SELECT 1', true, 0],
+            'Select with whitespace throws exception' => [" \tSELECT 1 \n", true, 0],
+            'zero rows' => ['UPDATE 1', false, 0],
+            'one row' => ['UPDATE 1', false, 1],
+            'multiple rows' => ['UPDATE 1', false, 3],
+            'string row count' => ['UPDATE 1', false, '3'],
         ];
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getActionResult
+     */
+    public function testActionTrimsQueryBeforeExecutingIt(): void
+    {
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeStatement'])->getMock();
+        $connection->expects($this->once())->method('executeStatement')->with('UPDATE 1', [])->willReturn(1);
+        $action = $this->getMockBuilder(d3TestAction::class)->onlyMethods(['getConnection'])->getMock();
+        $action->method('getConnection')->willReturn($connection);
+
+        $action->executeAction([" \tUPDATE 1 \n", []]);
+        $this->assertSame(1, $action->getActionResult()->getAffectedRows());
+    }
+
+    /** @covers \D3\DataWizard\Application\Model\ActionBase::clearActionResult */
+    public function testActionResultCanBeClearedThroughPublicApi(): void
+    {
+        $this->assertTrue((new \ReflectionMethod($this->_oModel, 'clearActionResult'))->isPublic());
+        $this->setValue($this->_oModel, 'actionResult', new \D3\DataWizard\Application\Model\ActionResult(2));
+        $this->_oModel->clearActionResult();
+        $this->assertNull($this->_oModel->getActionResult());
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getActionResult
+     * @covers \D3\DataWizard\Application\Model\ActionResult::__construct
+     * @covers \D3\DataWizard\Application\Model\ActionResult::getAffectedRows
+     */
+    public function testFailedExecutionDoesNotKeepPreviousSuccessResult(): void
+    {
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeStatement'])->getMock();
+        $connection->expects($this->once())->method('executeStatement')->willReturn(2);
+        $action = $this->getMockBuilder(d3TestAction::class)->onlyMethods(['getConnection'])->getMock();
+        $action->method('getConnection')->willReturn($connection);
+        $action->executeAction(['UPDATE 1', []]);
+        $this->assertSame(2, $action->getActionResult()->getAffectedRows());
+
+        try {
+            $action->executeAction(['SELECT 1', []]);
+            $this->fail('SELECT must not be accepted as an action.');
+        } catch (TaskException $exception) {
+            $this->assertNull($action->getActionResult());
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getActionResult
+     */
+    public function testDatabaseFailureDoesNotProduceSuccessResult(): void
+    {
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeStatement'])->getMock();
+        $connection->method('executeStatement')->willThrowException(new \RuntimeException('database failed'));
+        $action = $this->getMockBuilder(d3TestAction::class)->onlyMethods(['getConnection'])->getMock();
+        $action->method('getConnection')->willReturn($connection);
+
+        try {
+            $action->executeAction(['UPDATE 1', []]);
+            $this->fail('The database failure must be propagated.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('database failed', $exception->getMessage());
+            $this->assertNull($action->getActionResult());
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::run
+     * @covers \D3\DataWizard\Application\Model\ActionBase::executeAction
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getActionResult
+     */
+    public function testRunClearsPreviousResultBeforePreparingNextQuery(): void
+    {
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeStatement'])->getMock();
+        $connection->expects($this->once())->method('executeStatement')->willReturn(1);
+        $action = $this->getMockBuilder(d3TestAction::class)
+            ->onlyMethods(['getConnection', 'getQuery'])->getMock();
+        $action->method('getConnection')->willReturn($connection);
+        $calls = 0;
+        $action->method('getQuery')->willReturnCallback(static function () use (&$calls): array {
+            if ($calls++ === 0) {
+                return ['UPDATE 1', []];
+            }
+            throw new \RuntimeException('query preparation failed');
+        });
+
+        $action->run();
+        $this->assertSame(1, $action->getActionResult()->getAffectedRows());
+        try {
+            $action->run();
+            $this->fail('The query preparation failure must be propagated.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('query preparation failed', $exception->getMessage());
+            $this->assertNull($action->getActionResult());
+        }
     }
 
     /**

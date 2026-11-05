@@ -51,6 +51,10 @@
 [{/strip}][{/capture}]
 [{oxscript add=$smarty.capture.d3script}]
 
+[{if isset($actionSuccessMessage) && $actionSuccessMessage}]
+    <div class="alert alert-success" role="status">[{$actionSuccessMessage|escape}]</div>
+[{/if}]
+
 [{assign var="groups" value=$oView->getGroups()}]
 [{if $groups|@count}]
     <div id="accordion">

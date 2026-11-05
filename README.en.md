@@ -56,6 +56,8 @@ The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process result rows inc
 
 ## Extensibility
 
+After a standard action completes successfully, `getActionResult()` returns an `ActionResult` whose `getAffectedRows()` method reports the affected row count. Before execution and after an error the result is `null`; errors continue to be reported as exceptions. The signatures of `run()` and `executeAction()` are unchanged. Custom actions overriding these methods can set the protected `$actionResult` property themselves.
+
 The module represents the technical basic framework of the exports and does not claim to be complete. In order to adapt the scope to individual requirements, the following extensions are prepared:
 
 - Add exports or tasks
