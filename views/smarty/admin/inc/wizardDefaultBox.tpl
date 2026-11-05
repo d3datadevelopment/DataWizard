@@ -10,7 +10,7 @@
                 <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
                 <input type="hidden" name="fnc" value="runTask">
                 <input type="hidden" name="taskid" value="[{$id}]">
-                <input type="hidden" name="format" value="CSV">
+                <input type="hidden" name="format" value="CSV_SPREADSHEET">
 
 
                 [{if $item->getDescription()}]

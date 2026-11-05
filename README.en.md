@@ -31,7 +31,7 @@ This package requires an Composer installed OXID eShop as defined in [composer.j
 Open a command line interface and navigate to the shop root directory (parent of source and vendor). Execute the following command. Adapt the paths to your environment.
 
 ```bash
-php composer require d3/datawizard:^2.0
+php composer require d3/datawizard:^3.0
 ``` 
 
 Activate the module in the admin area of the shop in "Extensions -> Modules".
@@ -44,9 +44,9 @@ Log in to the admin area of your shop and navigate to "D³ Modules -> Data Wizar
 
 ### CSV and spreadsheets
 
-The default `CSV` (raw data) export leaves field names and values unchanged for machine processing. It does not protect spreadsheet users from formulas.
+The primary export button in the admin area uses `CSV (for spreadsheets)`; admin requests without a format use it as well. The format menu still offers `CSV` (raw data), which leaves field names and values unchanged for machine processing. Raw CSV does not protect spreadsheet users from formulas. Programmatic calls continue to default to `CSV`.
 
-The format menu also offers `CSV (for spreadsheets)`, with the technical format name `CSV_SPREADSHEET`. It prefixes suspicious field names and values with an apostrophe, including formula characters following leading whitespace or control characters. This changes the exported data: for example, the text `-123` becomes `'-123`. The CSV writer still handles delimiters and quotation marks.
+The technical name of the spreadsheet format is `CSV_SPREADSHEET`. It prefixes suspicious field names and values with an apostrophe, including formula characters following leading whitespace or control characters. This changes the exported data: for example, the text `-123` becomes `'-123`. The CSV writer still handles delimiters and quotation marks.
 
 Behavior depends on the spreadsheet application and its import and save settings. In particular, saving or exporting again can change the protective prefix; the format cannot guarantee safety in every application or subsequent processing step. Use the raw format when unchanged data is required.
 

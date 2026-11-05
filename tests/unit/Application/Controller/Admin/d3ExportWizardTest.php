@@ -191,6 +191,53 @@ class d3ExportWizardTest extends d3AdminController
     }
 
     /**
+     * @dataProvider adminExportFormats
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::execute
+     */
+    public function testAdminExportUsesRequestedOrSpreadsheetDefaultFormat($requested, string $expected): void
+    {
+        $oldRequest = Registry::getRequest();
+        $request = $this->getMockBuilder(Request::class)
+            ->onlyMethods(['getRequestEscapedParameter'])->getMock();
+        $request->method('getRequestEscapedParameter')->willReturnCallback(
+            static function ($name) use ($requested) {
+                return $name === 'taskid' ? 'testTaskId' : $requested;
+            }
+        );
+        $settings = $this->getMockBuilder(ModuleSettingService::class)->disableOriginalConstructor()
+            ->onlyMethods(['getBoolean'])->getMock();
+        $settings->method('getBoolean')->willReturn(false);
+        $export = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['run', 'init'])->getMock();
+        $export->expects($this->once())->method('init');
+        $export->expects($this->once())->method('run')->with($expected)->willReturn('');
+        $configuration = $this->getMockBuilder(Configuration::class)->disableOriginalConstructor()
+            ->onlyMethods(['getExportById'])->getMock();
+        $configuration->expects($this->once())->method('getExportById')->with('testTaskId')->willReturn($export);
+        $controller = $this->getMockBuilder(d3ExportWizard::class)->onlyMethods(['getSettingsService'])->getMock();
+        $controller->method('getSettingsService')->willReturn($settings);
+        $this->setValue($controller, 'configuration', $configuration);
+
+        Registry::set(Request::class, $request);
+        try {
+            $this->callMethod($controller, 'execute');
+        } finally {
+            Registry::set(Request::class, $oldRequest);
+        }
+    }
+
+    public function adminExportFormats(): array
+    {
+        return [
+            'missing format' => [null, RendererBridge::FORMAT_CSV_SPREADSHEET],
+            'empty format' => ['', RendererBridge::FORMAT_CSV_SPREADSHEET],
+            'spreadsheet CSV' => [RendererBridge::FORMAT_CSV_SPREADSHEET, RendererBridge::FORMAT_CSV_SPREADSHEET],
+            'explicit raw CSV' => [RendererBridge::FORMAT_CSV, RendererBridge::FORMAT_CSV],
+            'explicit JSON' => [RendererBridge::FORMAT_JSON, RendererBridge::FORMAT_JSON],
+            'unknown format is passed through' => ['unknown', 'unknown'],
+        ];
+    }
+
+    /**
      * @return array
      */
     public function runTaskFailedDataProvider(): array

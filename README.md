@@ -45,9 +45,9 @@ Melden Sie sich im Adminbereich Ihres Shops an und navigieren Sie zu "D³ Module
 
 ### CSV und Tabellenkalkulation
 
-Der Standardexport `CSV` (Rohdaten) gibt Feldnamen und Werte unverändert aus und eignet sich für die maschinelle Weiterverarbeitung. Er schützt nicht vor Formeln in Tabellenkalkulationsprogrammen.
+Der primäre Export-Button im Adminbereich verwendet `CSV (für Tabellenkalkulation)`; das gilt auch für Admin-Anfragen ohne Formatangabe. Das Formatmenü bietet weiterhin `CSV` (Rohdaten), das Feldnamen und Werte unverändert für die maschinelle Weiterverarbeitung ausgibt. Rohdaten-CSV schützt nicht vor Formeln in Tabellenkalkulationsprogrammen. Bei programmatischen Aufrufen bleibt `CSV` das Standardformat.
 
-Im Formatmenü steht zusätzlich `CSV (für Tabellenkalkulation)` zur Verfügung; der technische Formatname ist `CSV_SPREADSHEET`. Dieses Format stellt verdächtigen Feldnamen und Werten ein Apostroph voran, auch wenn Formelzeichen erst nach führenden Leer- oder Steuerzeichen auftreten. Dadurch verändern sich die exportierten Daten: Beispielsweise wird der Text `-123` zu `'-123`. Trennzeichen und Anführungszeichen werden weiterhin vom CSV-Writer kodiert.
+Der technische Name des Tabellenkalkulationsformats ist `CSV_SPREADSHEET`. Dieses Format stellt verdächtigen Feldnamen und Werten ein Apostroph voran, auch wenn Formelzeichen erst nach führenden Leer- oder Steuerzeichen auftreten. Dadurch verändern sich die exportierten Daten: Beispielsweise wird der Text `-123` zu `'-123`. Trennzeichen und Anführungszeichen werden weiterhin vom CSV-Writer kodiert.
 
 Das Verhalten hängt vom Tabellenkalkulationsprogramm und dessen Import- und Speicheroptionen ab. Insbesondere kann ein erneutes Speichern oder Exportieren Schutzzeichen verändern; eine universelle Garantie für alle Programme und nachfolgenden Verarbeitungsschritte besteht nicht. Für unveränderte Daten das Rohdatenformat verwenden.
 

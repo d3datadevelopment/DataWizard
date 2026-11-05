@@ -1,8 +1,9 @@
 [{block name="submitElements"}]
     <div class="btn-group" [{$readonly}]>
-        <button type="button" class="btn btn-primary" onclick="startTask('[{$id}]', 'CSV')" [{$readonly}]>
+        <button type="button" class="btn btn-primary" onclick="startTask('[{$id}]', 'CSV_SPREADSHEET')" [{$readonly}]>
             <i class="fas fa-fw fa-magic"></i>
             [{oxmultilang ident=$item->getButtonText()}]
+            ([{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET"}])
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [{$readonly}]>
             <span class="visually-hidden">
