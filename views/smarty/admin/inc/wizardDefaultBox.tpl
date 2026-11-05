@@ -21,7 +21,7 @@
                 <p class="card-text">[{$description}]</p>
                 [{else}]
                 [{assign var="shorttext" value=$description|truncate:$sectionlength:''}]
-                <p class="card-text" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="cursor: pointer">
+                <p class="card-text" data-bs-toggle="collapse" data-bs-target="#collapseExample_[{$id}]" aria-expanded="false" aria-controls="collapseExample_[{$id}]" style="cursor: pointer">
                     [{$shorttext}]...
                 </p>
                 <p class="card-text collapse" id="collapseExample_[{$id}]">

@@ -4,8 +4,8 @@
             <i class="fas fa-fw fa-magic"></i>
             [{oxmultilang ident=$item->getButtonText()}]
         </button>
-        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [{$readonly}]>
-            <span class="sr-only">
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [{$readonly}]>
+            <span class="visually-hidden">
                 <i class="fas fa-fw fa-magic"></i>
                 [{oxmultilang ident=$item->getButtonText()}]
             </span>

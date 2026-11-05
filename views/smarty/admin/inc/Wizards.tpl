@@ -1,10 +1,7 @@
 [{include file="headitem.tpl" title="GENERAL_ADMIN_TITLE"|oxmultilangassign}]
 
-[{oxstyle include="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"}]
-[{oxscript include="https://code.jquery.com/jquery-3.2.1.slim.min.js"}]
-[{oxscript include="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"}]
-[{oxscript include="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"}]
-[{oxstyle include="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css"}]
+[{oxstyle include=$oViewConf->getModuleUrl('d3datawizard', 'out/admin/src/css/bootstrap.min.css')}]
+[{oxscript include=$oViewConf->getModuleUrl('d3datawizard', 'out/admin/src/js/bootstrap.bundle.min.js')}]
 
 [{if $readonly}]
     [{assign var="readonly" value="readonly disabled"}]
@@ -61,13 +58,13 @@
             <div class="card mb-2">
                 <div class="card-header p-1" id="heading[{$group}]">
                     <h4 class="mb-0">
-                        <span class="btn p-1" data-toggle="collapse" data-target="#collapse[{$group}]" aria-expanded="false" aria-controls="collapse[{$group}]">
+                        <span class="btn p-1" data-bs-toggle="collapse" data-bs-target="#collapse[{$group}]" aria-expanded="false" aria-controls="collapse[{$group}]">
                             [{oxmultilang ident=$group}]
                         </span>
                     </h4>
                 </div>
 
-                <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-parent="#accordion">
+                <div id="collapse[{$group}]" class="collapse" aria-labelledby="heading[{$group}]" data-bs-parent="#accordion">
                     <div class="card-body pb-0">
                         <div class="row">
                             [{foreach from=$oView->getGroupTasks($group) key="id" item="item"}]
