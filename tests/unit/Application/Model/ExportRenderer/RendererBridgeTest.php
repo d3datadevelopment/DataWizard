@@ -21,6 +21,7 @@ use D3\DataWizard\Application\Model\ExportRenderer\Json;
 use D3\DataWizard\Application\Model\ExportRenderer\Pretty;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
+use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
 use D3\ModCfg\Tests\unit\d3ModCfgUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
@@ -56,6 +57,13 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
         $this->assertIsArray($list);
         $this->assertArrayHasKey(RendererBridge::FORMAT_CSV, $list);
         $this->assertInstanceOf(Csv::class, $list[RendererBridge::FORMAT_CSV]);
+        $this->assertArrayHasKey(RendererBridge::FORMAT_CSV_SPREADSHEET, $list);
+        $this->assertInstanceOf(SpreadsheetCsv::class, $list[RendererBridge::FORMAT_CSV_SPREADSHEET]);
+        $this->assertInstanceOf(SpreadsheetCsv::class, $this->_oModel->getRenderer('csv_spreadsheet'));
+        $this->assertSame(
+            'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET',
+            $this->_oModel->getTranslatedRendererIdList()[RendererBridge::FORMAT_CSV_SPREADSHEET]
+        );
     }
 
     /**

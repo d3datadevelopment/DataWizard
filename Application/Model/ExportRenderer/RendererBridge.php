@@ -20,6 +20,7 @@ use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
 class RendererBridge
 {
     public const FORMAT_CSV    = 'CSV';
+    public const FORMAT_CSV_SPREADSHEET = 'CSV_SPREADSHEET';
     public const FORMAT_PRETTY = 'Pretty';
     public const FORMAT_JSON   = 'JSON';
 
@@ -30,6 +31,7 @@ class RendererBridge
     {
         return [
             self::FORMAT_CSV    => oxNew(Csv::class),
+            self::FORMAT_CSV_SPREADSHEET => oxNew(SpreadsheetCsv::class),
             self::FORMAT_PRETTY => oxNew(Pretty::class),
             self::FORMAT_JSON   => oxNew(Json::class),
         ];

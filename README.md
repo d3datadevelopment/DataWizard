@@ -43,6 +43,14 @@ Dieses Paket enthält keine Exporte oder Aktionen. In [Erweiterungspakete](#erwe
 
 Melden Sie sich im Adminbereich Ihres Shops an und navigieren Sie zu "D³ Module -> Data Wizard". Wechseln Sie je nach Wunsch zu "Exporte" oder "Aktionen". Wählen Sie den gewünschten Eintrag und starten Sie den Export bzw. die Aktion.
 
+### CSV und Tabellenkalkulation
+
+Der Standardexport `CSV` (Rohdaten) gibt Feldnamen und Werte unverändert aus und eignet sich für die maschinelle Weiterverarbeitung. Er schützt nicht vor Formeln in Tabellenkalkulationsprogrammen.
+
+Im Formatmenü steht zusätzlich `CSV (für Tabellenkalkulation)` zur Verfügung; der technische Formatname ist `CSV_SPREADSHEET`. Dieses Format stellt verdächtigen Feldnamen und Werten ein Apostroph voran, auch wenn Formelzeichen erst nach führenden Leer- oder Steuerzeichen auftreten. Dadurch verändern sich die exportierten Daten: Beispielsweise wird der Text `-123` zu `'-123`. Trennzeichen und Anführungszeichen werden weiterhin vom CSV-Writer kodiert.
+
+Das Verhalten hängt vom Tabellenkalkulationsprogramm und dessen Import- und Speicheroptionen ab. Insbesondere kann ein erneutes Speichern oder Exportieren Schutzzeichen verändern; eine universelle Garantie für alle Programme und nachfolgenden Verarbeitungsschritte besteht nicht. Für unveränderte Daten das Rohdatenformat verwenden.
+
 ## Erweiterbarkeit
 
 Das Modul stellt das technische Grundgerüst der Exporte dar und erhebt keinen Anspruch auf Vollständigkeit. Um den Umfang an die individuellen Anforderungen anzupassen, sind folgende Erweiterungen vorbereitet:

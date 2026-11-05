@@ -42,6 +42,14 @@ These package doesn't contain any export or action items. See [Extension package
 
 Log in to the admin area of your shop and navigate to "D³ Modules -> Data Wizard". Go to "Exports" or "Actions" (as desired). Choose your desired item and export or execute it.
 
+### CSV and spreadsheets
+
+The default `CSV` (raw data) export leaves field names and values unchanged for machine processing. It does not protect spreadsheet users from formulas.
+
+The format menu also offers `CSV (for spreadsheets)`, with the technical format name `CSV_SPREADSHEET`. It prefixes suspicious field names and values with an apostrophe, including formula characters following leading whitespace or control characters. This changes the exported data: for example, the text `-123` becomes `'-123`. The CSV writer still handles delimiters and quotation marks.
+
+Behavior depends on the spreadsheet application and its import and save settings. In particular, saving or exporting again can change the protective prefix; the format cannot guarantee safety in every application or subsequent processing step. Use the raw format when unchanged data is required.
+
 ## Extensibility
 
 The module represents the technical basic framework of the exports and does not claim to be complete. In order to adapt the scope to individual requirements, the following extensions are prepared:
