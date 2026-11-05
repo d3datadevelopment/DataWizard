@@ -29,6 +29,11 @@ class SpreadsheetCsv extends Csv
         return 'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET';
     }
 
+    public function writeContent($stream, iterable $rows, iterable $fieldNames): void
+    {
+        parent::writeContent($stream, $this->escapeRows($rows), $this->escapeValues($fieldNames));
+    }
+
     private function escapeRows(iterable $rows): iterable
     {
         foreach ($rows as $row) {

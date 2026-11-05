@@ -232,6 +232,7 @@ class CsvTest extends ExportRendererTest
 
     /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::configureCsv
      * @test
      */
     public function canUseConfiguredEnclosureAndDelimiter(): void
@@ -256,6 +257,21 @@ class CsvTest extends ExportRendererTest
 
         $this->assertSame("'", $csv->getEnclosure());
         $this->assertSame('|', $csv->getDelimiter());
+    }
+
+    /** @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::configureCsv */
+    public function testSubclassCanConfigureCsvWriter(): void
+    {
+        $renderer = new class extends Csv {
+            public function configureFromSubclass(Writer $writer): void
+            {
+                parent::configureCsv($writer);
+            }
+        };
+        $writer = Writer::fromString();
+        $renderer->configureFromSubclass($writer);
+
+        $this->assertNotSame('', $writer->getDelimiter());
     }
 
     /**

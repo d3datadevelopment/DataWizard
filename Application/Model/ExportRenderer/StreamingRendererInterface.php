@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @copyright (C) D3 Data Development (Inh. Thomas Dartsch)
+ */
+
+declare(strict_types=1);
+
+namespace D3\DataWizard\Application\Model\ExportRenderer;
+
+interface StreamingRendererInterface extends RendererInterface
+{
+    /** @param resource $stream Writable stream owned by the caller. */
+    public function writeContent($stream, iterable $rows, iterable $fieldNames): void;
+}

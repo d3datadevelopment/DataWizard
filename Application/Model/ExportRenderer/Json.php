@@ -18,7 +18,7 @@ namespace D3\DataWizard\Application\Model\ExportRenderer;
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use JsonException;
 
-class Json implements RendererInterface
+class Json implements StreamingRendererInterface
 {
     /**
      * @param iterable $rows
@@ -42,6 +42,22 @@ class Json implements RendererInterface
     public function getFileExtension(): string
     {
         return 'json';
+    }
+
+    public function writeContent($stream, iterable $rows, iterable $fieldNames): void
+    {
+        try {
+            StreamWriter::write($stream, '[');
+            $first = true;
+            foreach ($rows as $row) {
+                $encoded = json_encode($row, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                StreamWriter::write($stream, ($first ? "\n" : ",\n") . '    ' . str_replace("\n", "\n    ", $encoded));
+                $first = false;
+            }
+            StreamWriter::write($stream, $first ? ']' : "\n]");
+        } catch (JsonException $e) {
+            throw oxNew(RenderException::class, $e->getMessage(), []);
+        }
     }
 
     /**

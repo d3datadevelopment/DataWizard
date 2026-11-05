@@ -20,9 +20,14 @@ use Assert\LazyAssertionException;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
+use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
+use D3\DataWizard\Application\Model\ExportRenderer\StreamingRendererInterface;
+use D3\DataWizard\Application\Model\ExportRenderer\Csv;
+use D3\DataWizard\Application\Model\ExportRenderer\Json;
+use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
 use D3\ModCfg\Application\Model\d3filesystem;
 use D3\ModCfg\Application\Model\download;
 use Doctrine\DBAL\Connection;
@@ -152,24 +157,7 @@ abstract class ExportBase implements QueryBase
      */
     public function getExportData(array $query): array
     {
-        [ $queryString, $parameters ] = $query;
-
-        Assert::that($queryString)->string();
-        Assert::that($parameters)->isArray();
-
-        $queryString = trim($queryString);
-
-        try {
-            Assert::lazy()
-                ->that(strtolower(trim($queryString)))
-                ->startsWith(
-                    'select',
-                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
-                )
-                ->verifyNow();
-        } catch (LazyAssertionException $exception) {
-            throw new TaskException($this, $exception->getMessage(), $exception);
-        }
+        [ $queryString, $parameters ] = $this->validateExportQuery($query);
 
         $rows = $this->getConnection()->executeQuery($queryString, $parameters)->fetchAllAssociative();
 
@@ -188,6 +176,30 @@ abstract class ExportBase implements QueryBase
         $fieldNames = array_keys($rows[0]);
 
         return [ $rows, $fieldNames ];
+    }
+
+    private function validateExportQuery(array $query): array
+    {
+        [ $queryString, $parameters ] = $query;
+
+        Assert::that($queryString)->string();
+        Assert::that($parameters)->isArray();
+
+        $queryString = trim($queryString);
+
+        try {
+            Assert::lazy()
+                ->that(strtolower($queryString))
+                ->startsWith(
+                    'select',
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTSELECT')
+                )
+                ->verifyNow();
+        } catch (LazyAssertionException $exception) {
+            throw new TaskException($this, $exception->getMessage(), $exception);
+        }
+
+        return [$queryString, $parameters];
     }
 
     /**
@@ -240,6 +252,11 @@ abstract class ExportBase implements QueryBase
      */
     protected function executeExport(string $format, $path): string
     {
+        $renderer = $this->getStreamingRenderer($format);
+        if ($renderer !== null) {
+            return $this->executeStreamingExport($format, $path, $renderer);
+        }
+
         $content = $this->getContent($format);
 
         $oFS = $this->getFileSystem();
@@ -254,6 +271,129 @@ abstract class ExportBase implements QueryBase
         return '';
     }
 
+    private function getStreamingRenderer(string $format): ?StreamingRendererInterface
+    {
+        // Existing extension points may provide data or alter output and must keep the legacy path.
+        foreach (['getContent', 'getExportData', 'renderContent', 'getDownload', 'saveExportFile'] as $method) {
+            if ((new \ReflectionMethod($this, $method))->getDeclaringClass()->getName() !== self::class) {
+                return null;
+            }
+        }
+
+        $renderer = $this->getRenderer($format);
+        if (in_array(get_class($renderer), [Csv::class, SpreadsheetCsv::class, Json::class], true)) {
+            return $renderer;
+        }
+
+        return null;
+    }
+
+    private function executeStreamingExport(string $format, $path, StreamingRendererInterface $renderer): string
+    {
+        $stream = $this->createExportStream();
+        if ($stream === false) {
+            throw oxNew(RenderException::class, 'Could not create temporary export file', []);
+        }
+
+        try {
+            [$queryString, $parameters] = $this->validateExportQuery($this->getQuery());
+            $result = $this->getConnection()->executeQuery($queryString, $parameters);
+            try {
+                $first = $result->fetchAssociative();
+                if ($first === false) {
+                    throw new TaskException(
+                        $this,
+                        Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
+                    );
+                }
+                $rows = (static function () use ($first, $result): \Generator {
+                    yield $first;
+                    while (($row = $result->fetchAssociative()) !== false) {
+                        yield $row;
+                    }
+                })();
+                $renderer->writeContent($stream, $rows, array_keys($first));
+            } finally {
+                $result->free();
+            }
+
+            if (!$this->rewindExportStream($stream)) {
+                throw oxNew(RenderException::class, 'Could not rewind export stream', []);
+            }
+
+            $fs = $this->getFileSystem();
+            $filename = $fs->filterFilename($this->getExportFileName($format));
+            if ($path === null) {
+                $this->downloadStream($filename, $stream);
+                return '';
+            }
+
+            return $this->saveExportStream($fs->trailingslashit($path) . $filename, $stream);
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    /** @return resource|false */
+    protected function createExportStream()
+    {
+        return tmpfile();
+    }
+
+    /** @param resource $stream */
+    protected function rewindExportStream($stream): bool
+    {
+        return rewind($stream);
+    }
+
+    /** @param resource $stream */
+    protected function downloadStream(string $filename, $stream): void
+    {
+        oxNew(StreamDownload::class)->startStreamDownload($filename, $stream);
+    }
+
+    /** @param resource $stream */
+    protected function saveExportStream(string $filePath, $stream): string
+    {
+        if (!stream_is_local($filePath)) {
+            throw oxNew(ExportFileException::class, $filePath);
+        }
+
+        $candidate = $filePath;
+        foreach (range(1, 10) as $attempt) {
+            $destination = @fopen($candidate, 'xb');
+            if ($destination !== false) {
+                try {
+                    $size = fstat($stream)['size'];
+                    $copied = stream_copy_to_stream($stream, $destination);
+                    $closed = $this->closeExportFile($destination);
+                    $destination = null;
+                    if ($copied !== $size || !$closed) {
+                        throw oxNew(ExportFileException::class, $candidate);
+                    }
+                    $this->getFileSystem()->chmod($candidate);
+                    return $candidate;
+                } catch (\Throwable $exception) {
+                    if (is_resource($destination)) {
+                        fclose($destination);
+                    }
+                    @unlink($candidate);
+                    throw $exception;
+                }
+            }
+
+            clearstatcache(true, $candidate);
+            if (!file_exists($candidate) && !is_link($candidate)) {
+                throw oxNew(ExportFileException::class, $candidate);
+            }
+            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+            $base = $extension === '' ? $filePath : substr($filePath, 0, -strlen($extension) - 1);
+            $candidate = $base . '_' . bin2hex(random_bytes(8)) . ($extension === '' ? '' : '.' . $extension);
+        }
+
+        throw oxNew(ExportFileException::class, $candidate);
+    }
+
     /**
      * Create a file exclusively so concurrent exports cannot overwrite each other.
      */
@@ -264,7 +404,7 @@ abstract class ExportBase implements QueryBase
         }
 
         $candidate = $filePath;
-        for ($attempt = 0; $attempt < 10; $attempt++) {
+        foreach (range(1, 10) as $attempt) {
             $handle = @fopen($candidate, 'xb');
             if ($handle !== false) {
                 $remaining = $content;

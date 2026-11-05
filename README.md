@@ -51,6 +51,10 @@ Im Formatmenü steht zusätzlich `CSV (für Tabellenkalkulation)` zur Verfügung
 
 Das Verhalten hängt vom Tabellenkalkulationsprogramm und dessen Import- und Speicheroptionen ab. Insbesondere kann ein erneutes Speichern oder Exportieren Schutzzeichen verändern; eine universelle Garantie für alle Programme und nachfolgenden Verarbeitungsschritte besteht nicht. Für unveränderte Daten das Rohdatenformat verwenden.
 
+### Große Exporte
+
+Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten die Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Dafür muss im temporären Verzeichnis ausreichend Speicherplatz vorhanden sein. Je nach Datenbanktreiber und dessen Konfiguration können Abfrageergebnisse zusätzlich vom Treiber gepuffert werden; der Speicherbedarf ist daher nicht in jeder Umgebung konstant. `Pretty`, direkte Aufrufe von `getContent()` sowie individuell angepasste Export- und Rendererklassen verwenden weiterhin den bisherigen speicherbasierten Ablauf.
+
 ## Erweiterbarkeit
 
 Das Modul stellt das technische Grundgerüst der Exporte dar und erhebt keinen Anspruch auf Vollständigkeit. Um den Umfang an die individuellen Anforderungen anzupassen, sind folgende Erweiterungen vorbereitet:

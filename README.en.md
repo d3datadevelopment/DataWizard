@@ -50,6 +50,10 @@ The format menu also offers `CSV (for spreadsheets)`, with the technical format 
 
 Behavior depends on the spreadsheet application and its import and save settings. In particular, saving or exporting again can change the protective prefix; the format cannot guarantee safety in every application or subsequent processing step. Use the raw format when unchanged data is required.
 
+### Large exports
+
+The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process result rows incrementally for normal file and browser exports, using a temporary file. The temporary directory must have sufficient disk space. Depending on the database driver and its configuration, the driver may still buffer query results, so memory usage is not necessarily constant. `Pretty`, direct calls to `getContent()`, and customized export or renderer classes continue to use the existing in-memory path.
+
 ## Extensibility
 
 The module represents the technical basic framework of the exports and does not claim to be complete. In order to adapt the scope to individual requirements, the following extensions are prepared:

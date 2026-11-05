@@ -22,7 +22,7 @@ use League\Csv\Writer;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 
-class Csv implements RendererInterface
+class Csv implements StreamingRendererInterface
 {
     public function __construct(protected bool $forceEnclose = false)
     {}
@@ -56,6 +56,19 @@ class Csv implements RendererInterface
         return 'csv';
     }
 
+    public function writeContent($stream, iterable $rows, iterable $fieldNames): void
+    {
+        try {
+            $csv = Writer::fromStream($stream);
+            $this->configureCsv($csv);
+            $this->forceEnclose ? $csv->forceEnclosure() : $csv->necessaryEnclosure();
+            $csv->insertOne(is_array($fieldNames) ? $fieldNames : iterator_to_array($fieldNames));
+            $csv->insertAll($rows);
+        } catch (Exception $e) {
+            throw oxNew(RenderException::class, $e->getMessage(), []);
+        }
+    }
+
     /**
      * @return Writer
      * @throws Exception
@@ -64,6 +77,13 @@ class Csv implements RendererInterface
     {
         $csv = Writer::fromString();
 
+        $this->configureCsv($csv);
+
+        return $csv;
+    }
+
+    protected function configureCsv(Writer $csv): void
+    {
         $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser') ?? '"';
         $csv->setEnclosure($sEncloser);
 
@@ -71,8 +91,6 @@ class Csv implements RendererInterface
         $csv->setDelimiter($sDelimiter);
 
         $csv->addValidator(new ColumnConsistency(), 'columns_consistency');
-
-        return $csv;
     }
 
     /**

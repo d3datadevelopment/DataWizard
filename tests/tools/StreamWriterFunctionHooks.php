@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace D3\DataWizard\Application\Model\ExportRenderer;
+
+// Loaded only in an isolated test to simulate a single failed progress update.
+function substr(string $string, int $offset, ?int $length = null): string
+{
+    if ($GLOBALS['dataWizardTestNoProgressOnce'] ?? false) {
+        $GLOBALS['dataWizardTestNoProgressOnce'] = false;
+        return $string;
+    }
+
+    return $length === null ? \substr($string, $offset) : \substr($string, $offset, $length);
+}

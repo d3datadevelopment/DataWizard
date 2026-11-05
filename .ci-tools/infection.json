@@ -13,7 +13,8 @@
     "@default": true,
     "ProtectedVisibility": {
       "ignore": [
-        "D3\\DataWizard\\Application\\Model\\ExportRenderer\\RendererBridge::translateRendererId"
+        "D3\\DataWizard\\Application\\Model\\ExportRenderer\\RendererBridge::translateRendererId",
+        "D3\\DataWizard\\Application\\Model\\StreamDownload::finishDownload"
       ]
     }
   },
