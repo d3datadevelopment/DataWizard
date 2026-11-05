@@ -38,7 +38,13 @@ class Csv implements RendererInterface
     {
         try {
             $csv = $this->getCsv();
-            $this->forceEnclose ? $csv->forceEnclosure() : $csv->relaxEnclosure();
+            if ($this->forceEnclose) {
+                $csv->forceEnclosure();
+            } elseif (method_exists($csv, 'necessaryEnclosure')) {
+                $csv->necessaryEnclosure();
+            } else {
+                $csv->relaxEnclosure();
+            }
             $csv->insertOne((array) $fieldNames);
             $csv->insertAll($rows);
             return (string) $csv;
@@ -60,7 +66,11 @@ class Csv implements RendererInterface
      */
     protected function getCsv(): Writer
     {
-        $csv = Writer::createFromString();
+        if (method_exists(Writer::class, 'fromString')) {
+            $csv = Writer::fromString();
+        } else {
+            $csv = Writer::createFromString();
+        }
 
         $sEncloser = $this->d3GetConfig()->getConfigParam('sGiCsvFieldEncloser') ?? '"';
         $csv->setEnclosure($sEncloser);
