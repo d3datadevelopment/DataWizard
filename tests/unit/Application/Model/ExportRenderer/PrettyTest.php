@@ -76,11 +76,7 @@ class PrettyTest extends ExportRendererTest
     {
         $this->assertInstanceOf(
             ArrayToTextTable::class,
-            $this->callMethod(
-                $this->_oModel,
-                'getArrayToTextTableInstance',
-                [['field1', 'field2']]
-            )
+            $this->_oModel->getArrayToTextTableInstance(['field1', 'field2'])
         );
     }
 }

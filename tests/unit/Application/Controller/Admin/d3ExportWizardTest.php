@@ -53,6 +53,7 @@ class d3ExportWizardTest extends d3AdminController
      */
     public function canGetGroups()
     {
+        $this->assertControllerMethodPublic('getGroups');
         $expected = ['expected' => 'array'];
         /** @var Configuration|MockObject $configurationMock */
         $configurationMock = $this->getMockBuilder(Configuration::class)
@@ -64,10 +65,7 @@ class d3ExportWizardTest extends d3AdminController
 
         $this->assertSame(
             $expected,
-            $this->callMethod(
-                $this->_oController,
-                'getGroups'
-            )
+            $this->_oController->getGroups()
         );
     }
 
@@ -79,6 +77,7 @@ class d3ExportWizardTest extends d3AdminController
      */
     public function canGetGroupTasks($argument)
     {
+        $this->assertControllerMethodPublic('getGroupTasks');
         $expected = ['expected' => 'array'];
         /** @var Configuration|MockObject $configurationMock */
         $configurationMock = $this->getMockBuilder(Configuration::class)
@@ -90,11 +89,7 @@ class d3ExportWizardTest extends d3AdminController
 
         $this->assertSame(
             $expected,
-            $this->callMethod(
-                $this->_oController,
-                'getGroupTasks',
-                [$argument]
-            )
+            $this->_oController->getGroupTasks($argument)
         );
     }
 
@@ -147,10 +142,12 @@ class d3ExportWizardTest extends d3AdminController
             ->onlyMethods([
                 'getQuery',
                 'run',
+                'init',
             ])
             ->getMock();
         $exportMock->expects($this->exactly((int) $blDebug))->method('getQuery')->willReturn(['SELECT 1', ['1']]);
         $exportMock->expects($this->exactly((int) !$blDebug))->method('run')->willReturn('');
+        $exportMock->expects($this->once())->method('init');
 
         /** @var Configuration|MockObject $configurationMock */
         $configurationMock = $this->getMockBuilder(Configuration::class)

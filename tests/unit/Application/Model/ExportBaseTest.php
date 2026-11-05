@@ -56,6 +56,40 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::init
+     * @test
+     */
+    public function canInitializeExport(): void
+    {
+        $this->assertNull($this->_oModel->init());
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getDownload
+     * @test
+     * @throws ReflectionException
+     */
+    public function canGetDownloadService(): void
+    {
+        $this->assertInstanceOf(
+            download::class,
+            $this->callMethod($this->_oModel, 'getDownload')
+        );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getBoxTemplate
+     * @test
+     */
+    public function canGetBoxTemplate(): void
+    {
+        $this->assertStringStartsWith(
+            '@d3datawizard/admin/inc/wizardDefaultBox.',
+            $this->_oModel->getBoxTemplate()
+        );
+    }
+
+    /**
      * @covers \D3\DataWizard\Application\Model\ExportBase::getDescription
      * @test
      * @throws ReflectionException

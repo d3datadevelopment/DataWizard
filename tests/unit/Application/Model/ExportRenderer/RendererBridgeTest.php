@@ -51,13 +51,11 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
      */
     public function canGetRendererList()
     {
-        $list = $this->callMethod(
-            $this->_oModel,
-            'getRendererList'
-        );
+        $list = $this->_oModel->getRendererList();
 
         $this->assertIsArray($list);
-        $this->assertTrue((bool) count($list));
+        $this->assertArrayHasKey(RendererBridge::FORMAT_CSV, $list);
+        $this->assertInstanceOf(Csv::class, $list[RendererBridge::FORMAT_CSV]);
     }
 
     /**
@@ -67,15 +65,9 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
      */
     public function canGetTranslatedRendererIdList()
     {
-        $utlist = $this->callMethod(
-            $this->_oModel,
-            'getRendererList'
-        );
+        $utlist = $this->_oModel->getRendererList();
 
-        $list = $this->callMethod(
-            $this->_oModel,
-            'getTranslatedRendererIdList'
-        );
+        $list = $this->_oModel->getTranslatedRendererIdList();
 
         $this->assertIsArray($list);
         $this->assertTrue((bool) count($list));
@@ -137,11 +129,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
             $this->expectException(NoSuitableRendererException::class);
         }
 
-        $this->callMethod(
-            $this->_oModel,
-            'getRenderer',
-            [$format]
-        );
+        $this->_oModel->getRenderer($format);
     }
 
     /**

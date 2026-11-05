@@ -48,6 +48,27 @@ class ActionBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::init
+     * @test
+     */
+    public function canInitializeAction(): void
+    {
+        $this->assertNull($this->_oModel->init());
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ActionBase::getBoxTemplate
+     * @test
+     */
+    public function canGetBoxTemplate(): void
+    {
+        $this->assertStringStartsWith(
+            '@d3datawizard/admin/inc/wizardDefaultBox.',
+            $this->_oModel->getBoxTemplate()
+        );
+    }
+
+    /**
      * @covers \D3\DataWizard\Application\Model\ActionBase::getDescription
      * @test
      * @throws ReflectionException

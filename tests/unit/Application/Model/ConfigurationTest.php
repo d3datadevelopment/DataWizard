@@ -467,6 +467,33 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @test
+     */
+    public function configurationPublicApiIsCallableWithoutReflection(): void
+    {
+        $this->assertTrue((new \ReflectionMethod(Configuration::class, 'configure'))->isPublic());
+        $action = oxNew(d3TestAction::class);
+        $export = oxNew(d3TestExport::class);
+        $actionId = md5(get_class($action));
+        $exportId = md5(get_class($export));
+
+        $this->_oModel->configure();
+        $this->_oModel->registerAction('api-group', $action);
+        $this->_oModel->registerExport('api-group', $export);
+
+        $this->assertContains('api-group', $this->_oModel->getActionGroups());
+        $this->assertContains('api-group', $this->_oModel->getExportGroups());
+        $this->assertSame($action, $this->_oModel->getActionsByGroup('api-group')[$actionId]);
+        $this->assertSame($export, $this->_oModel->getExportsByGroup('api-group')[$exportId]);
+        $this->assertSame($action, $this->_oModel->getAllActions()[$actionId]);
+        $this->assertSame($export, $this->_oModel->getAllExports()[$exportId]);
+        $this->assertSame($action, $this->_oModel->getActionById($actionId));
+        $this->assertSame($export, $this->_oModel->getExportById($exportId));
+        $this->assertSame([$actionId => $action], $this->_oModel->getGroupedActions()['api-group']);
+        $this->assertSame([$exportId => $export], $this->_oModel->getGroupedExports()['api-group']);
+    }
+
+    /**
      * @return array[]
      */
     public function canGetActionByIdDataProvider(): array

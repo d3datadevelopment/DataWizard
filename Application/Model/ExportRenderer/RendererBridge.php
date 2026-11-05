@@ -61,7 +61,7 @@ class RendererBridge
         $format = strtolower($format);
 
         $rendererList = array_change_key_case($this->getRendererList());
-        $rendererListTypes = array_keys(array_change_key_case($rendererList));
+        $rendererListTypes = array_keys($rendererList);
 
         if (in_array($format, $rendererListTypes, true)) {
             return $rendererList[$format];

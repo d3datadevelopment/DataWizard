@@ -36,7 +36,7 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
      */
     public function canConstruct()
     {
-        $invalidField = new Number(null, [
+        $invalidField = new Number('Age', [
             'required' => true,
             'min' => 1,
             'max' => 10,
@@ -55,8 +55,28 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
         $this->_oModel = oxNew(InputUnvalidException::class, $taskMock, $invalidField);
 
         $this->assertMatchesRegularExpression(
-            '/^testTitle\s-\s*->\s.*\sless\s/m',
+            '/^testTitle\s-\sAge\s->\s.*\sless\s/m',
             $this->_oModel->getMessage()
         );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\Exceptions\InputUnvalidException::__construct
+     * @test
+     */
+    public function canConstructWithoutLabel(): void
+    {
+        $invalidField = new Number(null, ['required' => true]);
+        $invalidField->setValue(null)->setErrorMessages(['errorMsgs']);
+
+        $task = $this->getMockBuilder(d3TestExport::class)
+            ->onlyMethods(['getTitle'])
+            ->getMock();
+        $task->method('getTitle')->willReturn('testTitle');
+
+        $exception = oxNew(InputUnvalidException::class, $task, $invalidField);
+
+        $this->assertStringContainsString('testTitle -  -> ', $exception->getMessage());
+        $this->assertNotSame('testTitle -  -> ', $exception->getMessage());
     }
 }

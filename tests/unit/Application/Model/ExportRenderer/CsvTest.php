@@ -231,6 +231,46 @@ class CsvTest extends ExportRendererTest
     }
 
     /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
+     * @test
+     */
+    public function canUseConfiguredEnclosureAndDelimiter(): void
+    {
+        $configMock = $this->getMockBuilder(Config::class)
+            ->onlyMethods(['getConfigParam'])
+            ->getMock();
+        $configMock->method('getConfigParam')->willReturnCallback(
+            static fn(string $name): ?string => match ($name) {
+                'sGiCsvFieldEncloser' => "'",
+                'sCSVSign' => '|',
+                default => null,
+            }
+        );
+
+        $renderer = $this->getMockBuilder(Csv::class)
+            ->onlyMethods(['d3GetConfig'])
+            ->getMock();
+        $renderer->method('d3GetConfig')->willReturn($configMock);
+
+        $csv = $this->callMethod($renderer, 'getCsv');
+
+        $this->assertSame("'", $csv->getEnclosure());
+        $this->assertSame('|', $csv->getDelimiter());
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getCsv
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getContent
+     * @test
+     */
+    public function rejectsRowsWithInconsistentColumns(): void
+    {
+        $this->expectException(RenderException::class);
+
+        oxNew(Csv::class)->getContent([['only-one-column']], ['first', 'second']);
+    }
+
+    /**
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::d3GetConfig
      * @test
      * @throws ReflectionException
@@ -239,10 +279,7 @@ class CsvTest extends ExportRendererTest
     {
         $this->assertInstanceOf(
             Config::class,
-            $this->callMethod(
-                $this->_oModel,
-                'd3GetConfig'
-            )
+            $this->_oModel->d3GetConfig()
         );
     }
 }

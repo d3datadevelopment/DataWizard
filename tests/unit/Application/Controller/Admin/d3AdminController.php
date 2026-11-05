@@ -74,6 +74,19 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
 
     /**
      * @test
+     */
+    public function constructorInitializesAdminModeThroughParent(): void
+    {
+        $config = Registry::getConfig();
+        $config->setConfigParam('blAdmin', false);
+
+        oxNew($this->testClassName);
+
+        $this->assertTrue($config->getConfigParam('blAdmin'));
+    }
+
+    /**
+     * @test
      * @return void
      * @throws ReflectionException
      * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getViewId
@@ -95,6 +108,7 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      */
     public function runTaskPass()
     {
+        $this->assertControllerMethodPublic('runTask');
         /** @var d3ActionWizard|d3ExportWizard|MockObject $controllerMock */
         $controllerMock = $this->getMockBuilder($this->testClassName)
             ->onlyMethods(['execute'])
@@ -103,10 +117,7 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
 
         $this->_oController = $controllerMock;
 
-        $this->callMethod(
-            $this->_oController,
-            'runTask'
-        );
+        $this->_oController->runTask();
     }
 
     /**
@@ -119,6 +130,7 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      */
     public function runTaskFailed($exceptionClass, array $constructorArgs)
     {
+        $this->assertControllerMethodPublic('runTask');
         /** @var DataWizardException|DBALException|DatabaseErrorException|MockObject $exceptionMock */
         $exceptionMock = $this->getMockBuilder($exceptionClass)
             ->setConstructorArgs($constructorArgs)
@@ -147,10 +159,7 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
 
         $this->_oController = $controllerMock;
 
-        $this->callMethod(
-            $this->_oController,
-            'runTask'
-        );
+        $this->_oController->runTask();
     }
 
     /**
@@ -174,10 +183,12 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
             ->onlyMethods([
                 'getQuery',
                 'run',
+                'init',
             ])
             ->getMock();
-        $actionMock->expects($this->atLeastOnce())->method('getQuery')->willReturn(['SELECT 1', ['1']]);
+        $actionMock->expects($this->exactly((int) $blDebug))->method('getQuery')->willReturn(['SELECT 1', ['1']]);
         $actionMock->expects($this->exactly((int) !$blDebug))->method('run')->willReturn(true);
+        $actionMock->expects($this->once())->method('init');
 
         /** @var Configuration|MockObject $configurationMock */
         $configurationMock = $this->getMockBuilder(Configuration::class)
@@ -223,11 +234,9 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      */
     public function canGetUserMessages()
     {
+        $this->assertControllerMethodPublic('getUserMessages');
         $this->assertNull(
-            $this->callMethod(
-                $this->_oController,
-                'getUserMessages'
-            )
+            $this->_oController->getUserMessages()
         );
     }
 
@@ -239,11 +248,9 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      */
     public function canGetHelpUrl()
     {
+        $this->assertControllerMethodPublic('getHelpURL');
         $this->assertNull(
-            $this->callMethod(
-                $this->_oController,
-                'getHelpURL'
-            )
+            $this->_oController->getHelpURL()
         );
     }
 
@@ -256,12 +263,16 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
      */
     public function canGetSettingsService(): void
     {
+        $this->assertControllerMethodPublic('getSettingsService');
         $this->assertInstanceOf(
             ModuleSettingService::class,
-            $this->callMethod(
-                $this->_oController,
-                'getSettingsService'
-            )
+            $this->_oController->getSettingsService()
         );
+    }
+
+    protected function assertControllerMethodPublic(string $methodName): void
+    {
+        $method = new \ReflectionMethod($this->testClassName, $methodName);
+        $this->assertTrue($method->isPublic(), $methodName.' must remain public');
     }
 }
