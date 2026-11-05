@@ -80,7 +80,7 @@ class CsvTest extends ExportRendererTest
         /** @var Writer|MockObject $csvMock */
         $csvMockBuilder = $this->getMockBuilder(Writer::class);
         $csvMockBuilder->disableOriginalConstructor();
-        $onlyMethods = ['__toString', 'insertOne', 'insertAll'];
+        $onlyMethods = ['toString', 'insertOne', 'insertAll'];
         $csvMockBuilder->onlyMethods($onlyMethods);
         $csvMock = $csvMockBuilder->getMock();
 
@@ -88,10 +88,10 @@ class CsvTest extends ExportRendererTest
         $csvMock->method('insertAll')->willReturn(1);
 
         if ($blThrowException) {
-            $csvMock->expects($this->atLeastOnce())->method('__toString')->willThrowException(oxNew(Exception::class));
+            $csvMock->expects($this->atLeastOnce())->method('toString')->willThrowException(oxNew(Exception::class));
             $this->expectException(RenderException::class);
         } else {
-            $csvMock->expects($this->atLeastOnce())->method('__toString')->willReturn($expected);
+            $csvMock->expects($this->atLeastOnce())->method('toString')->willReturn($expected);
         }
 
         /** @var Csv|MockObject $modelMock */
@@ -109,6 +109,51 @@ class CsvTest extends ExportRendererTest
                 [$valueList, $fieldList]
             )
         );
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getContent
+     * @test
+     */
+    public function canRenderRowsAndHeadersWithRequiredEnclosure(): void
+    {
+        $renderer = oxNew(Csv::class);
+        $content = $renderer->getContent(
+            [['plain', 'value;with;delimiter']],
+            ['first', 'second']
+        );
+
+        $this->assertStringContainsString('first;second', $content);
+        $this->assertStringContainsString('plain;"value;with;delimiter"', $content);
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getContent
+     * @test
+     */
+    public function canForceEnclosureForEveryValue(): void
+    {
+        $renderer = oxNew(Csv::class, true);
+        $content = $renderer->getContent([['plain', 'value']], ['first', 'second']);
+
+        $this->assertStringContainsString('"first";"second"', $content);
+        $this->assertStringContainsString('"plain";"value"', $content);
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::getContent
+     * @test
+     */
+    public function canRenderIterableFieldNames(): void
+    {
+        $fieldNames = (static function (): Generator {
+            yield 'first';
+            yield 'second';
+        })();
+
+        $content = oxNew(Csv::class)->getContent([['one', 'two']], $fieldNames);
+
+        $this->assertStringContainsString('first;second', $content);
     }
 
     /**

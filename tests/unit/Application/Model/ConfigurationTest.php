@@ -443,6 +443,30 @@ class ConfigurationTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @covers \D3\DataWizard\Application\Model\Configuration::getActionById
+     * @test
+     */
+    public function unknownActionIdIsIncludedInExceptionMessage(): void
+    {
+        $this->expectException(DataWizardException::class);
+        $this->expectExceptionMessage('no action with id missing-action');
+
+        $this->_oModel->getActionById('missing-action');
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\Configuration::getExportById
+     * @test
+     */
+    public function unknownExportIdIsIncludedInExceptionMessage(): void
+    {
+        $this->expectException(DataWizardException::class);
+        $this->expectExceptionMessage('no export with id missing-export');
+
+        $this->_oModel->getExportById('missing-export');
+    }
+
+    /**
      * @return array[]
      */
     public function canGetActionByIdDataProvider(): array

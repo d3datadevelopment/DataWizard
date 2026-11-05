@@ -1,0 +1,22 @@
+{
+  "source": {
+    "directories": [
+      "vendor/d3/datawizard/Application"
+    ]
+  },
+  "timeout": 30,
+  "logs": {
+    "json": "../../../../reports/infection/datawizard/infection.json",
+    "html": "../../../../reports/infection/datawizard/infection.html"
+  },
+  "mutators": {
+    "@default": true,
+    "ProtectedVisibility": {
+      "ignore": [
+        "D3\\DataWizard\\Application\\Model\\ExportRenderer\\RendererBridge::translateRendererId"
+      ]
+    }
+  },
+  "testFramework": "phpunit",
+  "testFrameworkOptions": "--configuration=vendor/d3/datawizard/.ci-tools/phpunit.xml"
+}

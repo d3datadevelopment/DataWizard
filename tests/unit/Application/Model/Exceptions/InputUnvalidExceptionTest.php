@@ -52,25 +52,11 @@ class InputUnvalidExceptionTest extends d3ModCfgUnitTestCase
             ->getMock();
         $taskMock->expects($this->atLeastOnce())->method('getTitle')->willReturn('testTitle');
 
-        /** @var InputUnvalidException|MockObject $modelMock */
-        $modelMock = $this->getMockBuilder(InputUnvalidException::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->_oModel = $modelMock;
-
-        $this->callMethod(
-            $this->_oModel,
-            '__construct',
-            [$taskMock, $invalidField]
-        );
+        $this->_oModel = oxNew(InputUnvalidException::class, $taskMock, $invalidField);
 
         $this->assertMatchesRegularExpression(
             '/^testTitle\s-\s*->\s.*\sless\s/m',
-            $this->callMethod(
-                $this->_oModel,
-                'getMessage'
-            )
+            $this->_oModel->getMessage()
         );
     }
 }
