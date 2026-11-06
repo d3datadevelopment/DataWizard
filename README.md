@@ -3,15 +3,11 @@
 
 # D³ Data Wizard für OXID eShop
 
-Das Modul `DataWizard` bietet ein Framework zur einfachen Integration von Exporten und ausführbaren Tasks über den Adminbereich des OXID Shops.
+Der Data Wizard stellt im OXID-Adminbereich Exporte und Aktionen bereit. Exporte bereiten Daten für den Download auf; Aktionen können Daten im Shop verändern. Die verfügbaren Einträge sind zur besseren Übersicht in Gruppen zusammengefasst.
 
-Die Exporte werden über Datenbankabfragen oder fertige Datenlisten definiert. Es stehen verschiedene Exportformate zur Verfügung. Die Generierung ist jederzeit und immer wiederkehrend möglich (im Rahmen der Systemgrenzen). Diese werden im Browser als Download angeboten.
+Das Grundmodul enthält selbst keine Exporte oder Aktionen. Diese werden durch Erweiterungen wie `d3/datawizardtasks` oder durch individuelle Anpassungen bereitgestellt.
 
-Alle Exporte bzw. Tasks sind für eine bessere Übersichtlichkeit in Gruppen zusammengefasst.
-
-Im Paket `d3/datawizardtasks` sind Beispielexporte enthalten. Diese sollen als Implementierungsreferenz für individuelle Exporte dienen.
-
-![Adminbereich](assets/administration_exports.jpg "Adminbereich")
+![Beispiel eines Exports im Adminbereich mit geöffnetem Formatmenü](assets/administration_exports.jpg)
 
 ## Inhaltsverzeichnis
 
@@ -28,38 +24,45 @@ Im Paket `d3/datawizardtasks` sind Beispielexporte enthalten. Diese sollen als I
 
 Dieses Paket erfordert einen mit Composer installierten OXID eShop in einer in der [composer.json](composer.json) definierten Version.
 
-Öffnen Sie eine Kommandozeile und navigieren Sie zum Stammverzeichnis des Shops (Elternverzeichnis von source und vendor). Führen Sie den folgenden Befehl aus. Passen Sie die Pfadangaben an Ihre Installationsumgebung an.
+Lassen Sie die Installation bei Bedarf von Ihrer technischen Betreuung durchführen. Wechseln Sie auf der Kommandozeile in das Stammverzeichnis des Shops (das Verzeichnis mit `source` und `vendor`) und führen Sie folgenden Befehl aus:
 
 
 ```bash
-php composer require d3/datawizard:^3.0
+composer require d3/datawizard:^3.0
 ``` 
 
 Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".
 
 ## Verwendung
 
-Dieses Paket enthält keine Exporte oder Aktionen. In [Erweiterungspakete](#erweiterungspakete) finden Sie installierbare Beispieleinträge.
+1. Melden Sie sich im Adminbereich an und öffnen Sie „D³ Module → Data Wizard → Exporte“ oder „Aktionen“.
+2. Öffnen Sie die gewünschte Gruppe und füllen Sie gegebenenfalls die Felder des Eintrags aus. Welche Einträge und Felder verfügbar sind, hängt von den installierten Erweiterungen ab.
+3. Für einen Export klicken Sie auf „Export starten“. Die Datei wird über Ihren Browser heruntergeladen. Mit dem Pfeil rechts neben dem Button können Sie ein anderes Format auswählen.
+4. Für eine Aktion klicken Sie auf „Aktion starten“ und bestätigen die Rückfrage. Aktionen können Shopdaten verändern. Nach erfolgreicher Ausführung zeigt eine Standardaktion an, wie viele Einträge verändert wurden.
 
-Melden Sie sich im Adminbereich Ihres Shops an und navigieren Sie zu "D³ Module -> Data Wizard". Wechseln Sie je nach Wunsch zu "Exporte" oder "Aktionen". Wählen Sie den gewünschten Eintrag und starten Sie den Export bzw. die Aktion.
+Falls keine Einträge angezeigt werden, muss eine passende Erweiterung installiert und aktiviert oder ein individueller Eintrag eingerichtet werden. Wenden Sie sich dafür an Ihre technische Betreuung.
 
-Über „SQL-Abfrage anzeigen“ im Aufklappmenü eines Exports oder einer Aktion lässt sich die vorbereitete Abfrage mit ihren Parametern anzeigen, ohne sie auszuführen oder eine Exportdatei zu erzeugen.
+Über den Pfeil rechts neben dem Start-Button können Sie bei Exporten und Aktionen „SQL-Abfrage anzeigen“ wählen. Die Abfrage wird dann angezeigt, aber nicht ausgeführt; es wird keine Datei erstellt. Diese Ansicht ist vor allem für die technische Betreuung gedacht.
+
+Die SQL-Vorschau erscheint derzeit im Meldungsbereich, der auch für Fehler verwendet wird. Sie bedeutet für sich genommen nicht, dass die Abfrage ausgeführt wurde.
 
 ### CSV und Tabellenkalkulation
 
-Der primäre Export-Button im Adminbereich verwendet `CSV (für Tabellenkalkulation)`; das gilt auch für Admin-Anfragen ohne Formatangabe. Das Formatmenü bietet weiterhin `CSV` (Rohdaten), das Feldnamen und Werte unverändert für die maschinelle Weiterverarbeitung ausgibt. Rohdaten-CSV schützt nicht vor Formeln in Tabellenkalkulationsprogrammen. Bei programmatischen Aufrufen bleibt `CSV` das Standardformat.
+Der Hauptbutton erstellt „CSV (für Tabellenkalkulation)“. Wählen Sie dieses Format, wenn Sie die Datei beispielsweise in Excel oder LibreOffice Calc öffnen möchten. Zum Schutz vor unbeabsichtigt ausgeführten Formeln werden bestimmte Zellinhalte mit einem Apostroph versehen; dadurch können sich Werte ändern. Das Verhalten hängt vom Tabellenprogramm und seinen Import- und Speicheroptionen ab. Insbesondere kann erneutes Speichern den Schutz verändern; eine Garantie für alle Programme besteht nicht.
 
-Der technische Name des Tabellenkalkulationsformats ist `CSV_SPREADSHEET`. Dieses Format stellt verdächtigen Feldnamen und Werten ein Apostroph voran, auch wenn Formelzeichen erst nach führenden Leer- oder Steuerzeichen auftreten. Dadurch verändern sich die exportierten Daten: Beispielsweise wird der Text `-123` zu `'-123`. Trennzeichen und Anführungszeichen werden weiterhin vom CSV-Writer kodiert.
-
-Das Verhalten hängt vom Tabellenkalkulationsprogramm und dessen Import- und Speicheroptionen ab. Insbesondere kann ein erneutes Speichern oder Exportieren Schutzzeichen verändern; eine universelle Garantie für alle Programme und nachfolgenden Verarbeitungsschritte besteht nicht. Für unveränderte Daten das Rohdatenformat verwenden.
+Im Aufklappmenü stehen außerdem „CSV (Rohdaten)“ für unveränderte Werte, „formatierte Tabelle (Textdatei)“ für eine lesbare Texttabelle und „JSON (für Programme)“ für die technische Weiterverarbeitung zur Verfügung. Öffnen Sie Rohdaten-CSV mit fremdbeeinflussbaren Inhalten nicht unbedacht in einem Tabellenprogramm: Solche Inhalte können als Formeln interpretiert werden.
 
 ### Große Exporte
 
-Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten die Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Dafür muss im temporären Verzeichnis ausreichend Speicherplatz vorhanden sein. Je nach Datenbanktreiber und dessen Konfiguration können Abfrageergebnisse zusätzlich vom Treiber gepuffert werden; der Speicherbedarf ist daher nicht in jeder Umgebung konstant. `Pretty`, direkte Aufrufe von `getContent()` sowie individuell angepasste Export- und Rendererklassen verwenden weiterhin den bisherigen speicherbasierten Ablauf.
-
-Bei Exporten in ein Zielverzeichnis wird die fertige Datei über einen Hardlink atomar veröffentlicht, ohne vorhandene Dateien zu überschreiben. Das Zielverzeichnis muss Hardlinks unterstützen und ausreichend Speicherplatz für die temporäre Datei bieten. Nach einem abrupten Prozessabbruch können Dateien mit dem Namen `.d3export_*.tmp` zurückbleiben; nicht mehr verwendete temporäre Dateien können entfernt werden.
+Große Exporte können Zeit sowie ausreichend Arbeitsspeicher und Speicherplatz auf dem Server benötigen. Falls ein Export abbricht oder keine Datei heruntergeladen wird, wenden Sie sich mit dem Namen des Exports und einer gegebenenfalls angezeigten Fehlermeldung an Ihre technische Betreuung.
 
 ## Erweiterbarkeit
+
+Die folgenden Hinweise richten sich an Entwicklerinnen und Entwickler.
+
+Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Der Datenbanktreiber kann Ergebnisse dennoch puffern. `Pretty`, direkte Aufrufe von `getContent()` und angepasste Export- oder Rendererklassen können weiterhin mehr Speicher benötigen. Programmatische Aufrufe verwenden standardmäßig Rohdaten-CSV.
+
+Bei programmatischen Exporten in ein Zielverzeichnis wird die fertige Datei über einen Hardlink atomar veröffentlicht, ohne vorhandene Dateien zu überschreiben. Das Zielverzeichnis muss Hardlinks unterstützen und Platz für die temporäre Datei bieten. Nach einem abrupten Prozessabbruch können `.d3export_*.tmp`-Dateien zurückbleiben; nicht mehr verwendete temporäre Dateien können entfernt werden.
 
 Nach einer erfolgreich ausgeführten Standard-Action liefert `getActionResult()` ein `ActionResult` mit der Anzahl betroffener Zeilen über `getAffectedRows()`. Vor der Ausführung und nach einem Fehler ist das Ergebnis `null`; Fehler werden weiterhin als Exceptions gemeldet. Die Signaturen von `run()` und `executeAction()` bleiben unverändert. Eigene Actions, die diese Methoden überschreiben, können das geschützte Feld `$actionResult` selbst setzen.
 

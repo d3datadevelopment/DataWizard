@@ -8,15 +8,14 @@
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [{$readonly}]>
             <span class="visually-hidden">
-                <i class="fas fa-fw fa-magic"></i>
-                [{oxmultilang ident=$item->getButtonText()}]
+                [{oxmultilang ident="D3_DATAWIZARD_EXPORT_OPTIONS"}]
             </span>
         </button>
         <div class="dropdown-menu">
             [{block name="dataWizardFormat"}]
                 [{assign var="rendererBridge" value=$item->getRendererBridge()}]
                 [{foreach from=$rendererBridge->getTranslatedRendererIdList() key="key" item="translationId"}]
-                    <button class="dropdown-item" onclick="startTask('[{$id}]', '[{$key}]')" [{$readonly}]>
+                    <button type="button" class="dropdown-item" onclick="startTask('[{$id}]', '[{$key}]')" [{$readonly}]>
                         [{oxmultilang ident=$translationId}]
                     </button>
                 [{/foreach}]

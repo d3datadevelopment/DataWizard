@@ -6,15 +6,14 @@
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="visually-hidden">
-                <i class="fas fa-fw fa-magic"></i>
-                {{ translate({ ident: item.getButtonText() }) }}
+                {{ translate({ ident: 'D3_DATAWIZARD_EXPORT_OPTIONS' }) }}
             </span>
         </button>
         <div class="dropdown-menu">
             {% block dataWizardFormat %}
                 {% set rendererBridge = item.getRendererBridge() %}
                 {% for key, translationId in rendererBridge.getTranslatedRendererIdList() %}
-                    <button class="dropdown-item" onclick="startTask('{{ id }}', '{{ key }}')">
+                    <button type="button" class="dropdown-item" onclick="startTask('{{ id }}', '{{ key }}')">
                         {{ translate({ ident: translationId }) }}
                     </button>
                 {% endfor %}

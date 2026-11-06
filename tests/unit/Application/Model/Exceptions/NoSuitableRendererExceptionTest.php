@@ -44,7 +44,7 @@ class NoSuitableRendererExceptionTest extends d3ModCfgUnitTestCase
         $this->_oModel = oxNew(NoSuitableRendererException::class, 'testMessage', $exception);
 
         $this->assertStringContainsString(
-            'kein Renderer f',
+            'Das Exportformat',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'

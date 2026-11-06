@@ -3,15 +3,11 @@
 
 # D³ Data Wizard for OXID eShop
 
-The module `DataWizard` offers a framework for the simple integration of exports via the admin area of the OXID shop.
+Data Wizard provides exports and actions in the OXID admin area. Exports prepare data for download; actions can change shop data. Available items are organized into groups.
 
-The exports are defined via database queries or ready-made data lists. Various export formats are available. The generation is possible at any time and always recurring (within the system limits). These are offered as downloads in the browser.
+The base module does not contain exports or actions itself. They are supplied by extensions such as `d3/datawizardtasks` or by custom implementations.
 
-All exports and tasks are grouped together for better clarity.
-
-Sample exports are included in the package `d3/datawizardtasks`. These are intended to serve as an implementation reference for individual exports.
-
-![administration area](assets/administration_exports.jpg "administration area")
+![Example export in the admin area with the format menu open](assets/administration_exports.jpg)
 
 ## Table of content
 
@@ -28,37 +24,44 @@ Sample exports are included in the package `d3/datawizardtasks`. These are inten
 
 This package requires an Composer installed OXID eShop as defined in [composer.json](composer.json).
 
-Open a command line interface and navigate to the shop root directory (parent of source and vendor). Execute the following command. Adapt the paths to your environment.
+Ask your technical support to install the module if needed. On the command line, navigate to the shop root directory (the directory containing `source` and `vendor`) and run:
 
 ```bash
-php composer require d3/datawizard:^3.0
+composer require d3/datawizard:^3.0
 ``` 
 
 Activate the module in the admin area of the shop in "Extensions -> Modules".
 
 ## Usage
 
-These package doesn't contain any export or action items. See [Extension packages](#extension_packages) for installable example items.
+1. Log in to the admin area and open “D³ Modules → Data Wizard → Exports” or “Actions”.
+2. Open the desired group and fill in any fields for the item. Available items and fields depend on the installed extensions.
+3. To export, click “Start export”. Your browser downloads the file. Use the arrow to the right of the button to choose another format.
+4. To run an action, click “Start action” and confirm the prompt. Actions can change shop data. After successful execution, a standard action reports how many entries were changed.
 
-Log in to the admin area of your shop and navigate to "D³ Modules -> Data Wizard". Go to "Exports" or "Actions" (as desired). Choose your desired item and export or execute it.
+If no items are displayed, a suitable extension must be installed and activated or a custom item configured. Contact your technical support for help.
 
-Select “Show SQL query” from an export's or action's dropdown menu to display the prepared query with its parameters without executing it or creating an export file.
+Use the arrow next to the start button on an export or action to select “Show SQL query”. This displays the query without executing it or creating a file. The view is primarily intended for technical support.
+
+The SQL preview currently appears in the message area also used for errors. It does not by itself mean that the query has been executed.
 
 ### CSV and spreadsheets
 
-The primary export button in the admin area uses `CSV (for spreadsheets)`; admin requests without a format use it as well. The format menu still offers `CSV` (raw data), which leaves field names and values unchanged for machine processing. Raw CSV does not protect spreadsheet users from formulas. Programmatic calls continue to default to `CSV`.
+The main button creates “CSV (for spreadsheets)”. Choose this format when opening the file in Excel or LibreOffice Calc, for example. To reduce the risk of accidentally executed formulas, some cell values are prefixed with an apostrophe; this can change their contents. Behavior depends on the spreadsheet application and its import and save settings. Saving again can change the protection, and safety cannot be guaranteed for every application.
 
-The technical name of the spreadsheet format is `CSV_SPREADSHEET`. It prefixes suspicious field names and values with an apostrophe, including formula characters following leading whitespace or control characters. This changes the exported data: for example, the text `-123` becomes `'-123`. The CSV writer still handles delimiters and quotation marks.
-
-Behavior depends on the spreadsheet application and its import and save settings. In particular, saving or exporting again can change the protective prefix; the format cannot guarantee safety in every application or subsequent processing step. Use the raw format when unchanged data is required.
+The dropdown also offers “CSV (raw data)” for unchanged values, “Table (text file)” for a readable text table, and “JSON (for programs)” for automated processing. Take care when opening raw CSV containing data that others can influence in a spreadsheet: such values may be interpreted as formulas.
 
 ### Large exports
 
-The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process result rows incrementally for normal file and browser exports, using a temporary file. The temporary directory must have sufficient disk space. Depending on the database driver and its configuration, the driver may still buffer query results, so memory usage is not necessarily constant. `Pretty`, direct calls to `getContent()`, and customized export or renderer classes continue to use the existing in-memory path.
-
-For exports to a target directory, the completed file is published atomically using a hard link without overwriting existing files. The target directory must support hard links and have sufficient space for the temporary file. An abrupt process termination may leave `.d3export_*.tmp` files behind; temporary files that are no longer in use can be removed.
+Large exports can take time and require sufficient server memory and disk space. If an export fails or no file is downloaded, contact your technical support with the export name and any error message displayed.
 
 ## Extensibility
+
+The following notes are intended for developers.
+
+The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process rows incrementally for normal file and browser exports, using a temporary file. The database driver may still buffer results. `Pretty`, direct calls to `getContent()`, and customized export or renderer classes may continue to use more memory. Programmatic calls default to raw CSV.
+
+For programmatic exports to a target directory, the completed file is published atomically using a hard link without overwriting existing files. The target directory must support hard links and have space for the temporary file. An abrupt process termination may leave `.d3export_*.tmp` files behind; temporary files that are no longer in use can be removed.
 
 After a standard action completes successfully, `getActionResult()` returns an `ActionResult` whose `getAffectedRows()` method reports the affected row count. Before execution and after an error the result is `null`; errors continue to be reported as exceptions. The signatures of `run()` and `executeAction()` are unchanged. Custom actions overriding these methods can set the protected `$actionResult` property themselves.
 

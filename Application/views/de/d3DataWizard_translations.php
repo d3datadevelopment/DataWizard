@@ -37,21 +37,22 @@ return [
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (für Tabellenkalkulation)',
     'D3_DATAWIZARD_QUERY_PREVIEW'                     => 'SQL-Abfrage anzeigen',
     'D3_DATAWIZARD_ACTION_OPTIONS'                    => 'Aktionsoptionen öffnen',
-    'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty-Format',
-    'D3_DATAWIZARD_EXPORT_FORMAT_JSON'                => 'JSON-Format',
+    'D3_DATAWIZARD_EXPORT_OPTIONS'                    => 'Exportformate und weitere Optionen öffnen',
+    'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'formatierte Tabelle (Textdatei)',
+    'D3_DATAWIZARD_EXPORT_FORMAT_JSON'                => 'JSON (für Programme)',
 
     'D3_DATAWIZARD_ACTION_SUBMIT'                     => 'Aktion starten',
     'D3_DATAWIZARD_ACTION_SUBMIT_CONFIRM'             => 'Soll die Aktion gestartet werden?',
 
-    'D3_DATAWIZARD_DEBUG'                             => 'Debug: %1$s',
+    'D3_DATAWIZARD_DEBUG'                             => 'SQL-Abfrage: %1$s',
 
-    'D3_DATAWIZARD_ERR_NOEXPORTSELECT'                => 'Export kann nicht ausgeführt werden. Exporte erfordern SELECT Query.',
+    'D3_DATAWIZARD_ERR_NOEXPORTSELECT'                => 'Der Export kann nicht ausgeführt werden. Bitte wenden Sie sich an Ihre technische Betreuung.',
     'D3_DATAWIZARD_ERR_NOEXPORT_INSTALLED'            => 'Es sind keine Exporte installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_NOEXPORTCONTENT'               => 'Export ist leer, kein Inhalt zum Download verfügbar',
-    'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'kein Renderer für Format "%1$s" registriert',
+    'D3_DATAWIZARD_ERR_NOSUITABLERENDERER'            => 'Das Exportformat "%1$s" ist nicht verfügbar.',
     'D3_DATAWIZARD_ERR_EXPORTFILEERROR'               => 'Exportdatei "%1$s" kann nicht angelegt werden',
 
-    'D3_DATAWIZARD_ERR_ACTIONSELECT'                  => 'Aktion kann nicht ausgeführt werden. Aktionen können keine SELECTs exportieren.',
+    'D3_DATAWIZARD_ERR_ACTIONSELECT'                  => 'Die Aktion kann nicht ausgeführt werden. Bitte wenden Sie sich an Ihre technische Betreuung.',
     'D3_DATAWIZARD_ERR_NOACTION_INSTALLED'            => 'Es sind keine Aktionen installiert oder aktiviert.',
     'D3_DATAWIZARD_ERR_ACTIONRESULT'                  => '%1$s Eintrag verändert',
     'D3_DATAWIZARD_ERR_ACTIONRESULTS'                 => '%1$s Einträge verändert',

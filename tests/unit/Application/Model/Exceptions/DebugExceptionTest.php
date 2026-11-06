@@ -44,7 +44,7 @@ class DebugExceptionTest extends d3ModCfgUnitTestCase
         $this->_oModel = oxNew(DebugException::class, 'testMessage', $exception);
 
         $this->assertStringContainsString(
-            'Debug: testMessage',
+            'SQL-Abfrage: testMessage',
             $this->callMethod(
                 $this->_oModel,
                 'getMessage'
