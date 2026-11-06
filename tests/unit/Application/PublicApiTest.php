@@ -35,9 +35,7 @@ class PublicApiTest extends d3ModCfgUnitTestCase
     {
         return [
             'configuration' => [Configuration::class, [
-                'configure',
-                'registerAction',
-                'registerExport',
+
                 'getGroupedActions',
                 'getGroupedExports',
                 'getActionGroups',

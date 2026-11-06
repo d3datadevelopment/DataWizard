@@ -30,7 +30,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-abstract class ActionBase implements QueryBase
+abstract class ActionBase implements QueryBase, TaskRegistrationInterface
 {
     protected array $formElements = [];
     protected ?ActionResult $actionResult = null;

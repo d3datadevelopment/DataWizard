@@ -180,3 +180,7 @@ THE SOFTWARE.
 ### Export-Renderer erweitern
 
 Eine Anleitung für eigene Renderer steht unter [docs/export-renderer.md](docs/export-renderer.md).
+
+### Eigene Tasks
+
+Die [Anleitung für Actions und Exports](docs/tasks.md) beschreibt Registrierung und Kategorien.

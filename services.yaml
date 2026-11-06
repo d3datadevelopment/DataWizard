@@ -3,6 +3,13 @@ services:
     autowire: false
     public: true
 
+  D3\DataWizard\Application\Model\ConfigurationInterface:
+    class: D3\DataWizard\Application\Model\Configuration
+    shared: false
+    arguments:
+      - !tagged_iterator d3.datawizard.action
+      - !tagged_iterator d3.datawizard.export
+
   D3\DataWizard\Application\Model\ExportRenderer\RendererBridgeInterface:
     class: D3\DataWizard\Application\Model\ExportRenderer\RendererBridge
     arguments:
