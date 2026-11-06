@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Controller\Admin;
 
-use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\ConfigurationInterface;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
@@ -37,7 +37,7 @@ class d3ActionWizard extends AdminDetailsController
 {
     protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ActionWizard';
 
-    protected Configuration $configuration;
+    protected ConfigurationInterface $configuration;
     protected ?string $actionSuccessMessage = null;
     protected ?string $queryPreview = null;
 
@@ -45,7 +45,7 @@ class d3ActionWizard extends AdminDetailsController
     {
         parent::__construct();
 
-        $this->configuration = oxNew(Configuration::class);
+        $this->configuration = ContainerFactory::getInstance()->getContainer()->get(ConfigurationInterface::class);
     }
 
     public function getViewId(): string

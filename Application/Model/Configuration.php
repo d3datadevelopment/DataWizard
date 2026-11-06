@@ -17,7 +17,7 @@ namespace D3\DataWizard\Application\Model;
 
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 
-class Configuration
+class Configuration implements ConfigurationInterface
 {
     public const GROUP_SHOP     = 'D3_DATAWIZARD_GROUP_SHOP';
     public const GROUP_CATEGORY = 'D3_DATAWIZARD_GROUP_CATEGORIES';
@@ -30,32 +30,37 @@ class Configuration
     protected array $actions = [];
     protected array $exports = [];
 
-    public function __construct()
+    public function __construct(iterable $actions = [], iterable $exports = [])
     {
-        $this->configure();
+        foreach ($actions as $action) {
+            if (!$action instanceof ActionBase) {
+                throw new \InvalidArgumentException('Action must extend ActionBase');
+            }
+            $this->addTask($this->actions, $action);
+        }
+        foreach ($exports as $export) {
+            if (!$export instanceof ExportBase) {
+                throw new \InvalidArgumentException('Export must extend ExportBase');
+            }
+            $this->addTask($this->exports, $export);
+        }
     }
 
-    public function configure()
+    private function addTask(array &$groups, TaskRegistrationInterface $task): void
     {
-        // extend to add exports and actions via 'registerAction()' or 'registerExport()' method
-    }
-
-    /**
-     * @param            $group
-     * @param ActionBase $action
-     */
-    public function registerAction($group, ActionBase $action): void
-    {
-        $this->actions[$group][md5(get_class($action))] = $action;
-    }
-
-    /**
-     * @param            $group
-     * @param ExportBase $export
-     */
-    public function registerExport($group, ExportBase $export): void
-    {
-        $this->exports[$group][md5(get_class($export))] = $export;
+        $id = $task->getTaskId();
+        $group = $task->getGroup();
+        // IDs are used in HTML attributes and JavaScript, and groups in CSS selectors.
+        if (!preg_match('/\A[A-Za-z][A-Za-z0-9_-]*\z/D', $id) ||
+            !preg_match('/\A[A-Za-z][A-Za-z0-9_-]*\z/D', $group)) {
+            throw new \InvalidArgumentException('Invalid task ID or group: ' . $id . ', ' . $group);
+        }
+        foreach ($groups as $tasks) {
+            if (isset($tasks[$id])) {
+                throw new \InvalidArgumentException('Duplicate task ID: ' . $id);
+            }
+        }
+        $groups[$group][$id] = $task;
     }
 
     /**

@@ -17,6 +17,16 @@ use D3\DataWizard\Application\Model\ExportBase;
 
 class d3TestExport extends ExportBase
 {
+    public function getTaskId(): string
+    {
+        return 'test_task';
+    }
+
+    public function getGroup(): string
+    {
+        return 'TEST_GROUP';
+    }
+
     public function getTitle(): string
     {
         return 'TestTitle';

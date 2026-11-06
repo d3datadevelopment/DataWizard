@@ -173,3 +173,7 @@ THE SOFTWARE.
 ### Export renderer extensions
 
 See the [developer guide](docs/export-renderer.md) for a complete example (in German).
+
+### Custom tasks
+
+See the [action and export developer guide](docs/tasks.md) (in German).

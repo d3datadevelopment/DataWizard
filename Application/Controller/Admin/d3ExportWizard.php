@@ -17,7 +17,7 @@ namespace D3\DataWizard\Application\Controller\Admin;
 
 use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
 
-use D3\DataWizard\Application\Model\Configuration;
+use D3\DataWizard\Application\Model\ConfigurationInterface;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
@@ -44,14 +44,14 @@ class d3ExportWizard extends AdminDetailsController
 {
     protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ExportWizard';
 
-    protected Configuration $configuration;
+    protected ConfigurationInterface $configuration;
     protected ?string $queryPreview = null;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->configuration = oxNew(Configuration::class);
+        $this->configuration = ContainerFactory::getInstance()->getContainer()->get(ConfigurationInterface::class);
     }
 
     public function getViewId(): string
