@@ -42,6 +42,8 @@ These package doesn't contain any export or action items. See [Extension package
 
 Log in to the admin area of your shop and navigate to "D³ Modules -> Data Wizard". Go to "Exports" or "Actions" (as desired). Choose your desired item and export or execute it.
 
+Select “Show SQL query” from an export's or action's dropdown menu to display the prepared query with its parameters without executing it or creating an export file.
+
 ### CSV and spreadsheets
 
 The primary export button in the admin area uses `CSV (for spreadsheets)`; admin requests without a format use it as well. The format menu still offers `CSV` (raw data), which leaves field names and values unchanged for machine processing. Raw CSV does not protect spreadsheet users from formulas. Programmatic calls continue to default to `CSV`.

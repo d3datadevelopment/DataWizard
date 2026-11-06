@@ -101,7 +101,8 @@ class d3ExportWizard extends AdminDetailsController
         $export = $this->configuration->getExportById($id);
         $export->init();
 
-        if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
+        $format = Registry::getRequest()->getRequestEscapedParameter('format');
+        if (strtoupper((string) $format) === RendererBridge::FORMAT_QUERY) {
             [ $queryString, $parameters ] = $export->getQuery();
             throw oxNew(
                 DebugException::class,
@@ -109,7 +110,6 @@ class d3ExportWizard extends AdminDetailsController
             );
         }
 
-        $format = Registry::getRequest()->getRequestEscapedParameter('format');
         $export->run($format === null || $format === '' ? RendererBridge::FORMAT_CSV_SPREADSHEET : $format);
     }
 

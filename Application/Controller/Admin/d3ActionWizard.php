@@ -21,6 +21,7 @@ use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
 use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
+use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\ModCfg\Application\Model\d3database;
 use Doctrine\DBAL\Exception as DBALException;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
@@ -98,7 +99,7 @@ class d3ActionWizard extends AdminDetailsController
         $action->clearActionResult();
         $action->init();
 
-        if ($this->getSettingsService()->getBoolean('d3datawizard_debug', Constants::OXID_MODULE_ID)) {
+        if (strtoupper((string) Registry::getRequest()->getRequestEscapedParameter('format')) === RendererBridge::FORMAT_QUERY) {
             [ $queryString, $parameters ] = $action->getQuery();
             /** @var DebugException $debug */
             $debug = oxNew(

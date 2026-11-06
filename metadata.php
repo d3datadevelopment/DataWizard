@@ -49,13 +49,6 @@ $aModule = [
         '@' . $sModuleId . '/admin/inc/d3ExportSubmit.tpl' => 'views/smarty/admin/inc/exportSubmit.tpl',
         '@' . $sModuleId . '/admin/inc/d3ActionSubmit.tpl' => 'views/smarty/admin/inc/actionSubmit.tpl',
     ],
-    'settings'    => [
-        [
-            'group'     => $sModuleId.'_general',
-            'name'      => $sModuleId.'_debug',
-            'type'      => 'bool',
-            'value'     => false,
-        ],
-    ],
+    'settings'    => [],
     'blocks'      => [],
 ];

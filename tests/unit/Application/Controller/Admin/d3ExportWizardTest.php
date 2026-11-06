@@ -119,7 +119,9 @@ class d3ExportWizardTest extends d3AdminController
         $requestMock = $this->getMockBuilder(get_class(Registry::getRequest()))
             ->onlyMethods(['getRequestEscapedParameter'])
             ->getMock();
-        $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback([$this, 'executePassRequestCallback']);
+        $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback(
+            static fn ($name) => $name === 'taskid' ? 'testTaskId' : ($blDebug ? 'query' : RendererBridge::FORMAT_CSV)
+        );
         //OnConsecutiveCalls('testTaskId', 'CSV');
         Registry::set(Request::class, $requestMock);
 
@@ -128,10 +130,7 @@ class d3ExportWizardTest extends d3AdminController
             ->disableOriginalConstructor()
             ->onlyMethods(['getBoolean'])
             ->getMock();
-        $settingsServiceMock->expects($this->once())->method('getBoolean')->with(
-            $this->identicalTo('d3datawizard_debug'),
-            $this->identicalTo(Constants::OXID_MODULE_ID)
-        )->willReturn($blDebug);
+        $settingsServiceMock->expects($this->never())->method('getBoolean');
 
         /** @var d3ExportWizard|MockObject $controllerMock */
         $controllerMock = $this->getMockBuilder(d3ExportWizard::class)

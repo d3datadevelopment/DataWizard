@@ -115,13 +115,15 @@ class d3ActionWizardTest extends d3AdminController
      * @throws ReflectionException
      * @dataProvider executePassDataProvider
      */
-    public function executePass($blDebug)
+    public function executePass($blDebug, $format = null)
     {
         /** @var Request|MockObject $requestMock */
         $requestMock = $this->getMockBuilder(get_class(Registry::getRequest()))
             ->onlyMethods(['getRequestEscapedParameter'])
             ->getMock();
-        $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback([$this, 'executePassRequestCallback']);
+        $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback(
+            static fn ($name) => $name === 'taskid' ? 'testTaskId' : $format
+        );
         Registry::set(Request::class, $requestMock);
 
         /** @var ModuleSettingService $settingsServiceMock */
@@ -129,10 +131,7 @@ class d3ActionWizardTest extends d3AdminController
             ->disableOriginalConstructor()
             ->onlyMethods(['getBoolean'])
             ->getMock();
-        $settingsServiceMock->expects($this->once())->method('getBoolean')->with(
-            $this->identicalTo('d3datawizard_debug'),
-            $this->identicalTo(Constants::OXID_MODULE_ID)
-        )->willReturn($blDebug);
+        $settingsServiceMock->expects($this->never())->method('getBoolean');
 
         /** @var d3ActionWizard|MockObject $controllerMock */
         $controllerMock = $this->getMockBuilder(d3ActionWizard::class)
@@ -188,8 +187,9 @@ class d3ActionWizardTest extends d3AdminController
     public function executePassDataProvider(): array
     {
         return [
-            'no debug'  => [false],
-            'debug'  => [true],
+            'missing format executes action' => [false, null],
+            'empty format executes action' => [false, ''],
+            'query preview' => [true, 'query'],
         ];
     }
 
@@ -210,7 +210,9 @@ class d3ActionWizardTest extends d3AdminController
         $oldLogger = Registry::getLogger();
         $oldUtilsView = Registry::getUtilsView();
         $request = $this->getMockBuilder(Request::class)->onlyMethods(['getRequestEscapedParameter'])->getMock();
-        $request->method('getRequestEscapedParameter')->with('taskid')->willReturn('task-id');
+        $request->method('getRequestEscapedParameter')->willReturnCallback(
+            static fn ($name) => $name === 'taskid' ? 'task-id' : ''
+        );
         $language = $this->getMockBuilder(Language::class)->onlyMethods(['translateString'])->getMock();
         $language->expects($this->once())->method('translateString')->with($translationId)->willReturn('%s affected');
         $logger = $this->createMock(LoggerInterface::class);

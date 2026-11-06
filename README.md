@@ -43,6 +43,8 @@ Dieses Paket enthält keine Exporte oder Aktionen. In [Erweiterungspakete](#erwe
 
 Melden Sie sich im Adminbereich Ihres Shops an und navigieren Sie zu "D³ Module -> Data Wizard". Wechseln Sie je nach Wunsch zu "Exporte" oder "Aktionen". Wählen Sie den gewünschten Eintrag und starten Sie den Export bzw. die Aktion.
 
+Über „SQL-Abfrage anzeigen“ im Aufklappmenü eines Exports oder einer Aktion lässt sich die vorbereitete Abfrage mit ihren Parametern anzeigen, ohne sie auszuführen oder eine Exportdatei zu erzeugen.
+
 ### CSV und Tabellenkalkulation
 
 Der primäre Export-Button im Adminbereich verwendet `CSV (für Tabellenkalkulation)`; das gilt auch für Admin-Anfragen ohne Formatangabe. Das Formatmenü bietet weiterhin `CSV` (Rohdaten), das Feldnamen und Werte unverändert für die maschinelle Weiterverarbeitung ausgibt. Rohdaten-CSV schützt nicht vor Formeln in Tabellenkalkulationsprogrammen. Bei programmatischen Aufrufen bleibt `CSV` das Standardformat.

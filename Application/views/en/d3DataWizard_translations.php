@@ -23,7 +23,6 @@ return [
     'd3mxDataWizard_Action'                           => 'actions',
 
     'SHOP_MODULE_GROUP_d3datawizard_general'          => 'basic settings',
-    'SHOP_MODULE_d3datawizard_debug'                  => 'shows queries instead of executing them',
 
     'D3_DATAWIZARD_GROUP_ARTICLES'                    => 'articles',
     'D3_DATAWIZARD_GROUP_CATEGORIES'                  => 'categories',
@@ -37,6 +36,8 @@ return [
     'D3_DATAWIZARD_EXPORT_SUBMIT_FORMAT'              => '%1$s: %2$s',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV (raw data)',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (for spreadsheets)',
+    'D3_DATAWIZARD_QUERY_PREVIEW'                     => 'Show SQL query',
+    'D3_DATAWIZARD_ACTION_OPTIONS'                    => 'Open action options',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty format',
     'D3_DATAWIZARD_EXPORT_FORMAT_JSON'                => 'JSON format',
 

@@ -23,6 +23,7 @@ class RendererBridge
     public const FORMAT_CSV_SPREADSHEET = 'CSV_SPREADSHEET';
     public const FORMAT_PRETTY = 'Pretty';
     public const FORMAT_JSON   = 'JSON';
+    public const FORMAT_QUERY  = 'QUERY';
 
     /**
      * @return array
