@@ -15,6 +15,12 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Model;
 
+use D3\DataWizard\Application\Model\ExportRenderer\Json;
+
+use D3\DataWizard\Application\Model\ExportRenderer\Pretty;
+
+use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
+
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
@@ -83,7 +89,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
 
         try {
             $created = $this->callMethod($export, 'executeExport', [$format, dirname($existing)]);
-            $expected = oxNew(RendererBridge::class)->getRenderer($format)->getContent($rows, array_keys($rows[0]));
+            $expected = $export->getRendererBridge()->getRenderer($format)->getContent($rows, array_keys($rows[0]));
             $this->assertNotSame($existing, $created);
             $this->assertSame('existing', file_get_contents($existing));
             $this->assertSame(dirname($existing), dirname($created));
@@ -106,9 +112,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
     public function streamingFormats(): array
     {
         return [
-            'CSV' => [RendererBridge::FORMAT_CSV],
-            'spreadsheet CSV' => [RendererBridge::FORMAT_CSV_SPREADSHEET],
-            'JSON' => [RendererBridge::FORMAT_JSON],
+            'CSV' => [Csv::FORMAT],
+            'spreadsheet CSV' => [SpreadsheetCsv::FORMAT],
+            'JSON' => [Json::FORMAT],
         ];
     }
 
@@ -139,7 +145,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         try {
             $this->expectException(TaskException::class);
             $this->expectExceptionMessage('No export data');
-            $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_CSV, sys_get_temp_dir()]);
+            $this->callMethod($export, 'executeExport', [Csv::FORMAT, sys_get_temp_dir()]);
         } finally {
             Registry::set(Language::class, $originalLanguage);
         }
@@ -169,7 +175,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
             }
         );
 
-        $this->assertSame('', $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_JSON, null]));
+        $this->assertSame('', $this->callMethod($export, 'executeExport', [Json::FORMAT, null]));
         $this->assertSame(['export.json', "[\n    {\n        \"value\": \"one\"\n    }\n]"], $downloaded);
     }
 
@@ -192,7 +198,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $export->expects($this->never())->method('downloadStream');
 
         $this->expectException(RenderException::class);
-        $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_JSON, null]);
+        $this->callMethod($export, 'executeExport', [Json::FORMAT, null]);
     }
 
     /** @covers \D3\DataWizard\Application\Model\ExportBase::validateExportQuery */
@@ -244,7 +250,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $export->method('getQuery')->willReturn(['DELETE FROM test', []]);
 
         try {
-            $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_JSON, null]);
+            $this->callMethod($export, 'executeExport', [Json::FORMAT, null]);
             $this->fail('Invalid query must raise an exception.');
         } catch (TaskException $exception) {
             $this->assertFalse(is_resource($stream));
@@ -259,14 +265,14 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
     public function testLegacyRendererAndOverriddenExportUseLegacyPath(): void
     {
         $export = oxNew(d3TestExport::class);
-        $this->assertNull($this->callMethod($export, 'getStreamingRenderer', [RendererBridge::FORMAT_PRETTY]));
+        $this->assertNull($this->callMethod($export, 'getStreamingRenderer', [Pretty::FORMAT]));
 
         $custom = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getContent'])->getMock();
-        $this->assertNull($this->callMethod($custom, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
+        $this->assertNull($this->callMethod($custom, 'getStreamingRenderer', [Csv::FORMAT]));
 
         $customRenderer = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getRenderer'])->getMock();
         $customRenderer->method('getRenderer')->willReturn(new class () extends Csv {});
-        $this->assertNull($this->callMethod($customRenderer, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
+        $this->assertNull($this->callMethod($customRenderer, 'getStreamingRenderer', [Csv::FORMAT]));
     }
 
     /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
@@ -469,7 +475,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $export->expects($this->never())->method('getQuery');
 
         $this->expectException(RenderException::class);
-        $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_JSON, null]);
+        $this->callMethod($export, 'executeExport', [Json::FORMAT, null]);
     }
 
     /**
@@ -491,7 +497,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $export->expects($this->never())->method('downloadStream');
 
         $this->expectException(RenderException::class);
-        $this->callMethod($export, 'executeExport', [RendererBridge::FORMAT_JSON, null]);
+        $this->callMethod($export, 'executeExport', [Json::FORMAT, null]);
     }
 
     /**

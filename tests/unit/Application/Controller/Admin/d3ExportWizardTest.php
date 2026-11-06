@@ -15,6 +15,12 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 
+use D3\DataWizard\Application\Model\ExportRenderer\Json;
+
+use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
+
+use D3\DataWizard\Application\Model\ExportRenderer\Csv;
+
 use D3\DataWizard\Application\Controller\Admin\d3ExportWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
@@ -119,7 +125,7 @@ class d3ExportWizardTest extends d3AdminController
             ->onlyMethods(['getRequestEscapedParameter'])
             ->getMock();
         $requestMock->expects($this->any())->method('getRequestEscapedParameter')->willReturnCallback(
-            static fn ($name) => $name === 'taskid' ? 'testTaskId' : ($blDebug ? 'query' : RendererBridge::FORMAT_CSV)
+            static fn ($name) => $name === 'taskid' ? 'testTaskId' : ($blDebug ? 'query' : Csv::FORMAT)
         );
         //OnConsecutiveCalls('testTaskId', 'CSV');
         Registry::set(Request::class, $requestMock);
@@ -175,7 +181,7 @@ class d3ExportWizardTest extends d3AdminController
             case 'taskid':
                 return 'testTaskId';
             case 'format':
-                return RendererBridge::FORMAT_CSV;
+                return Csv::FORMAT;
             default:
                 return oxNew(Request::class)->getRequestEscapedParameter($varName);
         }
@@ -230,11 +236,11 @@ class d3ExportWizardTest extends d3AdminController
     public function adminExportFormats(): array
     {
         return [
-            'missing format' => [null, RendererBridge::FORMAT_CSV_SPREADSHEET],
-            'empty format' => ['', RendererBridge::FORMAT_CSV_SPREADSHEET],
-            'spreadsheet CSV' => [RendererBridge::FORMAT_CSV_SPREADSHEET, RendererBridge::FORMAT_CSV_SPREADSHEET],
-            'explicit raw CSV' => [RendererBridge::FORMAT_CSV, RendererBridge::FORMAT_CSV],
-            'explicit JSON' => [RendererBridge::FORMAT_JSON, RendererBridge::FORMAT_JSON],
+            'missing format' => [null, SpreadsheetCsv::FORMAT],
+            'empty format' => ['', SpreadsheetCsv::FORMAT],
+            'spreadsheet CSV' => [SpreadsheetCsv::FORMAT, SpreadsheetCsv::FORMAT],
+            'explicit raw CSV' => [Csv::FORMAT, Csv::FORMAT],
+            'explicit JSON' => [Json::FORMAT, Json::FORMAT],
             'unknown format is passed through' => ['unknown', 'unknown'],
         ];
     }

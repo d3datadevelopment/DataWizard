@@ -1,0 +1,21 @@
+services:
+  _defaults:
+    autowire: false
+    public: true
+
+  D3\DataWizard\Application\Model\ExportRenderer\RendererBridgeInterface:
+    class: D3\DataWizard\Application\Model\ExportRenderer\RendererBridge
+    arguments:
+      - !tagged_iterator d3.datawizard.renderer
+
+  D3\DataWizard\Application\Model\ExportRenderer\Csv:
+    tags: ['d3.datawizard.renderer']
+
+  D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv:
+    tags: ['d3.datawizard.renderer']
+
+  D3\DataWizard\Application\Model\ExportRenderer\Pretty:
+    tags: ['d3.datawizard.renderer']
+
+  D3\DataWizard\Application\Model\ExportRenderer\Json:
+    tags: ['d3.datawizard.renderer']

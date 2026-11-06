@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\Application\Controller\Admin;
 
+use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
+
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
@@ -110,7 +112,7 @@ class d3ExportWizard extends AdminDetailsController
             return;
         }
 
-        $export->run($format === null || $format === '' ? RendererBridge::FORMAT_CSV_SPREADSHEET : $format);
+        $export->run($format === null || $format === '' ? SpreadsheetCsv::FORMAT : $format);
     }
 
     public function getQueryPreview(): ?string

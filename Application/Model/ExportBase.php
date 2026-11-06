@@ -24,6 +24,7 @@ use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
+use D3\DataWizard\Application\Model\ExportRenderer\RendererBridgeInterface;
 use D3\DataWizard\Application\Model\ExportRenderer\StreamingRendererInterface;
 use D3\DataWizard\Application\Model\ExportRenderer\Csv;
 use D3\DataWizard\Application\Model\ExportRenderer\Json;
@@ -70,7 +71,7 @@ abstract class ExportBase implements QueryBase
      * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
      */
-    public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
+    public function run(string $format = Csv::FORMAT, $path = null): string
     {
         if ($this->hasFormElements()) {
             /** @var Input $element */
@@ -100,9 +101,9 @@ abstract class ExportBase implements QueryBase
         return $this->getRendererBridge()->getRenderer($format);
     }
 
-    public function getRendererBridge(): RendererBridge
+    public function getRendererBridge(): RendererBridgeInterface
     {
-        return oxNew(RendererBridge::class);
+        return ContainerFactory::getInstance()->getContainer()->get(RendererBridgeInterface::class);
     }
 
     /**

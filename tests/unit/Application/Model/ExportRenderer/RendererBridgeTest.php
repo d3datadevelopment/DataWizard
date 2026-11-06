@@ -38,7 +38,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     {
         parent::setUp();
 
-        $this->_oModel = oxNew(RendererBridge::class);
+        $this->_oModel = new RendererBridge([new Csv(), new SpreadsheetCsv(), new Pretty(), new Json()]);
     }
 
     public function tearDown(): void
@@ -46,6 +46,26 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
         parent::tearDown();
 
         unset($this->_oModel);
+    }
+
+    public function testCustomRendererIsAvailableCaseInsensitively(): void
+    {
+        $renderer = $this->createMock(RendererInterface::class);
+        $renderer->method('getFormat')->willReturn('custom');
+        $renderer->method('getTitleTranslationId')->willReturn('CUSTOM_TITLE');
+        $bridge = new RendererBridge([$renderer]);
+        $this->assertSame($renderer, $bridge->getRenderer('CUSTOM'));
+        $this->assertSame(['custom' => 'CUSTOM_TITLE'], $bridge->getTranslatedRendererIdList());
+    }
+
+    public function testDuplicateFormatsAreRejectedIgnoringCase(): void
+    {
+        $first = $this->createMock(RendererInterface::class);
+        $first->method('getFormat')->willReturn('custom');
+        $second = $this->createMock(RendererInterface::class);
+        $second->method('getFormat')->willReturn('CUSTOM');
+        $this->expectException(\InvalidArgumentException::class);
+        new RendererBridge([$first, $second]);
     }
 
     /**
@@ -58,14 +78,14 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
         $list = $this->_oModel->getRendererList();
 
         $this->assertIsArray($list);
-        $this->assertArrayHasKey(RendererBridge::FORMAT_CSV, $list);
-        $this->assertInstanceOf(Csv::class, $list[RendererBridge::FORMAT_CSV]);
-        $this->assertArrayHasKey(RendererBridge::FORMAT_CSV_SPREADSHEET, $list);
-        $this->assertInstanceOf(SpreadsheetCsv::class, $list[RendererBridge::FORMAT_CSV_SPREADSHEET]);
+        $this->assertArrayHasKey(Csv::FORMAT, $list);
+        $this->assertInstanceOf(Csv::class, $list[Csv::FORMAT]);
+        $this->assertArrayHasKey(SpreadsheetCsv::FORMAT, $list);
+        $this->assertInstanceOf(SpreadsheetCsv::class, $list[SpreadsheetCsv::FORMAT]);
         $this->assertInstanceOf(SpreadsheetCsv::class, $this->_oModel->getRenderer('csv_spreadsheet'));
         $this->assertSame(
             'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET',
-            $this->_oModel->getTranslatedRendererIdList()[RendererBridge::FORMAT_CSV_SPREADSHEET]
+            $this->_oModel->getTranslatedRendererIdList()[SpreadsheetCsv::FORMAT]
         );
     }
 
@@ -149,7 +169,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
     public function canGetRendererDataProvider(): array
     {
         return [
-            'existing renderer' => [RendererBridge::FORMAT_JSON, false],
+            'existing renderer' => [Json::FORMAT, false],
             'unknown renderer' => ['unknownRenderer', true],
         ];
     }
