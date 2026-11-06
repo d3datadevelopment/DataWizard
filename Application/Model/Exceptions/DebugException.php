@@ -18,6 +18,9 @@ namespace D3\DataWizard\Application\Model\Exceptions;
 use Exception;
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * @deprecated SQL previews are displayed as informational messages by the admin controllers.
+ */
 class DebugException extends DataWizardException
 {
     public function __construct($sMessage = "not set", Exception $previous = null)
