@@ -16,26 +16,35 @@ declare(strict_types=1);
 namespace D3\DataWizard\Application\Model\ExportRenderer;
 
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
+use InvalidArgumentException;
 
-class RendererBridge
+class RendererBridge implements RendererBridgeInterface
 {
-    public const FORMAT_CSV    = 'CSV';
-    public const FORMAT_CSV_SPREADSHEET = 'CSV_SPREADSHEET';
-    public const FORMAT_PRETTY = 'Pretty';
-    public const FORMAT_JSON   = 'JSON';
     public const FORMAT_QUERY  = 'QUERY';
 
-    /**
-     * @return array
-     */
+    private array $renderers = [];
+
+    public function __construct(iterable $renderers = [])
+    {
+        foreach ($renderers as $renderer) {
+            if (!$renderer instanceof RendererInterface) {
+                throw new InvalidArgumentException('Renderer must implement RendererInterface');
+            }
+            $format = $renderer->getFormat();
+            if ($format === '' || strtolower($format) === strtolower(self::FORMAT_QUERY) || isset($this->renderers[strtolower($format)])) {
+                throw new InvalidArgumentException('Empty, reserved or duplicate renderer format: ' . $format);
+            }
+            $this->renderers[strtolower($format)] = $renderer;
+        }
+    }
+
     public function getRendererList(): array
     {
-        return [
-            self::FORMAT_CSV    => oxNew(Csv::class),
-            self::FORMAT_CSV_SPREADSHEET => oxNew(SpreadsheetCsv::class),
-            self::FORMAT_PRETTY => oxNew(Pretty::class),
-            self::FORMAT_JSON   => oxNew(Json::class),
-        ];
+        $list = [];
+        foreach ($this->renderers as $renderer) {
+            $list[$renderer->getFormat()] = $renderer;
+        }
+        return $list;
     }
 
     public function getTranslatedRendererIdList(): array
@@ -59,7 +68,7 @@ class RendererBridge
      * @return RendererInterface
      * @throws NoSuitableRendererException
      */
-    public function getRenderer(string $format = self::FORMAT_CSV): RendererInterface
+    public function getRenderer(string $format = Csv::FORMAT): RendererInterface
     {
         $format = strtolower($format);
 

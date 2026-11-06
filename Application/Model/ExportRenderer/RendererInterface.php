@@ -17,6 +17,8 @@ namespace D3\DataWizard\Application\Model\ExportRenderer;
 
 interface RendererInterface
 {
+    public function getFormat(): string;
+
     /**
      * @param iterable $rows
      * @param iterable $fieldNames

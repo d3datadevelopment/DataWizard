@@ -19,6 +19,13 @@ use Stringable;
 
 class SpreadsheetCsv extends Csv
 {
+    public const FORMAT = 'CSV_SPREADSHEET';
+
+    public function getFormat(): string
+    {
+        return self::FORMAT;
+    }
+
     public function getContent(iterable $rows, iterable $fieldNames): string
     {
         return parent::getContent($this->escapeRows($rows), $this->escapeValues($fieldNames));

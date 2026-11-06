@@ -20,6 +20,13 @@ use JsonException;
 
 class Json implements StreamingRendererInterface
 {
+    public const FORMAT = 'JSON';
+
+    public function getFormat(): string
+    {
+        return self::FORMAT;
+    }
+
     /**
      * @param iterable $rows
      * @param iterable $fieldNames

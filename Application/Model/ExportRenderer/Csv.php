@@ -24,6 +24,13 @@ use OxidEsales\Eshop\Core\Registry;
 
 class Csv implements StreamingRendererInterface
 {
+    public const FORMAT = 'CSV';
+
+    public function getFormat(): string
+    {
+        return self::FORMAT;
+    }
+
     public function __construct(protected bool $forceEnclose = false)
     {
     }

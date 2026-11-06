@@ -646,7 +646,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
             $this->callMethod(
                 $this->_oModel,
                 'getRenderer',
-                [RendererBridge::FORMAT_CSV]
+                [Csv::FORMAT]
             )
         );
     }
@@ -676,7 +676,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
      */
     public function canGetFileExtension()
     {
-        $format = RendererBridge::FORMAT_CSV;
+        $format = Csv::FORMAT;
         $expected = 'myFileExtension';
 
         /** @var RendererInterface|MockObject $rendererMock */
@@ -714,7 +714,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     {
         $rows = ['row1', 'row2'];
         $fieldnames = ['fieldname1', 'fieldname2'];
-        $format = RendererBridge::FORMAT_CSV;
+        $format = Csv::FORMAT;
         $expected = 'myContent';
 
         /** @var RendererInterface|MockObject $rendererMock */
@@ -773,7 +773,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
      */
     public function canGetExportFileName()
     {
-        $format = RendererBridge::FORMAT_CSV;
+        $format = Csv::FORMAT;
 
         /** @var d3TestExport|MockObject $modelMock */
         $modelMock = $this->getMockBuilder(d3TestExport::class)

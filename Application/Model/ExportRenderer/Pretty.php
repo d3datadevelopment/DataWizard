@@ -19,6 +19,13 @@ use MathieuViossat\Util\ArrayToTextTable;
 
 class Pretty implements RendererInterface
 {
+    public const FORMAT = 'Pretty';
+
+    public function getFormat(): string
+    {
+        return self::FORMAT;
+    }
+
     /**
      * @param iterable $rows
      * @param iterable $fieldNames

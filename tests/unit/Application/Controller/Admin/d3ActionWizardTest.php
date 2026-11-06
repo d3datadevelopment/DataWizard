@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace D3\DataWizard\tests\unit\Application\Controller\Admin;
 
+use D3\DataWizard\Application\Model\ExportRenderer\Csv;
+
 use D3\DataWizard\Application\Controller\Admin\d3ActionWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
@@ -177,7 +179,7 @@ class d3ActionWizardTest extends d3AdminController
     {
         return match ($varName) {
             'taskid' => 'testTaskId',
-            'format' => RendererBridge::FORMAT_CSV,
+            'format' => Csv::FORMAT,
             default => oxNew(Request::class)->getRequestEscapedParameter($varName),
         };
     }
