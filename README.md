@@ -28,7 +28,7 @@ Lassen Sie die Installation bei Bedarf von Ihrer technischen Betreuung durchfüh
 
 
 ```bash
-composer require d3/datawizard:^3.0
+composer require d3/datawizard:^3.1
 ``` 
 
 Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".

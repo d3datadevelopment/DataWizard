@@ -27,7 +27,7 @@ This package requires an Composer installed OXID eShop as defined in [composer.j
 Ask your technical support to install the module if needed. On the command line, navigate to the shop root directory (the directory containing `source` and `vendor`) and run:
 
 ```bash
-composer require d3/datawizard:^3.0
+composer require d3/datawizard:^3.1
 ``` 
 
 Activate the module in the admin area of the shop in "Extensions -> Modules".
