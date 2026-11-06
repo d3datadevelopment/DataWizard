@@ -50,6 +50,13 @@
     <div class="alert alert-success" role="status">{{ actionSuccessMessage|escape }}</div>
 {% endif %}
 
+{% if oView.getQueryPreview() is not null %}
+    <div class="alert alert-info" role="status">
+        <strong>{{ translate({ ident: 'D3_DATAWIZARD_QUERY_PREVIEW' }) }}</strong>
+        <pre>{{ oView.getQueryPreview()|escape }}</pre>
+    </div>
+{% endif %}
+
 <form name="myedit" id="myedit" action="{{ oViewConf.getSelfLink() }}" method="post" style="padding: 0;margin: 0;height:0;">
     {{ oViewConf.getHiddenSid()|raw }}
     <input type="hidden" name="cl" value="{{ oViewConf.getActiveClassName() }}">

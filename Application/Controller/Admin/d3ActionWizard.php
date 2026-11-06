@@ -18,7 +18,6 @@ namespace D3\DataWizard\Application\Controller\Admin;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
-use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
@@ -40,6 +39,7 @@ class d3ActionWizard extends AdminDetailsController
 
     protected Configuration $configuration;
     protected ?string $actionSuccessMessage = null;
+    protected ?string $queryPreview = null;
 
     public function __construct()
     {
@@ -72,6 +72,7 @@ class d3ActionWizard extends AdminDetailsController
     public function runTask(): void
     {
         $this->actionSuccessMessage = null;
+        $this->queryPreview = null;
         try {
             $this->execute();
         } catch (DataWizardException|DBALException $e) {
@@ -84,7 +85,6 @@ class d3ActionWizard extends AdminDetailsController
      * @return void
      * @throws ContainerExceptionInterface
      * @throws DBALException
-     * @throws DebugException
      * @throws InputUnvalidException
      * @throws NotFoundExceptionInterface
      * @throws TaskException
@@ -94,6 +94,7 @@ class d3ActionWizard extends AdminDetailsController
     protected function execute(): void
     {
         $this->actionSuccessMessage = null;
+        $this->queryPreview = null;
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $action = $this->configuration->getActionById($id);
         $action->clearActionResult();
@@ -101,12 +102,8 @@ class d3ActionWizard extends AdminDetailsController
 
         if (strtoupper((string) Registry::getRequest()->getRequestEscapedParameter('format')) === RendererBridge::FORMAT_QUERY) {
             [ $queryString, $parameters ] = $action->getQuery();
-            /** @var DebugException $debug */
-            $debug = oxNew(
-                DebugException::class,
-                d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
-            );
-            throw $debug;
+            $this->queryPreview = d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters);
+            return;
         }
 
         $action->run();
@@ -124,6 +121,11 @@ class d3ActionWizard extends AdminDetailsController
     public function getActionSuccessMessage(): ?string
     {
         return $this->actionSuccessMessage;
+    }
+
+    public function getQueryPreview(): ?string
+    {
+        return $this->queryPreview;
     }
 
     /**

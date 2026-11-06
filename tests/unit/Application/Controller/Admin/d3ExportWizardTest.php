@@ -19,7 +19,6 @@ use D3\DataWizard\Application\Controller\Admin\d3ExportWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
-use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
@@ -159,14 +158,15 @@ class d3ExportWizardTest extends d3AdminController
         $configurationMock->expects($this->atLeastOnce())->method('getExportById')->with('testTaskId')->willReturn($exportMock);
         $this->setValue($this->_oController, 'configuration', $configurationMock);
 
-        if ($blDebug) {
-            $this->expectException(DebugException::class);
-        }
-
         $this->callMethod(
             $this->_oController,
             'execute'
         );
+        if ($blDebug) {
+            $this->assertStringContainsString('SELECT 1', $this->_oController->getQueryPreview());
+        } else {
+            $this->assertNull($this->_oController->getQueryPreview());
+        }
     }
 
     public function executePassRequestCallback($varName)

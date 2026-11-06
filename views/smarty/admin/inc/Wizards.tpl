@@ -55,6 +55,13 @@
     <div class="alert alert-success" role="status">[{$actionSuccessMessage|escape}]</div>
 [{/if}]
 
+[{if $oView->getQueryPreview() !== null}]
+    <div class="alert alert-info" role="status">
+        <strong>[{oxmultilang ident="D3_DATAWIZARD_QUERY_PREVIEW"}]</strong>
+        <pre>[{$oView->getQueryPreview()|escape}]</pre>
+    </div>
+[{/if}]
+
 [{assign var="groups" value=$oView->getGroups()}]
 [{if $groups|@count}]
     <div id="accordion">

@@ -43,8 +43,6 @@ If no items are displayed, a suitable extension must be installed and activated 
 
 Use the arrow next to the start button on an export or action to select “Show SQL query”. This displays the query without executing it or creating a file. The view is primarily intended for technical support.
 
-The SQL preview currently appears in the message area also used for errors. It does not by itself mean that the query has been executed.
-
 ### CSV and spreadsheets
 
 The main button creates “CSV (for spreadsheets)”. Choose this format when opening the file in Excel or LibreOffice Calc, for example. To reduce the risk of accidentally executed formulas, some cell values are prefixed with an apostrophe; this can change their contents. Behavior depends on the spreadsheet application and its import and save settings. Saving again can change the protection, and safety cannot be guaranteed for every application.

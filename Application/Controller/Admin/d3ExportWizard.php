@@ -18,7 +18,6 @@ namespace D3\DataWizard\Application\Controller\Admin;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
-use D3\DataWizard\Application\Model\Exceptions\DebugException;
 use D3\DataWizard\Application\Model\Exceptions\NoSuitableRendererException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\ModCfg\Application\Model\d3database;
@@ -44,6 +43,7 @@ class d3ExportWizard extends AdminDetailsController
     protected $_sThisTemplate = '@'. Constants::OXID_MODULE_ID .'/admin/d3ExportWizard';
 
     protected Configuration $configuration;
+    protected ?string $queryPreview = null;
 
     public function __construct()
     {
@@ -77,6 +77,7 @@ class d3ExportWizard extends AdminDetailsController
      */
     public function runTask(): void
     {
+        $this->queryPreview = null;
         try {
             $this->execute();
         } catch (DataWizardException|DBALException|DatabaseErrorException $e) {
@@ -97,6 +98,7 @@ class d3ExportWizard extends AdminDetailsController
      */
     protected function execute(): void
     {
+        $this->queryPreview = null;
         $id = Registry::getRequest()->getRequestEscapedParameter('taskid');
         $export = $this->configuration->getExportById($id);
         $export->init();
@@ -104,13 +106,16 @@ class d3ExportWizard extends AdminDetailsController
         $format = Registry::getRequest()->getRequestEscapedParameter('format');
         if (strtoupper((string) $format) === RendererBridge::FORMAT_QUERY) {
             [ $queryString, $parameters ] = $export->getQuery();
-            throw oxNew(
-                DebugException::class,
-                d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters)
-            );
+            $this->queryPreview = d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters);
+            return;
         }
 
         $export->run($format === null || $format === '' ? RendererBridge::FORMAT_CSV_SPREADSHEET : $format);
+    }
+
+    public function getQueryPreview(): ?string
+    {
+        return $this->queryPreview;
     }
 
     /**

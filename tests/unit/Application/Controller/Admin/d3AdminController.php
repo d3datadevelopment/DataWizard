@@ -121,6 +121,26 @@ abstract class d3AdminController extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @dataProvider queryPreviews
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::getQueryPreview
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::getQueryPreview
+     */
+    public function testQueryPreviewReturnsCurrentValue(?string $preview): void
+    {
+        $this->assertControllerMethodPublic('getQueryPreview');
+        $this->setValue($this->_oController, 'queryPreview', $preview);
+        $this->assertSame($preview, $this->_oController->getQueryPreview());
+    }
+
+    public function queryPreviews(): array
+    {
+        return [
+            'no preview' => [null],
+            'query with special characters' => ["SELECT '<value>'\nFROM example;"],
+        ];
+    }
+
+    /**
      * @covers \D3\DataWizard\Application\Controller\Admin\d3ActionWizard::runTask()
      * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::runTask()
      * @test

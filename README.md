@@ -44,8 +44,6 @@ Falls keine Einträge angezeigt werden, muss eine passende Erweiterung installie
 
 Über den Pfeil rechts neben dem Start-Button können Sie bei Exporten und Aktionen „SQL-Abfrage anzeigen“ wählen. Die Abfrage wird dann angezeigt, aber nicht ausgeführt; es wird keine Datei erstellt. Diese Ansicht ist vor allem für die technische Betreuung gedacht.
 
-Die SQL-Vorschau erscheint derzeit im Meldungsbereich, der auch für Fehler verwendet wird. Sie bedeutet für sich genommen nicht, dass die Abfrage ausgeführt wurde.
-
 ### CSV und Tabellenkalkulation
 
 Der Hauptbutton erstellt „CSV (für Tabellenkalkulation)“. Wählen Sie dieses Format, wenn Sie die Datei beispielsweise in Excel oder LibreOffice Calc öffnen möchten. Zum Schutz vor unbeabsichtigt ausgeführten Formeln werden bestimmte Zellinhalte mit einem Apostroph versehen; dadurch können sich Werte ändern. Das Verhalten hängt vom Tabellenprogramm und seinen Import- und Speicheroptionen ab. Insbesondere kann erneutes Speichern den Schutz verändern; eine Garantie für alle Programme besteht nicht.
