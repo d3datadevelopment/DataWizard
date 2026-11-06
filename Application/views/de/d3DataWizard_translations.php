@@ -33,6 +33,7 @@ return [
     'D3_DATAWIZARD_GROUP_USERS'                       => 'Benutzer',
 
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'Export starten',
+    'D3_DATAWIZARD_EXPORT_SUBMIT_FORMAT'              => '%1$s: %2$s',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV (Rohdaten)',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (für Tabellenkalkulation)',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty-Format',

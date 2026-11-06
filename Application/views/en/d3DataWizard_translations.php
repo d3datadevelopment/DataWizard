@@ -34,6 +34,7 @@ return [
     'D3_DATAWIZARD_GROUP_USERS'                       => 'users',
 
     'D3_DATAWIZARD_EXPORT_SUBMIT'                     => 'generate export',
+    'D3_DATAWIZARD_EXPORT_SUBMIT_FORMAT'              => '%1$s: %2$s',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV (raw data)',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (for spreadsheets)',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Pretty format',

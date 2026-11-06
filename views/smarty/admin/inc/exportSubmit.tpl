@@ -2,8 +2,9 @@
     <div class="btn-group" [{$readonly}]>
         <button type="button" class="btn btn-primary" onclick="startTask('[{$id}]', 'CSV_SPREADSHEET')" [{$readonly}]>
             <i class="fas fa-fw fa-magic"></i>
-            [{oxmultilang ident=$item->getButtonText()}]
-            ([{oxmultilang ident="D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET"}])
+            [{assign var="buttonText" value=$item->getButtonText()|oxmultilangassign}]
+            [{assign var="formatText" value="D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET"|oxmultilangassign}]
+            [{oxmultilang ident="D3_DATAWIZARD_EXPORT_SUBMIT_FORMAT" args=[$buttonText, $formatText]}]
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [{$readonly}]>
             <span class="visually-hidden">
