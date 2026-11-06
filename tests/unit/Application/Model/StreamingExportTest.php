@@ -49,6 +49,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv::escapeValues
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Json::writeContent
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\StreamWriter::write
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
     public function testFileExportReadsRowsIndividuallyAndPreservesExistingFile(string $format): void
     {
@@ -268,7 +269,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $this->assertNull($this->callMethod($customRenderer, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
     }
 
-    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
+    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
     public function testRejectsNonlocalAndUnavailableDestinations(): void
     {
         $stream = tmpfile();
@@ -296,37 +299,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         }
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
-    public function testMissingDestinationClearsStatCacheAndFailsWithoutRetry(): void
-    {
-        require_once dirname(__DIR__, 3) . '/tools/StreamFunctionHooks.php';
-        $GLOBALS['dataWizardTestStatCacheClears'] = [];
-        $scheme = 'd3streammissing';
-        $this->assertTrue(stream_wrapper_register($scheme, StreamingMissingStream::class));
-        StreamingMissingStream::$attempts = 0;
-        $stream = tmpfile();
-        $this->assertNotFalse($stream);
-        $path = $scheme . '://missing.csv';
-
-        try {
-            try {
-                $this->callMethod(oxNew(d3TestExport::class), 'saveExportStream', [$path, $stream]);
-                $this->fail('A missing destination must raise an export exception.');
-            } catch (ExportFileException $exception) {
-                $this->assertSame(1, StreamingMissingStream::$attempts);
-                $this->assertSame([[true, $path]], $GLOBALS['dataWizardTestStatCacheClears']);
-            }
-        } finally {
-            fclose($stream);
-            stream_wrapper_unregister($scheme);
-        }
-    }
-
-    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
     public function testCollisionRetainsExtensionAndAppliesFilePermissions(): void
     {
         $seed = tempnam(sys_get_temp_dir(), 'd3stream_');
@@ -359,7 +334,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         }
     }
 
-    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
+    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
     public function testIncompleteStreamCopyRemovesTheDestination(): void
     {
         $stream = tmpfile();
@@ -386,7 +363,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         }
     }
 
-    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
+    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
     public function testSubclassCanUseTheStreamFileExtensionPoint(): void
     {
         $export = new class () extends d3TestExport {
@@ -417,6 +396,7 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
     /**
      * @dataProvider failedCloseModes
      * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
     public function testFailedDestinationCloseRemovesPartialFile(bool $throws): void
     {
@@ -457,28 +437,6 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
     public function failedCloseModes(): array
     {
         return ['returns false' => [false], 'throws' => [true]];
-    }
-
-    /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream */
-    public function testStreamExportStopsAfterRepeatedFilenameCollisions(): void
-    {
-        $scheme = 'd3streamcollision';
-        $this->assertTrue(stream_wrapper_register($scheme, StreamingCollisionStream::class));
-        StreamingCollisionStream::$attempts = 0;
-        $stream = tmpfile();
-        $this->assertNotFalse($stream);
-
-        try {
-            try {
-                $this->callMethod(oxNew(d3TestExport::class), 'saveExportStream', [$scheme . '://export.csv', $stream]);
-                $this->fail('Repeated collisions must raise an export exception.');
-            } catch (ExportFileException $exception) {
-                $this->assertSame(10, StreamingCollisionStream::$attempts);
-            }
-        } finally {
-            fclose($stream);
-            stream_wrapper_unregister($scheme);
-        }
     }
 
     /** @covers \D3\DataWizard\Application\Model\ExportBase::downloadStream */

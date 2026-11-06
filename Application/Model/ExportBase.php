@@ -355,43 +355,10 @@ abstract class ExportBase implements QueryBase
     /** @param resource $stream */
     protected function saveExportStream(string $filePath, $stream): string
     {
-        if (!stream_is_local($filePath)) {
-            throw oxNew(ExportFileException::class, $filePath);
-        }
-
-        $candidate = $filePath;
-        foreach (range(1, 10) as $attempt) {
-            $destination = @fopen($candidate, 'xb');
-            if ($destination !== false) {
-                try {
-                    $size = fstat($stream)['size'];
-                    $copied = stream_copy_to_stream($stream, $destination);
-                    $closed = $this->closeExportFile($destination);
-                    $destination = null;
-                    if ($copied !== $size || !$closed) {
-                        throw oxNew(ExportFileException::class, $candidate);
-                    }
-                    $this->getFileSystem()->chmod($candidate);
-                    return $candidate;
-                } catch (\Throwable $exception) {
-                    if (is_resource($destination)) {
-                        fclose($destination);
-                    }
-                    @unlink($candidate);
-                    throw $exception;
-                }
-            }
-
-            clearstatcache(true, $candidate);
-            if (!file_exists($candidate) && !is_link($candidate)) {
-                throw oxNew(ExportFileException::class, $candidate);
-            }
-            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-            $base = $extension === '' ? $filePath : substr($filePath, 0, -strlen($extension) - 1);
-            $candidate = $base . '_' . bin2hex(random_bytes(8)) . ($extension === '' ? '' : '.' . $extension);
-        }
-
-        throw oxNew(ExportFileException::class, $candidate);
+        return $this->publishExport($filePath, static function ($destination) use ($stream): bool {
+            $stat = fstat($stream);
+            return $stat !== false && stream_copy_to_stream($stream, $destination) === $stat['size'];
+        });
     }
 
     /**
@@ -399,45 +366,60 @@ abstract class ExportBase implements QueryBase
      */
     protected function saveExportFile(string $filePath, string $content): string
     {
-        if (!stream_is_local($filePath)) {
+        return $this->publishExport($filePath, static function ($destination) use ($content): bool {
+            $offset = 0;
+            $length = strlen($content);
+            for ($attempt = 0; $offset < $length && $attempt < $length; $attempt++) {
+                $written = @fwrite($destination, substr($content, $offset));
+                if (!$written) {
+                    return false;
+                }
+                $offset += $written;
+            }
+            return $offset === $length;
+        });
+    }
+
+    /** Publish a complete local file without replacing an existing destination. */
+    private function publishExport(string $filePath, callable $write): string
+    {
+        if (!stream_is_local($filePath) || preg_match('~^[a-z][a-z0-9+.-]*://~i', $filePath)) {
             throw oxNew(ExportFileException::class, $filePath);
         }
-
-        $candidate = $filePath;
-        foreach (range(1, 10) as $attempt) {
-            $handle = @fopen($candidate, 'xb');
-            if ($handle !== false) {
-                $remaining = $content;
-                for ($writeAttempt = 0; $remaining !== '' && $writeAttempt < strlen($content); $writeAttempt++) {
-                    $bytes = @fwrite($handle, $remaining);
-                    if (!$bytes) {
-                        $this->closeExportFile($handle);
-                        @unlink($candidate);
-                        throw oxNew(ExportFileException::class, $candidate);
-                    }
-                    $remaining = substr($remaining, $bytes);
+        $directory = dirname($filePath);
+        $temporary = $directory . DIRECTORY_SEPARATOR . '.d3export_' . bin2hex(random_bytes(16)) . '.tmp';
+        $handle = @fopen($temporary, 'xb');
+        if ($handle === false) {
+            throw oxNew(ExportFileException::class, $filePath);
+        }
+        try {
+            $written = $write($handle);
+            $closed = $this->closeExportFile($handle);
+            $handle = null;
+            if (!$written || !$closed) {
+                throw oxNew(ExportFileException::class, $filePath);
+            }
+            $this->getFileSystem()->chmod($temporary);
+            $candidate = $filePath;
+            foreach (range(1, 10) as $attempt) {
+                if (@link($temporary, $candidate)) {
+                    return $candidate;
                 }
-                $closed = $this->closeExportFile($handle);
-                if ($remaining !== '' || !$closed) {
-                    @unlink($candidate);
+                clearstatcache(true, $candidate);
+                if (!file_exists($candidate) && !is_link($candidate)) {
                     throw oxNew(ExportFileException::class, $candidate);
                 }
-
-                $this->getFileSystem()->chmod($candidate);
-                return $candidate;
+                $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+                $base = $extension === '' ? $filePath : substr($filePath, 0, -strlen($extension) - 1);
+                $candidate = $base . '_' . bin2hex(random_bytes(8)) . ($extension === '' ? '' : '.' . $extension);
             }
-
-            clearstatcache(true, $candidate);
-            if (!file_exists($candidate) && !is_link($candidate)) {
-                throw oxNew(ExportFileException::class, $candidate);
+            throw oxNew(ExportFileException::class, $candidate);
+        } finally {
+            if (is_resource($handle)) {
+                fclose($handle);
             }
-
-            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-            $base = $extension === '' ? $filePath : substr($filePath, 0, -strlen($extension) - 1);
-            $candidate = $base . '_' . bin2hex(random_bytes(8)) . ($extension === '' ? '' : '.' . $extension);
+            @unlink($temporary);
         }
-
-        throw oxNew(ExportFileException::class, $candidate);
     }
 
     /** @param resource $handle */

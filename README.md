@@ -55,6 +55,8 @@ Das Verhalten hängt vom Tabellenkalkulationsprogramm und dessen Import- und Spe
 
 Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten die Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Dafür muss im temporären Verzeichnis ausreichend Speicherplatz vorhanden sein. Je nach Datenbanktreiber und dessen Konfiguration können Abfrageergebnisse zusätzlich vom Treiber gepuffert werden; der Speicherbedarf ist daher nicht in jeder Umgebung konstant. `Pretty`, direkte Aufrufe von `getContent()` sowie individuell angepasste Export- und Rendererklassen verwenden weiterhin den bisherigen speicherbasierten Ablauf.
 
+Bei Exporten in ein Zielverzeichnis wird die fertige Datei über einen Hardlink atomar veröffentlicht, ohne vorhandene Dateien zu überschreiben. Das Zielverzeichnis muss Hardlinks unterstützen und ausreichend Speicherplatz für die temporäre Datei bieten. Nach einem abrupten Prozessabbruch können Dateien mit dem Namen `.d3export_*.tmp` zurückbleiben; nicht mehr verwendete temporäre Dateien können entfernt werden.
+
 ## Erweiterbarkeit
 
 Nach einer erfolgreich ausgeführten Standard-Action liefert `getActionResult()` ein `ActionResult` mit der Anzahl betroffener Zeilen über `getAffectedRows()`. Vor der Ausführung und nach einem Fehler ist das Ergebnis `null`; Fehler werden weiterhin als Exceptions gemeldet. Die Signaturen von `run()` und `executeAction()` bleiben unverändert. Eigene Actions, die diese Methoden überschreiben, können das geschützte Feld `$actionResult` selbst setzen.

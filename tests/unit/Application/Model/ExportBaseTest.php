@@ -385,6 +385,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
 
     /**
      * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
     public function testFileExportPreservesExistingFileOnCollision(): void
     {
@@ -408,6 +409,7 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
 
     /**
      * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
     public function testFileExportReportsUnwritableTarget(): void
     {
@@ -423,88 +425,150 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @dataProvider atomicExportModes
      * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
+    public function testPublicationNeverExposesPartialContentOrOverwritesConcurrentFile(bool $streaming): void
+    {
+        $directory = tempnam(sys_get_temp_dir(), 'd3atomic_');
+        $this->assertNotFalse($directory);
+        unlink($directory);
+        $this->assertTrue(mkdir($directory));
+        $path = $directory . DIRECTORY_SEPARATOR . 'export.csv';
+        $fs = $this->getMockBuilder(d3filesystem::class)->onlyMethods(['chmod'])->getMock();
+        $fs->expects($this->once())->method('chmod')->willReturnCallback(function ($temporary) use ($path, $directory) {
+            $this->assertSame($directory, dirname($temporary));
+            $this->assertFileDoesNotExist($path);
+            $this->assertSame('complete export', file_get_contents($temporary));
+            file_put_contents($path, 'concurrent export');
+            return true;
+        });
+        $export = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getFileSystem'])->getMock();
+        $export->method('getFileSystem')->willReturn($fs);
+        $stream = null;
+        $created = null;
+        try {
+            if ($streaming) {
+                $stream = tmpfile();
+                $this->assertNotFalse($stream);
+                fwrite($stream, 'complete export');
+                rewind($stream);
+                $created = $this->callMethod($export, 'saveExportStream', [$path, $stream]);
+            } else {
+                $created = $this->callMethod($export, 'saveExportFile', [$path, 'complete export']);
+            }
+            $this->assertNotSame($path, $created);
+            $this->assertSame('concurrent export', file_get_contents($path));
+            $this->assertSame('complete export', file_get_contents($created));
+            $this->assertSame([], glob($directory . DIRECTORY_SEPARATOR . '.d3export_*.tmp'));
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+            if ($created !== null && is_file($created)) {
+                unlink($created);
+            }
+            if (is_file($path)) {
+                unlink($path);
+            }
+            rmdir($directory);
+        }
+    }
+
+    public function atomicExportModes(): array
+    {
+        return ['string' => [false], 'stream' => [true]];
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     * @dataProvider publicationFailures
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
+    public function testPublicationFailureRemovesTemporaryFile(string $failure, int $expectedCandidates): void
+    {
+        require_once dirname(__DIR__, 3) . '/tools/ExportPublicationFunctionHooks.php';
+        $GLOBALS['dataWizardPublicationFailure'] = $failure;
+        $GLOBALS['dataWizardPublicationCandidates'] = [];
+        $directory = tempnam(sys_get_temp_dir(), 'd3atomic_');
+        $this->assertNotFalse($directory);
+        unlink($directory);
+        $this->assertTrue(mkdir($directory));
+        $path = $directory . DIRECTORY_SEPARATOR . 'export.csv';
+
+        try {
+            try {
+                $this->callMethod(oxNew(d3TestExport::class), 'saveExportFile', [$path, 'content']);
+                $this->fail('A publication failure must raise an export exception.');
+            } catch (ExportFileException $exception) {
+                $this->assertCount($expectedCandidates, $GLOBALS['dataWizardPublicationCandidates']);
+                $this->assertSame([], glob($directory . DIRECTORY_SEPARATOR . '.d3export_*.tmp'));
+                foreach ($GLOBALS['dataWizardPublicationCandidates'] as $candidate) {
+                    $this->assertSame('concurrent', file_get_contents($candidate));
+                }
+                if ($expectedCandidates === 0) {
+                    $this->assertFileDoesNotExist($path);
+                }
+            }
+        } finally {
+            foreach ($GLOBALS['dataWizardPublicationCandidates'] as $candidate) {
+                if (is_file($candidate)) {
+                    unlink($candidate);
+                }
+            }
+            rmdir($directory);
+            unset($GLOBALS['dataWizardPublicationFailure'], $GLOBALS['dataWizardPublicationCandidates']);
+        }
+    }
+
+    public function publicationFailures(): array
+    {
+        return [
+            'write failure' => ['write', 0],
+            'hard link unavailable' => ['link', 0],
+            'repeated concurrent collisions' => ['collision', 10],
+        ];
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
+     */
+    public function testPublicationCompletesPartialWrites(): void
+    {
+        require_once dirname(__DIR__, 3) . '/tools/ExportPublicationFunctionHooks.php';
+        $GLOBALS['dataWizardPublicationFailure'] = 'partial';
+        $path = tempnam(sys_get_temp_dir(), 'd3partial_');
+        $this->assertNotFalse($path);
+        unlink($path);
+        $created = null;
+
+        try {
+            $created = $this->callMethod(oxNew(d3TestExport::class), 'saveExportFile', [$path, 'partial writes']);
+            $this->assertSame($path, $created);
+            $this->assertSame('partial writes', file_get_contents($created));
+        } finally {
+            if ($created !== null && is_file($created)) {
+                unlink($created);
+            }
+            unset($GLOBALS['dataWizardPublicationFailure']);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
+     * @covers \D3\DataWizard\Application\Model\ExportBase::publishExport
      */
     public function testFileExportRejectsRemoteStream(): void
     {
         $this->expectException(ExportFileException::class);
         $this->callMethod($this->_oModel, 'saveExportFile', ['https://example.invalid/export.csv', 'content']);
-    }
-
-    /**
-     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
-     */
-    public function testFileExportRemovesIncompleteFileOnWriteFailure(): void
-    {
-        $scheme = 'd3exportwritefailure';
-        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
-        FailingExportStream::$mode = 'write';
-        FailingExportStream::$removedPaths = [];
-
-        try {
-            try {
-                $this->callMethod($this->_oModel, 'saveExportFile', [$scheme . '://export.csv', 'content']);
-                $this->fail('A write failure must raise an export exception.');
-            } catch (ExportFileException $exception) {
-                $this->assertSame([$scheme . '://export.csv'], FailingExportStream::$removedPaths);
-            }
-        } finally {
-            stream_wrapper_unregister($scheme);
-        }
-    }
-
-    /**
-     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
-     */
-    public function testFileExportHandlesPartialWrites(): void
-    {
-        $scheme = 'd3exportpartial';
-        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
-        FailingExportStream::$mode = 'partial';
-        FailingExportStream::$writtenContent = '';
-
-        $fsMock = $this->getMockBuilder(d3filesystem::class)->onlyMethods(['chmod'])->getMock();
-        $fsMock->expects($this->once())->method('chmod')->with($scheme . '://export.csv')->willReturn(true);
-        $modelMock = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getFileSystem'])->getMock();
-        $modelMock->method('getFileSystem')->willReturn($fsMock);
-
-        try {
-            $result = $this->callMethod($modelMock, 'saveExportFile', [$scheme . '://export.csv', 'content']);
-            $this->assertSame($scheme . '://export.csv', $result);
-            $this->assertSame('content', FailingExportStream::$writtenContent);
-        } finally {
-            stream_wrapper_unregister($scheme);
-        }
-    }
-
-    /**
-     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
-     */
-    public function testFileExportRemovesFileWhenClosingFails(): void
-    {
-        $scheme = 'd3exportclosefailure';
-        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
-        FailingExportStream::$mode = 'partial';
-        FailingExportStream::$removedPaths = [];
-
-        $modelMock = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['closeExportFile'])->getMock();
-        $modelMock->expects($this->once())->method('closeExportFile')->willReturnCallback(
-            static function ($handle): bool {
-                fclose($handle);
-                return false;
-            }
-        );
-
-        try {
-            try {
-                $this->callMethod($modelMock, 'saveExportFile', [$scheme . '://export.csv', 'content']);
-                $this->fail('A close failure must raise an export exception.');
-            } catch (ExportFileException $exception) {
-                $this->assertSame([$scheme . '://export.csv'], FailingExportStream::$removedPaths);
-            }
-        } finally {
-            stream_wrapper_unregister($scheme);
-        }
     }
 
     /**
@@ -516,28 +580,6 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
         $this->assertNotFalse($handle);
         $this->assertTrue($this->callMethod($this->_oModel, 'closeExportFile', [$handle]));
         $this->assertFalse(is_resource($handle));
-    }
-
-    /**
-     * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportFile
-     */
-    public function testFileExportStopsAfterRepeatedCollisions(): void
-    {
-        $scheme = 'd3exportcollision';
-        $this->assertTrue(stream_wrapper_register($scheme, FailingExportStream::class));
-        FailingExportStream::$mode = 'collision';
-        FailingExportStream::$openAttempts = 0;
-
-        try {
-            try {
-                $this->callMethod($this->_oModel, 'saveExportFile', [$scheme . '://export.csv', 'content']);
-                $this->fail('Repeated collisions must raise an export exception.');
-            } catch (ExportFileException $exception) {
-                $this->assertSame(10, FailingExportStream::$openAttempts);
-            }
-        } finally {
-            stream_wrapper_unregister($scheme);
-        }
     }
 
     /**

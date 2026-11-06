@@ -54,6 +54,8 @@ Behavior depends on the spreadsheet application and its import and save settings
 
 The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process result rows incrementally for normal file and browser exports, using a temporary file. The temporary directory must have sufficient disk space. Depending on the database driver and its configuration, the driver may still buffer query results, so memory usage is not necessarily constant. `Pretty`, direct calls to `getContent()`, and customized export or renderer classes continue to use the existing in-memory path.
 
+For exports to a target directory, the completed file is published atomically using a hard link without overwriting existing files. The target directory must support hard links and have sufficient space for the temporary file. An abrupt process termination may leave `.d3export_*.tmp` files behind; temporary files that are no longer in use can be removed.
+
 ## Extensibility
 
 After a standard action completes successfully, `getActionResult()` returns an `ActionResult` whose `getAffectedRows()` method reports the affected row count. Before execution and after an error the result is `null`; errors continue to be reported as exceptions. The signatures of `run()` and `executeAction()` are unchanged. Custom actions overriding these methods can set the protected `$actionResult` property themselves.
