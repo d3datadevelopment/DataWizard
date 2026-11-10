@@ -37,6 +37,7 @@ return [
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV (raw data)',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (for spreadsheets)',
     'D3_DATAWIZARD_QUERY_PREVIEW'                     => 'Show SQL query',
+    'D3_DATAWIZARD_ERR_NOQUERY'                        => 'No SQL query is available for this task.',
     'D3_DATAWIZARD_ACTION_OPTIONS'                    => 'Open action options',
     'D3_DATAWIZARD_EXPORT_OPTIONS'                    => 'Open export formats and other options',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'Formatted table (text file)',

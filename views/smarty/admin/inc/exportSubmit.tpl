@@ -19,9 +19,11 @@
                         [{oxmultilang ident=$translationId}]
                     </button>
                 [{/foreach}]
-                <button type="button" class="dropdown-item" onclick="startTask('[{$id}]', 'QUERY')" [{$readonly}]>
-                    [{oxmultilang ident="D3_DATAWIZARD_QUERY_PREVIEW"}]
-                </button>
+                [{if $item->hasQuery()}]
+                    <button type="button" class="dropdown-item" onclick="startTask('[{$id}]', 'QUERY')" [{$readonly}]>
+                        [{oxmultilang ident="D3_DATAWIZARD_QUERY_PREVIEW"}]
+                    </button>
+                [{/if}]
             [{/block}]
         </div>
     </div>

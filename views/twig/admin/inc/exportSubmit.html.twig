@@ -17,9 +17,11 @@
                         {{ translate({ ident: translationId }) }}
                     </button>
                 {% endfor %}
-                <button type="button" class="dropdown-item" onclick="startTask('{{ id }}', 'QUERY')">
-                    {{ translate({ ident: 'D3_DATAWIZARD_QUERY_PREVIEW' }) }}
-                </button>
+                {% if item.hasQuery() %}
+                    <button type="button" class="dropdown-item" onclick="startTask('{{ id }}', 'QUERY')">
+                        {{ translate({ ident: 'D3_DATAWIZARD_QUERY_PREVIEW' }) }}
+                    </button>
+                {% endif %}
             {% endblock %}
         </div>
     </div>

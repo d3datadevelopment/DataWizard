@@ -35,6 +35,11 @@ abstract class ActionBase implements QueryBase
     protected array $formElements = [];
     protected ?ActionResult $actionResult = null;
 
+    public function hasQuery(): bool
+    {
+        return true;
+    }
+
     public function init()
     {
 

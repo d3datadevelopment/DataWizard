@@ -8,9 +8,11 @@
             <span class="visually-hidden">[{oxmultilang ident="D3_DATAWIZARD_ACTION_OPTIONS"}]</span>
         </button>
         <div class="dropdown-menu">
-            <button type="button" class="dropdown-item" onclick="startTask('[{$id}]', 'QUERY')" [{$readonly}]>
-                [{oxmultilang ident="D3_DATAWIZARD_QUERY_PREVIEW"}]
-            </button>
+            [{if $item->hasQuery()}]
+                <button type="button" class="dropdown-item" onclick="startTask('[{$id}]', 'QUERY')" [{$readonly}]>
+                    [{oxmultilang ident="D3_DATAWIZARD_QUERY_PREVIEW"}]
+                </button>
+            [{/if}]
         </div>
     </div>
 [{/block}]

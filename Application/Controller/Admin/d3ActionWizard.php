@@ -101,7 +101,13 @@ class d3ActionWizard extends AdminDetailsController
         $action->init();
 
         if (strtoupper((string) Registry::getRequest()->getRequestEscapedParameter('format')) === RendererBridge::FORMAT_QUERY) {
-            [ $queryString, $parameters ] = $action->getQuery();
+            [$queryString, $parameters] = $action->getQuery();
+            if (!is_string($queryString) || trim($queryString) === '') {
+                throw new TaskException(
+                    $action,
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOQUERY', null, true)
+                );
+            }
             $this->queryPreview = d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters);
             return;
         }

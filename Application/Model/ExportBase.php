@@ -46,6 +46,11 @@ abstract class ExportBase implements QueryBase
 {
     protected array $formElements = [];
 
+    public function hasQuery(): bool
+    {
+        return true;
+    }
+
     public function init()
     {
 

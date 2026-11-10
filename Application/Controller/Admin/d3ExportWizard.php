@@ -105,7 +105,13 @@ class d3ExportWizard extends AdminDetailsController
 
         $format = Registry::getRequest()->getRequestEscapedParameter('format');
         if (strtoupper((string) $format) === RendererBridge::FORMAT_QUERY) {
-            [ $queryString, $parameters ] = $export->getQuery();
+            [$queryString, $parameters] = $export->getQuery();
+            if (!is_string($queryString) || trim($queryString) === '') {
+                throw new TaskException(
+                    $export,
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOQUERY', null, true)
+                );
+            }
             $this->queryPreview = d3database::getInstance()->getPreparedStatementQuery($queryString, $parameters);
             return;
         }

@@ -36,6 +36,7 @@ return [
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV'                 => 'CSV (Rohdaten)',
     'D3_DATAWIZARD_EXPORT_FORMAT_CSV_SPREADSHEET'     => 'CSV (für Tabellenkalkulation)',
     'D3_DATAWIZARD_QUERY_PREVIEW'                     => 'SQL-Abfrage anzeigen',
+    'D3_DATAWIZARD_ERR_NOQUERY'                        => 'Für diese Aufgabe ist keine SQL-Abfrage verfügbar.',
     'D3_DATAWIZARD_ACTION_OPTIONS'                    => 'Aktionsoptionen öffnen',
     'D3_DATAWIZARD_EXPORT_OPTIONS'                    => 'Exportformate und weitere Optionen öffnen',
     'D3_DATAWIZARD_EXPORT_FORMAT_PRETTY'              => 'formatierte Tabelle (Textdatei)',
