@@ -19,6 +19,7 @@ use D3\DataWizard\Application\Controller\Admin\d3ExportWizard;
 use D3\DataWizard\Application\Model\Configuration;
 use D3\DataWizard\Application\Model\Constants;
 use D3\DataWizard\Application\Model\Exceptions\DataWizardException;
+use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\tests\tools\d3TestAction;
 use D3\DataWizard\tests\tools\d3TestExport;
@@ -237,6 +238,31 @@ class d3ExportWizardTest extends d3AdminController
             'explicit JSON' => [RendererBridge::FORMAT_JSON, RendererBridge::FORMAT_JSON],
             'unknown format is passed through' => ['unknown', 'unknown'],
         ];
+    }
+
+    public function testQueryPreviewRejectsExportWithoutQuery(): void
+    {
+        $oldRequest = Registry::getRequest();
+        $request = $this->getMockBuilder(Request::class)
+            ->onlyMethods(['getRequestEscapedParameter'])->getMock();
+        $request->method('getRequestEscapedParameter')->willReturnCallback(
+            static fn ($name) => $name === 'taskid' ? 'testTaskId' : RendererBridge::FORMAT_QUERY
+        );
+        $export = $this->getMockBuilder(d3TestExport::class)
+            ->onlyMethods(['getQuery', 'init'])->getMock();
+        $export->method('getQuery')->willReturn(['', []]);
+        $configuration = $this->getMockBuilder(Configuration::class)->disableOriginalConstructor()
+            ->onlyMethods(['getExportById'])->getMock();
+        $configuration->method('getExportById')->willReturn($export);
+        $this->setValue($this->_oController, 'configuration', $configuration);
+
+        Registry::set(Request::class, $request);
+        try {
+            $this->expectException(TaskException::class);
+            $this->callMethod($this->_oController, 'execute');
+        } finally {
+            Registry::set(Request::class, $oldRequest);
+        }
     }
 
     /**
