@@ -286,7 +286,7 @@ abstract class ExportBase implements QueryBase
         }
 
         $renderer = $this->getRenderer($format);
-        if (in_array(get_class($renderer), [Csv::class, SpreadsheetCsv::class, Json::class], true)) {
+        if ($renderer instanceof StreamingRendererInterface) {
             return $renderer;
         }
 
