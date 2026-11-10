@@ -30,16 +30,90 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\Registry;
 
-/**
- * @coversNothing
- */
 class StreamingExportTest extends d3ModCfgUnitTestCase
 {
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeContentToStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeStreamingRows
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getStreamingRenderer
+     * @covers \D3\DataWizard\Application\Model\ExportBase::validateExportQuery
+     */
+    public function testContentStreamReadsRowsIndividually(): void
+    {
+        $result = $this->createMock(Result::class);
+        $result->expects($this->exactly(3))->method('fetchAssociative')
+            ->willReturnOnConsecutiveCalls(['value' => 'one'], ['value' => 'two'], false);
+        $result->expects($this->never())->method('fetchAllAssociative');
+        $result->expects($this->once())->method('free');
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeQuery'])->getMock();
+        $connection->method('executeQuery')->willReturn($result);
+        $export = $this->getMockBuilder(d3TestExport::class)
+            ->onlyMethods(['getQuery', 'getConnection'])->getMock();
+        $export->method('getQuery')->willReturn(['SELECT 1', []]);
+        $export->method('getConnection')->willReturn($connection);
+        $stream = fopen('php://temp', 'w+');
+        try {
+            $export->writeContentToStream($stream, RendererBridge::FORMAT_JSON);
+            rewind($stream);
+            $expected = oxNew(RendererBridge::class)->getRenderer(RendererBridge::FORMAT_JSON)
+                ->getContent([['value' => 'one'], ['value' => 'two']], ['value']);
+            $this->assertSame($expected, stream_get_contents($stream));
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeContentToStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getStreamingRenderer
+     */
+    public function testContentStreamPreservesOverriddenContent(): void
+    {
+        $export = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getContent'])->getMock();
+        $export->expects($this->once())->method('getContent')->with('CSV')->willReturn('custom content');
+        $stream = fopen('php://temp', 'w+');
+        try {
+            $export->writeContentToStream($stream, 'CSV');
+            rewind($stream);
+            $this->assertSame('custom content', stream_get_contents($stream));
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeContentToStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeStreamingRows
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getStreamingRenderer
+     * @covers \D3\DataWizard\Application\Model\ExportBase::validateExportQuery
+     */
+    public function testContentStreamRejectsEmptyResultAndReleasesIt(): void
+    {
+        $result = $this->createMock(Result::class);
+        $result->expects($this->once())->method('fetchAssociative')->willReturn(false);
+        $result->expects($this->once())->method('free');
+        $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()
+            ->onlyMethods(['executeQuery'])->getMock();
+        $connection->method('executeQuery')->willReturn($result);
+        $export = $this->getMockBuilder(d3TestExport::class)
+            ->onlyMethods(['getQuery', 'getConnection'])->getMock();
+        $export->method('getQuery')->willReturn(['SELECT 1', []]);
+        $export->method('getConnection')->willReturn($connection);
+        $stream = fopen('php://temp', 'w+');
+        try {
+            $this->expectException(TaskException::class);
+            $export->writeContentToStream($stream, RendererBridge::FORMAT_JSON);
+        } finally {
+            fclose($stream);
+        }
+    }
     /**
      * @dataProvider streamingFormats
      * @covers \D3\DataWizard\Application\Model\ExportBase::executeExport
      * @covers \D3\DataWizard\Application\Model\ExportBase::getStreamingRenderer
      * @covers \D3\DataWizard\Application\Model\ExportBase::executeStreamingExport
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeStreamingRows
      * @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream
      * @covers \D3\DataWizard\Application\Model\ExportBase::validateExportQuery
      * @covers \D3\DataWizard\Application\Model\ExportRenderer\Csv::writeContent

@@ -23,7 +23,7 @@ class NoSuitableRendererException extends DataWizardException
     public function __construct($sMessage = "not set", Exception $previous = null)
     {
         $sMessage = sprintf(
-            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOSUITABLERENDERER'),
+            Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOSUITABLERENDERER', null, true),
             $sMessage
         );
 

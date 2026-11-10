@@ -25,6 +25,7 @@ use D3\DataWizard\Application\Model\Exceptions\TaskException;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererBridge;
 use D3\DataWizard\Application\Model\ExportRenderer\RendererInterface;
 use D3\DataWizard\Application\Model\ExportRenderer\StreamingRendererInterface;
+use D3\DataWizard\Application\Model\ExportRenderer\StreamWriter;
 use D3\DataWizard\Application\Model\ExportRenderer\Csv;
 use D3\DataWizard\Application\Model\ExportRenderer\Json;
 use D3\DataWizard\Application\Model\ExportRenderer\SpreadsheetCsv;
@@ -301,26 +302,7 @@ abstract class ExportBase implements QueryBase
         }
 
         try {
-            [$queryString, $parameters] = $this->validateExportQuery($this->getQuery());
-            $result = $this->getConnection()->executeQuery($queryString, $parameters);
-            try {
-                $first = $result->fetchAssociative();
-                if ($first === false) {
-                    throw new TaskException(
-                        $this,
-                        Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
-                    );
-                }
-                $rows = (static function () use ($first, $result): \Generator {
-                    yield $first;
-                    while (($row = $result->fetchAssociative()) !== false) {
-                        yield $row;
-                    }
-                })();
-                $renderer->writeContent($stream, $rows, array_keys($first));
-            } finally {
-                $result->free();
-            }
+            $this->writeStreamingRows($stream, $renderer);
 
             if (!$this->rewindExportStream($stream)) {
                 throw oxNew(RenderException::class, 'Could not rewind export stream', []);
@@ -336,6 +318,42 @@ abstract class ExportBase implements QueryBase
             return $this->saveExportStream($fs->trailingslashit($path) . $filename, $stream);
         } finally {
             fclose($stream);
+        }
+    }
+
+    /** Write export content to a caller-owned stream, preserving overridden export methods. */
+    public function writeContentToStream($stream, string $format): void
+    {
+        $renderer = $this->getStreamingRenderer($format);
+        if ($renderer === null) {
+            StreamWriter::write($stream, $this->getContent($format));
+            return;
+        }
+
+        $this->writeStreamingRows($stream, $renderer);
+    }
+
+    private function writeStreamingRows($stream, StreamingRendererInterface $renderer): void
+    {
+        [$queryString, $parameters] = $this->validateExportQuery($this->getQuery());
+        $result = $this->getConnection()->executeQuery($queryString, $parameters);
+        try {
+            $first = $result->fetchAssociative();
+            if ($first === false) {
+                throw new TaskException(
+                    $this,
+                    Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
+                );
+            }
+            $rows = (static function () use ($first, $result): \Generator {
+                yield $first;
+                while (($row = $result->fetchAssociative()) !== false) {
+                    yield $row;
+                }
+            })();
+            $renderer->writeContent($stream, $rows, array_keys($first));
+        } finally {
+            $result->free();
         }
     }
 
