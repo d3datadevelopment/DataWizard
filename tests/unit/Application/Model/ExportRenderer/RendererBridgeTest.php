@@ -55,6 +55,7 @@ class RendererBridgeTest extends d3ModCfgUnitTestCase
      */
     public function canGetRendererList()
     {
+        $this->assertTrue((new \ReflectionMethod(RendererBridge::class, 'getRendererList'))->isPublic());
         $list = $this->_oModel->getRendererList();
 
         $this->assertIsArray($list);

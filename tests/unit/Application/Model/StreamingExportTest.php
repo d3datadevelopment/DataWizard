@@ -264,9 +264,16 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
         $custom = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getContent'])->getMock();
         $this->assertNull($this->callMethod($custom, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
 
-        $customRenderer = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getRenderer'])->getMock();
-        $customRenderer->method('getRenderer')->willReturn(new class () extends Csv {});
-        $this->assertNull($this->callMethod($customRenderer, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
+    }
+
+    /** @covers \D3\DataWizard\Application\Model\ExportBase::getStreamingRenderer */
+    public function testCustomStreamingRendererUsesStreamingPath(): void
+    {
+        $renderer = new class () extends Csv {};
+        $export = $this->getMockBuilder(d3TestExport::class)->onlyMethods(['getRenderer'])->getMock();
+        $export->method('getRenderer')->willReturn($renderer);
+
+        $this->assertSame($renderer, $this->callMethod($export, 'getStreamingRenderer', [RendererBridge::FORMAT_CSV]));
     }
 
     /** @covers \D3\DataWizard\Application\Model\ExportBase::saveExportStream

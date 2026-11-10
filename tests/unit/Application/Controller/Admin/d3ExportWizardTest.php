@@ -28,6 +28,7 @@ use Exception;
 use OxidEsales\Eshop\Core\Exception\DatabaseErrorException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Request;
+use OxidEsales\Eshop\Core\Language;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingService;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionException;
@@ -240,9 +241,14 @@ class d3ExportWizardTest extends d3AdminController
         ];
     }
 
-    public function testQueryPreviewRejectsExportWithoutQuery(): void
+    /**
+     * @covers \D3\DataWizard\Application\Controller\Admin\d3ExportWizard::execute
+     * @dataProvider invalidPreviewQueries
+     */
+    public function testQueryPreviewRejectsExportWithoutQuery($query): void
     {
         $oldRequest = Registry::getRequest();
+        $oldLanguage = Registry::getLang();
         $request = $this->getMockBuilder(Request::class)
             ->onlyMethods(['getRequestEscapedParameter'])->getMock();
         $request->method('getRequestEscapedParameter')->willReturnCallback(
@@ -250,19 +256,30 @@ class d3ExportWizardTest extends d3AdminController
         );
         $export = $this->getMockBuilder(d3TestExport::class)
             ->onlyMethods(['getQuery', 'init'])->getMock();
-        $export->method('getQuery')->willReturn(['', []]);
+        $export->method('getQuery')->willReturn([$query, []]);
+        $language = $this->getMockBuilder(Language::class)->onlyMethods(['translateString'])->getMock();
+        $language->expects($this->once())->method('translateString')
+            ->with('D3_DATAWIZARD_ERR_NOQUERY', null, true)->willReturn('Query unavailable');
         $configuration = $this->getMockBuilder(Configuration::class)->disableOriginalConstructor()
             ->onlyMethods(['getExportById'])->getMock();
         $configuration->method('getExportById')->willReturn($export);
         $this->setValue($this->_oController, 'configuration', $configuration);
 
         Registry::set(Request::class, $request);
+        Registry::set(Language::class, $language);
         try {
             $this->expectException(TaskException::class);
+            $this->expectExceptionMessage('Query unavailable');
             $this->callMethod($this->_oController, 'execute');
         } finally {
             Registry::set(Request::class, $oldRequest);
+            Registry::set(Language::class, $oldLanguage);
         }
+    }
+
+    public function invalidPreviewQueries(): array
+    {
+        return ['empty' => [''], 'whitespace' => [" \t\n"], 'non-string' => [123]];
     }
 
     /**
