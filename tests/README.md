@@ -1,15 +1,23 @@
-# D3 Datawizard Tests
+# Data Wizard tests
 
-## Requirements
+Run the tests in a configured OXID shop installation with the module activated and the development dependencies from `composer.json` available. The PHPUnit configuration bootstraps `source/bootstrap.php`; the test environment therefore needs the shop configuration and its required services. The installed shop's root Composer configuration determines which development dependencies are installed.
 
-Please install the packages listed in the composer.json in "require-dev". Unfortunately Composer does not provide an automatic installation.
-missing ext-sockets
+Run commands from the shop root, which contains `source` and `vendor`. The examples below use the package-specific configuration; the command examples in the package's `composer.json` are under `extra.commands`, not Composer `scripts`.
 
-### Configuration
+```bash
+./vendor/bin/phpunit --configuration=vendor/d3/datawizard/.ci-tools/phpunit.xml --no-coverage
+```
 
-Make sure the module has been activated with a valid license key.
-Configure the error reporting to `error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);` in the `config.inc.php` due some deprecation issues in original OXID code
+To generate line coverage, use a PHP runtime with a supported coverage driver enabled, for example Xdebug:
 
-## Unit Tests
+```bash
+XDEBUG_MODE=coverage ./vendor/bin/phpunit --configuration=vendor/d3/datawizard/.ci-tools/phpunit.xml --coverage-html=reports/phpunit/datawizard --coverage-clover=reports/phpunit/datawizard/clover.xml
+```
 
-commands are described in composer.json scripts section
+For mutation testing, install Infection and run:
+
+```bash
+XDEBUG_MODE=coverage ./vendor/bin/infection --configuration=vendor/d3/datawizard/.ci-tools/infection.json --threads=1
+```
+
+If PHP or the required services run remotely, verify that the working-tree changes have been deployed to that runtime before interpreting the results. The generated reports belong to the runtime on which the commands execute.

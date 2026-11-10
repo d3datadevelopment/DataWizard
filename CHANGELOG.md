@@ -1,8 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The project uses four-part release numbers.
 
 ## [Unreleased]
 
@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable box templates for individual exports and actions.
 - Spreadsheet-safe CSV export format that neutralizes potential formula prefixes.
 - An option on each export and action to preview its SQL query without executing it.
+- Allow exports and actions without SQL to hide the query-preview option via `hasQuery()`; reject empty query previews with a task error.
 
 ### Changed
 - Use spreadsheet-safe CSV for the primary admin export button; raw CSV remains available.
 - Process rows incrementally for built-in CSV and JSON exports to reduce PHP memory usage.
+- Use the streaming export path for custom renderers implementing `StreamingRendererInterface`, subject to the existing export extension-point checks.
 - Report successful actions and their affected row count as a result instead of an exception.
 - Display SQL previews as informational messages without logging them as errors.
 - Align the appearance of error messages with the other admin notifications.
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Prevent exports with colliding file names from overwriting existing files.
 - Publish file exports atomically so consumers do not see partially written files.
+- Report an unavailable export query as a `TaskException` rather than failing because of a missing import.
 
 ### Removed
 - The global debug setting; SQL query previews are selected per export or action. An enabled legacy setting no longer prevents actions or exports from running.
@@ -75,6 +78,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - adjust code to PHP 7.3 and up
 
+## [1.5.0.1] - 2023-03-22
+### Changed
+- Update documentation for the 1.x release line.
+- Declare the ModCfg dependency.
+
+### Fixed
+- Correct nested HTML elements that could cause form issues.
+
+## [1.5.0.0] - 2021-12-21
+### Changed
+- Extract content rendering into a separate method in the 1.x release line.
+
+## [1.4.0.1] - 2021-12-20
+### Added
+- Add unit tests and test dependencies to the 1.x release line.
+
 ## [1.4.0.0](https://git.d3data.de/D3Public/DataWizard/compare/1.3.1.0...1.4.0.0) - 2021-11-11
 ### Added
 - add JSON export renderer
@@ -86,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - show registered export renderers in admin submit without required tpl block extension
 - force get translations from admin
 
-## [1.3.1.0](https://git.d3data.de/D3Public/DataWizard/compare/1.2.0.0...1.3.0.0) - 2021-09-10
+## [1.3.1.0](https://git.d3data.de/D3Public/DataWizard/compare/1.3.0.0...1.3.1.0) - 2021-09-10
 ### Added
 - installable in OXID 6.3.1
 
@@ -94,6 +113,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - can handle long task description text
 - has more generic admin controller templates
+
+## [1.2.1.0] - 2021-07-27
+### Changed
+- Move example tasks into the separate DataWizard Tasks module.
 
 ## [1.2.0.0](https://git.d3data.de/D3Public/DataWizard/compare/1.1.0.0...1.2.0.0) - 2021-07-27
 ### Added

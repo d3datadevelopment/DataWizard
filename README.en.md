@@ -41,7 +41,7 @@ Activate the module in the admin area of the shop in "Extensions -> Modules".
 
 If no items are displayed, a suitable extension must be installed and activated or a custom item configured. Contact your technical support for help.
 
-Use the arrow next to the start button on an export or action to select “Show SQL query”. This displays the query without executing it or creating a file. The view is primarily intended for technical support.
+Use the arrow next to the start button on a suitable export or action to select “Show SQL query”. This displays the query without executing it or creating a file. Tasks without an SQL query do not offer this option. Checks performed while generating the query can also produce an error in the preview. The view is primarily intended for technical support.
 
 ### CSV and spreadsheets
 
@@ -57,7 +57,13 @@ Large exports can take time and require sufficient server memory and disk space.
 
 The following notes are intended for developers.
 
-The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process rows incrementally for normal file and browser exports, using a temporary file. The database driver may still buffer results. `Pretty`, direct calls to `getContent()`, and customized export or renderer classes may continue to use more memory. Programmatic calls default to raw CSV.
+The built-in `CSV`, `CSV_SPREADSHEET` and `JSON` formats process rows incrementally for normal file and browser exports, using a temporary file. Custom renderers implementing `StreamingRendererInterface` can also use this path. For compatibility, an export that overrides `getContent`, `getExportData`, `renderContent`, `getDownload`, or `saveExportFile` uses the regular buffered path instead. `Pretty` and direct `getContent()` calls also use that path. The database driver may still buffer results when streaming. Programmatic calls default to raw CSV.
+
+For custom tasks, extend the `D3\DataWizard\Application\Model\Configuration` registry through the OXID module chain and register instances using `registerExport()` or `registerAction()`. Implementations extend `ExportBase` or `ActionBase`; SQL-based tasks return `[SQL, parameters]` from `getQuery()`. Bind input values as parameters and validate them server-side. The preview calls `getQuery()` directly and does not perform the normal form validation in `run()`.
+
+A task without SQL can override `hasQuery()` to return `false` and hide the preview. `getQuery()` remains part of the contract and can return `['', []]`; the implementation must also provide data or execution without SQL. An export can override `getExportData()` for this purpose, which selects the buffered path. See `d3/datawizardtasks` for examples and a detailed integration guide.
+
+Register additional export formats through an OXID extension of `ExportRenderer\RendererBridge::getRendererList()` and implement `RendererInterface`. For incremental output, the renderer also implements `StreamingRendererInterface`; the caller owns and closes the stream passed to it.
 
 For programmatic exports to a target directory, the completed file is published atomically using a hard link without overwriting existing files. The target directory must support hard links and have space for the temporary file. An abrupt process termination may leave `.d3export_*.tmp` files behind; temporary files that are no longer in use can be removed.
 

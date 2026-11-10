@@ -42,7 +42,7 @@ Aktivieren Sie das Modul im Shopadmin unter "Erweiterungen -> Module".
 
 Falls keine Einträge angezeigt werden, muss eine passende Erweiterung installiert und aktiviert oder ein individueller Eintrag eingerichtet werden. Wenden Sie sich dafür an Ihre technische Betreuung.
 
-Über den Pfeil rechts neben dem Start-Button können Sie bei Exporten und Aktionen „SQL-Abfrage anzeigen“ wählen. Die Abfrage wird dann angezeigt, aber nicht ausgeführt; es wird keine Datei erstellt. Diese Ansicht ist vor allem für die technische Betreuung gedacht.
+Über den Pfeil rechts neben dem Start-Button können Sie bei geeigneten Exporten und Aktionen „SQL-Abfrage anzeigen“ wählen. Die Abfrage wird dann angezeigt, aber nicht ausgeführt; es wird keine Datei erstellt. Einträge ohne SQL-Abfrage bieten diese Option nicht an. Prüfungen bei der Abfrageerstellung können auch in der Vorschau eine Fehlermeldung auslösen. Diese Ansicht ist vor allem für die technische Betreuung gedacht.
 
 ### CSV und Tabellenkalkulation
 
@@ -58,7 +58,13 @@ Große Exporte können Zeit sowie ausreichend Arbeitsspeicher und Speicherplatz 
 
 Die folgenden Hinweise richten sich an Entwicklerinnen und Entwickler.
 
-Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Der Datenbanktreiber kann Ergebnisse dennoch puffern. `Pretty`, direkte Aufrufe von `getContent()` und angepasste Export- oder Rendererklassen können weiterhin mehr Speicher benötigen. Programmatische Aufrufe verwenden standardmäßig Rohdaten-CSV.
+Die eingebauten Formate `CSV`, `CSV_SPREADSHEET` und `JSON` verarbeiten Ergebniszeilen beim normalen Datei- und Browserexport schrittweise und verwenden eine temporäre Datei. Auch eigene Renderer mit `StreamingRendererInterface` können diesen Pfad nutzen. Überschreibt ein Export eine der Methoden `getContent`, `getExportData`, `renderContent`, `getDownload` oder `saveExportFile`, wird aus Kompatibilitätsgründen der reguläre gepufferte Pfad verwendet. `Pretty` und direkte Aufrufe von `getContent()` verwenden ebenfalls diesen Pfad. Der Datenbanktreiber kann Ergebnisse auch beim Streaming puffern. Programmatische Aufrufe verwenden standardmäßig Rohdaten-CSV.
+
+Für eigene Tasks erweitern Sie die Registry `D3\DataWizard\Application\Model\Configuration` über die OXID-Modulkette und registrieren Instanzen mit `registerExport()` beziehungsweise `registerAction()`. Implementierungen erweitern `ExportBase` oder `ActionBase` und liefern für SQL-basierte Tasks aus `getQuery()` ein Array `[SQL, Parameter]`. Binden Sie Eingabewerte als Parameter und validieren Sie sie serverseitig. Die Vorschau ruft `getQuery()` direkt auf und führt die reguläre Formularvalidierung in `run()` nicht aus.
+
+Ein Task ohne SQL kann `hasQuery()` mit `false` überschreiben, um die Vorschau auszublenden. `getQuery()` bleibt Teil des Vertrags und liefert beispielsweise `['', []]`; die eigene Implementierung muss auch die Datenbeschaffung beziehungsweise Ausführung ohne SQL bereitstellen. Ein Export kann dazu `getExportData()` überschreiben; dadurch verwendet er den gepufferten Pfad. Die Beispiele und eine detaillierte Integrationsanleitung finden Sie in `d3/datawizardtasks`.
+
+Zusätzliche Exportformate registrieren Sie über eine OXID-Erweiterung der `ExportRenderer\RendererBridge::getRendererList()` und implementieren `RendererInterface`. Für inkrementelle Ausgabe implementiert der Renderer zusätzlich `StreamingRendererInterface`; der aufrufende Code besitzt und schließt den übergebenen Stream.
 
 Bei programmatischen Exporten in ein Zielverzeichnis wird die fertige Datei über einen Hardlink atomar veröffentlicht, ohne vorhandene Dateien zu überschreiben. Das Zielverzeichnis muss Hardlinks unterstützen und Platz für die temporäre Datei bieten. Nach einem abrupten Prozessabbruch können `.d3export_*.tmp`-Dateien zurückbleiben; nicht mehr verwendete temporäre Dateien können entfernt werden.
 
