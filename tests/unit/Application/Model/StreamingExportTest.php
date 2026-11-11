@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace D3\DataWizard\tests\unit\Application\Model;
 
 use D3\DataWizard\Application\Model\Exceptions\TaskException;
+use D3\DataWizard\Application\Model\Exceptions\InputUnvalidException;
+use FormManager\Inputs\Number;
 use D3\DataWizard\Application\Model\Exceptions\RenderException;
 use D3\DataWizard\Application\Model\Exceptions\ExportFileException;
 use D3\DataWizard\Application\Model\StreamDownload;
@@ -32,6 +34,49 @@ use OxidEsales\Eshop\Core\Registry;
 
 class StreamingExportTest extends d3ModCfgUnitTestCase
 {
+    /**
+     * @dataProvider invalidInputTargets
+     * @covers \D3\DataWizard\Application\Model\ExportBase::run
+     * @covers \D3\DataWizard\Application\Model\ExportBase::writeContentToStream
+     * @covers \D3\DataWizard\Application\Model\ExportBase::validateFormElements
+     */
+    public function testInvalidInputStopsExportBeforeDataAccess(string $target): void
+    {
+        $methods = ['getQuery', 'getConnection', 'getRenderer', 'executeExport'];
+        if ($target === 'buffered-stream') {
+            $methods[] = 'getContent';
+        }
+        $export = $this->getMockBuilder(d3TestExport::class)->onlyMethods($methods)->getMock();
+        foreach ($methods as $method) {
+            $export->expects($this->never())->method($method);
+        }
+        $field = new Number(null, ['required' => true, 'min' => 1, 'max' => 10]);
+        $field->setValue(20)->setErrorMessages(['Invalid value']);
+        $export->registerFormElement($field);
+        $stream = fopen('php://temp', 'w+');
+        try {
+            try {
+                if ($target === 'file') {
+                    $export->run('JSON', '/unused');
+                } else {
+                    $export->writeContentToStream($stream, 'JSON');
+                }
+                $this->fail('Invalid input must stop the export.');
+            } catch (InputUnvalidException $exception) {
+                $this->assertSame($export, $exception->task);
+                rewind($stream);
+                $this->assertSame('', stream_get_contents($stream));
+            }
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    public function invalidInputTargets(): array
+    {
+        return [['file'], ['stream'], ['buffered-stream']];
+    }
+
     /**
      * @covers \D3\DataWizard\Application\Model\ExportBase::writeContentToStream
      * @covers \D3\DataWizard\Application\Model\ExportBase::writeStreamingRows
@@ -52,6 +97,9 @@ class StreamingExportTest extends d3ModCfgUnitTestCase
             ->onlyMethods(['getQuery', 'getConnection'])->getMock();
         $export->method('getQuery')->willReturn(['SELECT 1', []]);
         $export->method('getConnection')->willReturn($connection);
+        $field = new Number(null, ['required' => true, 'min' => 1, 'max' => 10]);
+        $field->setValue(5);
+        $export->registerFormElement($field);
         $stream = fopen('php://temp', 'w+');
         try {
             $export->writeContentToStream($stream, RendererBridge::FORMAT_JSON);

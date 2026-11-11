@@ -78,6 +78,13 @@ abstract class ExportBase implements QueryBase
      */
     public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
     {
+        $this->validateFormElements();
+
+        return $this->executeExport($format, $path);
+    }
+
+    private function validateFormElements(): void
+    {
         if ($this->hasFormElements()) {
             /** @var Input $element */
             foreach ($this->getFormElements() as $element) {
@@ -86,8 +93,6 @@ abstract class ExportBase implements QueryBase
                 }
             }
         }
-
-        return $this->executeExport($format, $path);
     }
 
     /**
@@ -324,6 +329,8 @@ abstract class ExportBase implements QueryBase
     /** Write export content to a caller-owned stream, preserving overridden export methods. */
     public function writeContentToStream($stream, string $format): void
     {
+        $this->validateFormElements();
+
         $renderer = $this->getStreamingRenderer($format);
         if ($renderer === null) {
             StreamWriter::write($stream, $this->getContent($format));
