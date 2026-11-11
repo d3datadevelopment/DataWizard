@@ -46,6 +46,7 @@ use Psr\Container\NotFoundExceptionInterface;
 abstract class ExportBase implements QueryBase
 {
     protected array $formElements = [];
+    private bool $allowEmptyExport = false;
 
     public function hasQuery(): bool
     {
@@ -76,11 +77,15 @@ abstract class ExportBase implements QueryBase
      * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
      */
-    public function run(string $format = RendererBridge::FORMAT_CSV, $path = null): string
+    public function run(string $format = RendererBridge::FORMAT_CSV, $path = null, bool $allowEmpty = false): string
     {
         $this->validateFormElements();
-
-        return $this->executeExport($format, $path);
+        $this->allowEmptyExport = $allowEmpty;
+        try {
+            return $this->executeExport($format, $path);
+        } finally {
+            $this->allowEmptyExport = false;
+        }
     }
 
     private function validateFormElements(): void
@@ -171,6 +176,10 @@ abstract class ExportBase implements QueryBase
         [ $queryString, $parameters ] = $this->validateExportQuery($query);
 
         $rows = $this->getConnection()->executeQuery($queryString, $parameters)->fetchAllAssociative();
+
+        if ($rows === [] && $this->allowEmptyExport) {
+            return [[], []];
+        }
 
         try {
             Assert::lazy()
@@ -327,17 +336,21 @@ abstract class ExportBase implements QueryBase
     }
 
     /** Write export content to a caller-owned stream, preserving overridden export methods. */
-    public function writeContentToStream($stream, string $format): void
+    public function writeContentToStream($stream, string $format, bool $allowEmpty = false): void
     {
         $this->validateFormElements();
+        $this->allowEmptyExport = $allowEmpty;
+        try {
+            $renderer = $this->getStreamingRenderer($format);
+            if ($renderer === null) {
+                StreamWriter::write($stream, $this->getContent($format));
+                return;
+            }
 
-        $renderer = $this->getStreamingRenderer($format);
-        if ($renderer === null) {
-            StreamWriter::write($stream, $this->getContent($format));
-            return;
+            $this->writeStreamingRows($stream, $renderer);
+        } finally {
+            $this->allowEmptyExport = false;
         }
-
-        $this->writeStreamingRows($stream, $renderer);
     }
 
     private function writeStreamingRows($stream, StreamingRendererInterface $renderer): void
@@ -347,6 +360,10 @@ abstract class ExportBase implements QueryBase
         try {
             $first = $result->fetchAssociative();
             if ($first === false) {
+                if ($this->allowEmptyExport) {
+                    $renderer->writeContent($stream, [], []);
+                    return;
+                }
                 throw new TaskException(
                     $this,
                     Registry::getLang()->translateString('D3_DATAWIZARD_ERR_NOEXPORTCONTENT', null, true)
@@ -476,11 +493,15 @@ abstract class ExportBase implements QueryBase
      * @throws NoSuitableRendererException
      * @throws NotFoundExceptionInterface
      */
-    public function getContent(string $format): string
+    public function getContent(string $format, bool $allowEmpty = false): string
     {
-        [ $rows, $fieldNames ] = $this->getExportData($this->getQuery());
-
-        return $this->renderContent($rows, $fieldNames, $format);
+        $this->allowEmptyExport = $allowEmpty;
+        try {
+            [$rows, $fieldNames] = $this->getExportData($this->getQuery());
+            return $this->renderContent($rows, $fieldNames, $format);
+        } finally {
+            $this->allowEmptyExport = false;
+        }
     }
 
     public function getBoxTemplate(): string
