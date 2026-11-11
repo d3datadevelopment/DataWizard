@@ -860,6 +860,34 @@ class ExportBaseTest extends d3ModCfgUnitTestCase
     }
 
     /**
+     * @covers \D3\DataWizard\Application\Model\ExportBase::getExportData
+     * @test
+     */
+    public function returnsEmptyDataWhenRunAllowsEmptyExports(): void
+    {
+        $resultMock = $this->createMock(Result::class);
+        $resultMock->expects($this->once())->method('fetchAllAssociative')->willReturn([]);
+
+        $connectionMock = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['executeQuery'])
+            ->getMock();
+        $connectionMock->expects($this->once())->method('executeQuery')->willReturn($resultMock);
+
+        $exportMock = $this->getMockBuilder(d3TestExport::class)
+            ->onlyMethods(['getConnection', 'executeExport'])
+            ->getMock();
+        $exportMock->method('getConnection')->willReturn($connectionMock);
+        $exportMock->expects($this->once())->method('executeExport')->with('CSV', null)
+            ->willReturnCallback(function () use ($exportMock): string {
+                $this->assertSame([[], []], $exportMock->getExportData(['SELECT 1', []]));
+                return '';
+            });
+
+        $this->assertSame('', $exportMock->run('CSV', null, true));
+    }
+
+    /**
      * @return array[]
      */
     public function canGetExportDataDataProvider(): array
