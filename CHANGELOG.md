@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The project uses four-part release numbers.
 
 ## [Unreleased]
+
+## [3.2.0.0](https://git.d3data.de/D3Public/DataWizard/compare/3.1.0.0...3.2.0.0) - 2026-11-24
+
 ### Added
 - Support for OXID eShop 7.6
 - Stream export results incrementally to output streams for supported renderers.
