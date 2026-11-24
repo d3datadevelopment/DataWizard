@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The project uses four-part release numbers.
 
 ## [Unreleased]
+### Added
+- Support for OXID eShop 7.6
+- Stream export results incrementally to output streams for supported renderers.
+- Allow exports to succeed with empty results when explicitly enabled.
+
+### Changed
+- Validate form inputs consistently before file and stream exports.
+- Update documentation for streaming and empty-result exports.
+
+### Fixed
+- Handle tasks without SQL queries and report unavailable export queries correctly.
 
 ## [3.1.0.0](https://git.d3data.de/D3Public/DataWizard/compare/3.0.0.0...3.1.0.0) - 2026-11-06
 
